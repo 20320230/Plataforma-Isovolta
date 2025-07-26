@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Productividad — ISOVOLTA</title>
+  <link rel="icon" type="image/png" href="Isovolta.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --azul: #045194;
+      --azul-oscuro: #00376e;
+      --azul-claro: #eaf2fa;
+      --amarillo: #ffe031;
+      --rojo: #fe415b;
+      --verde: #0ac270;
+      --gris: #f3f8fb;
+      --blanco: #fff;
+      --borde: #e0e6ee;
+      --sombra: 0 4px 24px #00499018;
+      --radius: 17px;
+      --fondo-card: #fff;
+      --fondo-barra: #eaf3fc;
+    }
+    html, body { background:var(--gris); margin:0; padding:0; font-family:'Roboto',Arial,sans-serif; }
+    .barra-iluo {
+      display:flex; align-items:center; justify-content:space-between;
+      background:var(--blanco); color:var(--azul); min-height:65px;
+      border-bottom:2.5px solid var(--azul);
+      box-shadow: 0 1px 15px #04519408;
+      padding:0 24px 0 10px;
+    }
+    .logo-iluo { height:43px; margin:9px 22px 9px 7px;}
+    .usuario-ico { background:var(--azul-claro); border-radius:50%; padding:7px; }
+    .tabs-iluo {
+      display: flex;
+      background: var(--azul); color: #fff;
+      align-items: center; min-height:46px;
+      box-shadow: 0 2px 14px #00376e12;
+    }
+    .tab-btn {
+      padding: 9px 19px; cursor:pointer; font-weight:700;
+      background: none; border:none; outline:none; font-size: 1.01em;
+      color:#fff; transition: background .14s, color .13s;
+      border-radius: 10px 10px 0 0;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: #fff; color: var(--azul); border-bottom: 3px solid var(--amarillo);
+    }
+    .tab-content { display:none; padding:18px 8px 10px 8px;}
+    .tab-content.active { display:block; animation: fadeIn .32s;}
+    @keyframes fadeIn {from {opacity:.5;} to {opacity:1;}}
+    .filtros-panel {
+      display:flex; align-items:center; gap:11px; margin:17px 0 16px 0;
+      background:var(--fondo-card); padding:13px 23px; border-radius:var(--radius);
+      box-shadow: var(--sombra); flex-wrap:wrap;
+    }
+    .input-iluo {
+      border:1.5px solid var(--borde); border-radius:8px;
+      padding:6px 7px; font-size:1.06em; background:#fafcff; min-width:43px;
+      font-weight:500;
+    }
+    .btn-iluo {
+      background: var(--azul); color:#fff; border:none;
+      border-radius:9px; padding:7px 16px; font-weight:700; cursor:pointer;
+      font-size:1.01em; transition: background .13s, color .14s, box-shadow .13s;
+      box-shadow:var(--sombra);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .btn-iluo.yellow { background: var(--amarillo); color: #20293a;}
+    .btn-iluo.red { background: var(--rojo);}
+    .btn-iluo:active, .btn-iluo:hover { filter:brightness(1.08);}
+    .dias-iluo {
+      display:flex;gap:7px;flex-wrap:wrap;align-items:center;
+      padding:13px 0 13px 0;
+      background:var(--fondo-card); border-radius:var(--radius); box-shadow:var(--sombra);
+      margin-bottom:17px; justify-content:center;
+    }
+    .dia-chip {
+      border:none; border-radius:12px; padding:7px 0 3px 0; width:64px; text-align:center;
+      font-size:1.12em; font-weight:800;
+      background:var(--fondo-barra); color:#184060; cursor:pointer;
+      transition: background .13s, color .13s, transform .11s;
+      box-shadow:0 1px 7px #b0e2ff14;
+      line-height:1.09;
+      margin-bottom:2px;
+    }
+    .dia-chip.sel, .dia-chip:focus { box-shadow:0 2px 12px #04519418; border:2.4px solid #045194;}
+    .chip-verde { background: var(--verde); color: #fff; }
+    .chip-amarillo { background: var(--amarillo); color: #184060;}
+    .chip-rojo { background: var(--rojo); color: #fff;}
+    .chip-empty { background: #e0e6ed; color:#8a97ad;}
+    .tabla-iluo {width:100%; border-collapse:separate; border-spacing:0;}
+    .tabla-iluo th, .tabla-iluo td {
+      border-bottom:1.5px solid #e6eaf4; padding:6px 4px; text-align:center;
+      font-size:1.11em;
+    }
+    .tabla-iluo th {
+      background: #f6fafd; color: var(--azul); font-weight:800; border-top:1.5px solid #e6eaf4;
+    }
+    .tabla-iluo tr:last-child td { border-bottom:none;}
+    .tabla-iluo input { width:65px; border-radius:6px; border:1px solid #d3e2f2; font-size:1em; text-align:right;}
+    .tabla-iluo select { border-radius:6px; }
+    .acciones-btns { display:flex; gap:5px; justify-content:center;}
+    @media (max-width:950px){
+      .barra-iluo { flex-direction:column; min-height:60px;}
+      .filtros-panel { flex-direction:column; gap:9px;}
+      .tabla-iluo th, .tabla-iluo td { font-size:.99em;}
+      .tabla-iluo input { width:48px;}
+      .dia-chip { width:46px; font-size:0.98em;}
+    }
+  </style>
+</head>
+<body>
+  <div class="barra-iluo">
+    <div style="display:flex;align-items:center;">
+      <img class="logo-iluo" src="https://www.isovolta.com/logo_isovolta.png" alt="ISOVOLTA">
+      <span style="font-weight:800; font-size:1.33em; color:#045194;letter-spacing:.015em;">Panel de Productividad</span>
+    </div>
+    <span class="usuario-ico"><i data-lucide="user" style="color:#045194;"></i></span>
+  </div>
+  <div class="tabs-iluo">
+    <button class="tab-btn active" onclick="selectTab(0)">Panel Productividad</button>
+    <button class="tab-btn" onclick="selectTab(1)">Máquinas</button>
+    <button class="tab-btn" onclick="selectTab(2)">Turnos</button>
+    <button class="tab-btn" onclick="selectTab(3)">Personal</button>
+  </div>
+  <div class="tab-content active" id="panelProd">
+    <div class="filtros-panel">
+      <label>Año: <input id="anioPanel" class="input-iluo" type="number" min="2022" max="2100" style="width:70px;"></label>
+      <label>Mes: <select id="mesPanel" class="input-iluo"></select></label>
+      <label>Área: <select id="areaPanel" class="input-iluo"></select></label>
+      <button class="btn-iluo yellow" onclick="renderPanelProd()"><i data-lucide="refresh-cw"></i>Actualizar</button>
+    </div>
+    <div id="resumenGlobal" style="margin-bottom:8px;"></div>
+    <div id="resumenAreas" style="margin-bottom:17px;"></div>
+    <div id="diasRow" class="dias-iluo"></div>
+    <div id="formAgregarTurno"></div>
+    <button id="btnCopiarTurnos" class="btn-iluo" style="margin-bottom:14px; margin-right:9px;">
+  <i data-lucide="copy"></i> Copiar turnos de día anterior
+</button>
+
+    <div id="tablaPanelProd"></div>
+  </div>
+  <!-- Catálogos igual que antes -->
+  <div class="tab-content" id="catMaquinas">
+    <div style="font-size:1.14em;font-weight:700;color:var(--azul);margin:7px 0 12px 0;">Máquinas</div>
+    <form onsubmit="agregarMaquina(event)" style="margin-bottom:10px;">
+      <input id="nomMaq" class="input-iluo" placeholder="Nombre máquina" required>
+      <input id="areaMaq" class="input-iluo" placeholder="Área" required>
+      <input id="objMaq" class="input-iluo" placeholder="Objetivo/min" type="number" step="any" min="0" required>
+      <input id="unidadMaq" class="input-iluo" placeholder="Unidad" required>
+      <button class="btn-iluo" type="submit"><i data-lucide="plus"></i> Agregar</button>
+    </form>
+    <div id="tablaCatMaq"></div>
+  </div>
+  <div class="tab-content" id="catTurnos">
+    <div style="font-size:1.14em;font-weight:700;color:var(--azul);margin:7px 0 12px 0;">Turnos</div>
+    <form onsubmit="agregarTurnoCat(event)" style="margin-bottom:10px;">
+      <input id="nomTurno" class="input-iluo" placeholder="Nombre Turno" required>
+      <input id="inicioTurno" class="input-iluo" type="time" required>
+      <input id="finTurno" class="input-iluo" type="time" required>
+      <button class="btn-iluo" type="submit"><i data-lucide="plus"></i> Agregar</button>
+    </form>
+    <div id="tablaCatTurnos"></div>
+  </div>
+  <div class="tab-content" id="catOperadores">
+    <div style="font-size:1.14em;font-weight:700;color:var(--azul);margin:7px 0 12px 0;">Personas</div>
+    <form onsubmit="agregarOperador(event)" style="margin-bottom:8px;">
+      <input id="nomOperador" class="input-iluo" placeholder="Nombre Operador" required>
+      <input id="areaOperador" class="input-iluo" placeholder="Área" required>
+      <button class="btn-iluo" type="submit"><i data-lucide="plus"></i> Agregar</button>
+    </form>
+    <div id="tablaCatOperadores"></div>
+  </div>
+<script>
+const MES_NOMBRES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+let db;
+let selAnio = new Date().getFullYear();
+let selMes = new Date().getMonth()+1;
+let selDia = new Date().getDate();
+
+function getColorCalidad(perc) {
+  if (perc >= 98) return "#0ac270";     // Verde
+  if (perc >= 90) return "#ffe031";     // Amarillo
+  return "#fe415b";                     // Rojo
+}
+function getColorPPMS(ppms) {
+  if (ppms < 1900) return "#0ac270";    // Verde
+  if (ppms <= 2000) return "#ffe031";   // Amarillo
+  return "#fe415b";                     // Rojo
+}
+
+function abrirBD() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open("Productividad_MaqTurnoDias", 7);
+    req.onupgradeneeded = e => {
+      db = e.target.result;
+      if(!db.objectStoreNames.contains("maquinas")) db.createObjectStore("maquinas",{keyPath:"id",autoIncrement:true});
+      if(!db.objectStoreNames.contains("turnos")) db.createObjectStore("turnos",{keyPath:"id",autoIncrement:true});
+      if(!db.objectStoreNames.contains("operadores")) db.createObjectStore("operadores",{keyPath:"id",autoIncrement:true});
+      if(!db.objectStoreNames.contains("datos")) db.createObjectStore("datos",{keyPath:"id",autoIncrement:true});
+    };
+    req.onsuccess = e => {db = e.target.result; resolve();}
+    req.onerror = ()=>reject();
+  });
+}
+function getAll(store) {
+  return new Promise((resolve)=>{
+    const tx=db.transaction([store],"readonly");
+    const req=tx.objectStore(store).getAll();
+    req.onsuccess=()=>resolve(req.result);
+  });
+}
+function put(store,obj) {
+  return new Promise((resolve)=>{
+    const tx=db.transaction([store],"readwrite");
+    tx.objectStore(store).put(obj).onsuccess=()=>resolve();
+  });
+}
+function remove(store,id) {
+  return new Promise((resolve)=>{
+    const tx=db.transaction([store],"readwrite");
+    tx.objectStore(store).delete(id).onsuccess=()=>resolve();
+  });
+}
+function diasEnMes(mes,anio) { return new Date(anio,mes,0).getDate(); }
+function calcMinutosPlaneados(inicio, fin) {
+  if(!inicio || !fin) return '';
+  let [h1, m1] = inicio.split(':').map(Number);
+  let [h2, m2] = fin.split(':').map(Number);
+  let t1 = h1*60 + m1;
+  let t2 = h2*60 + m2;
+  let minutos = t2 >= t1 ? (t2-t1) : (1440-t1+t2);
+  return minutos;
+}
+
+// ============ RESUMEN GLOBAL Y AREAS ============
+
+async function renderResumenGlobalYAreas() {
+  let maquinas = await getAll("maquinas");
+  let turnos = await getAll("turnos");
+  let datos = await getAll("datos");
+  let dias = diasEnMes(selMes, selAnio);
+
+  // --- GLOBAL ---
+  let sumaProdG = 0, sumaObjG = 0, sumaMalasG = 0, sumaTotalG = 0;
+  for (let i = 1; i <= dias; i++) {
+    for (let m of maquinas) {
+      let fila = datos.find(d => d.anio === selAnio && d.mes === selMes && d.dia === i && d.maquinaId === m.id);
+      let objetivoMaq = m.objetivo || 0;
+      if (fila && fila.turnos) {
+        fila.turnos.forEach(t => {
+          let tCat = turnos.find(tt => tt.id === t.turnoId);
+          let minutos = tCat ? calcMinutosPlaneados(tCat.inicio, tCat.fin) : 0;
+          let objetivoTurno = minutos * objetivoMaq;
+          sumaProdG += t.producido || 0;
+          sumaObjG += objetivoTurno || 0;
+          sumaMalasG += t.defectuosa || 0;
+          sumaTotalG += t.producido || 0;
+        });
+      }
+    }
+  }
+  let cumplG = sumaObjG ? (sumaProdG / sumaObjG) * 100 : 0;
+  let colorG = cumplG >= 90 ? "#0ac270" : (cumplG >= 80 ? "#ffe031" : (cumplG>0?"#fe415b":"#bcc3cb"));
+  let txtG = sumaObjG>0 ? cumplG.toFixed(1)+"%" : "--";
+  let calidadGlobal = (sumaTotalG>0) ? 100 * (1 - (sumaMalasG/sumaTotalG)) : 0;
+  let ppmsGlobal = (sumaTotalG>0) ? (1000000 * (sumaMalasG/sumaTotalG)) : 0;
+
+  // Aquí semaforizamos solo el texto
+  let colorCalidadG = getColorCalidad(calidadGlobal);
+  let colorPPMSG = getColorPPMS(ppmsGlobal);
+
+  document.getElementById("resumenGlobal").innerHTML = `
+    <div style="
+      background:#fff;box-shadow:var(--sombra);border-radius:15px;
+      padding:13px 22px 10px 22px;font-size:1.19em;font-weight:700;
+      display:inline-flex;align-items:center;gap:17px;color:var(--azul);">
+      <span style="margin-right:6px;vertical-align:middle;">
+        <i data-lucide="activity" style="height:26px;width:26px;color:${colorG};vertical-align:middle;"></i>
+      </span>
+      <span style="margin-right:8px;">Cumplimiento Global del Mes:</span> 
+      <span style="font-size:1.22em;color:${colorG};margin-right:18px;">${txtG}</span>
+      <span style="margin-right:10px;">
+        % Global Calidad: <span style="font-weight:900;color:${colorCalidadG};">${sumaTotalG>0 ? calidadGlobal.toFixed(2)+"%" : "--"}</span>
+      </span>
+      <span>
+        PPMS: <span style="font-weight:900;color:${colorPPMSG};">${sumaTotalG>0 ? ppmsGlobal.toLocaleString("en-US",{maximumFractionDigits:0}) : "--"}</span>
+      </span>
+    </div>
+  `;
+
+  // --- POR ÁREA ---
+  let areas = [...new Set(maquinas.map(m=>m.area))];
+  let htmlAreas = `<div style="display:flex;gap:17px;flex-wrap:wrap;">`;
+  for(let area of areas){
+    let sumaProd = 0, sumaObj = 0, sumaMalas = 0, sumaTotal = 0;
+    let maquinasArea = maquinas.filter(m=>m.area === area);
+    for (let i = 1; i <= dias; i++) {
+      for (let m of maquinasArea) {
+        let fila = datos.find(d => d.anio === selAnio && d.mes === selMes && d.dia === i && d.maquinaId === m.id);
+        let objetivoMaq = m.objetivo || 0;
+        if (fila && fila.turnos) {
+          fila.turnos.forEach(t => {
+            let tCat = turnos.find(tt => tt.id === t.turnoId);
+            let minutos = tCat ? calcMinutosPlaneados(tCat.inicio, tCat.fin) : 0;
+            let objetivoTurno = minutos * objetivoMaq;
+            sumaProd += t.producido || 0;
+            sumaObj += objetivoTurno || 0;
+            sumaMalas += t.defectuosa || 0;
+            sumaTotal += t.producido || 0;
+          });
+        }
+      }
+    }
+    let cumpl = sumaObj ? (sumaProd / sumaObj) * 100 : 0;
+    let color = cumpl >= 90 ? "#0ac270" : (cumpl >= 80 ? "#ffe031" : (cumpl>0?"#fe415b":"#bcc3cb"));
+    let txt = sumaObj>0 ? cumpl.toFixed(1)+"%" : "--";
+    let calidadArea = (sumaTotal>0) ? 100 * (1 - (sumaMalas/sumaTotal)) : 0;
+    let ppmsArea = (sumaTotal>0) ? (1000000 * (sumaMalas/sumaTotal)) : 0;
+    let colorCalidadArea = getColorCalidad(calidadArea);
+    let colorPPMSArea = getColorPPMS(ppmsArea);
+
+    htmlAreas += `
+      <div style="background:#fff;box-shadow:var(--sombra);border-radius:14px;
+        padding:10px 22px 8px 22px;min-width:230px;
+        font-size:1.09em;font-weight:700;
+        color:var(--azul);">
+        <div>
+          <span style="margin-right:12px;vertical-align:middle;">
+            <i data-lucide="gantt-chart-square" style="height:20px;width:20px;color:${color};vertical-align:middle;"></i>
+          </span>
+          <span style="margin-right:7px;">${area}</span>
+          <span style="font-size:1.09em;color:${color};margin-left:8px;">${txt}</span>
+        </div>
+        <div style="font-size:0.99em; margin-top:2px; font-weight:700;">
+          % Global Calidad: <span style="color:${colorCalidadArea};">${sumaTotal>0 ? calidadArea.toFixed(2)+"%" : "--"}</span>
+        </div>
+        <div style="font-size:0.99em; margin-top:0px; font-weight:700;">
+          PPMS: <span style="color:${colorPPMSArea};">${sumaTotal>0 ? ppmsArea.toLocaleString("en-US",{maximumFractionDigits:0}) : "--"}</span>
+        </div>
+      </div>
+    `;
+  }
+  htmlAreas += `</div>`;
+  document.getElementById("resumenAreas").innerHTML = htmlAreas;
+  lucide.createIcons();
+}
+// =========== FIN RESUMEN =============
+
+async function renderDias() {
+  let row = document.getElementById("diasRow");
+  row.innerHTML = "";
+  let dias = diasEnMes(selMes, selAnio);
+  let maquinas = await getAll("maquinas");
+  let turnos = await getAll("turnos");
+  let datos = await getAll("datos");
+  let area = document.getElementById("areaPanel").value;
+  let maquinasArea = maquinas.filter(m => m.area === area);
+  for (let i = 1; i <= dias; i++) {
+    let sumaProd = 0, sumaObj = 0;
+    for (let m of maquinasArea) {
+      let fila = datos.find(d => d.anio === selAnio && d.mes === selMes && d.dia === i && d.maquinaId === m.id);
+      let objetivoMaq = m.objetivo || 0;
+      if (fila && fila.turnos) {
+        fila.turnos.forEach(t => {
+          let tCat = turnos.find(tt => tt.id === t.turnoId);
+          let minutos = tCat ? calcMinutosPlaneados(tCat.inicio, tCat.fin) : 0;
+          let objetivoTurno = minutos * objetivoMaq;
+          sumaProd += t.producido || 0;
+          sumaObj += objetivoTurno || 0;
+        });
+      }
+    }
+    let cumpl = sumaObj ? (sumaProd / sumaObj) * 100 : 0;
+    let colorClass = "chip-empty";
+    if(sumaObj > 0) {
+      if (cumpl >= 90) colorClass = "chip-verde";
+      else if (cumpl >= 80) colorClass = "chip-amarillo";
+      else colorClass = "chip-rojo";
+    }
+    let border = (selDia == i) ? "2.4px solid #045194" : "1.2px solid #e2e8f0";
+    let fecha = new Date(selAnio, selMes - 1, i);
+    let diaSemana = fecha.toLocaleDateString("es-MX", { weekday: "short" });
+    let b = document.createElement("button");
+    b.className = "dia-chip " + colorClass + (selDia == i ? " sel" : "");
+    b.style.border = border;
+    b.title = sumaObj > 0 ? `Cumplimiento: ${cumpl.toFixed(1)}%` : "Sin objetivo";
+    b.innerHTML = `
+      <div>${i}</div>
+      <div style="font-size:0.93em;line-height:1;">${diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)}</div>
+      <div style="font-size:0.85em;line-height:1.08; font-weight:600; ${sumaObj>0?'':'color:#97a0b5;'}">
+        ${sumaObj>0? cumpl.toFixed(0)+'%': '--'}
+      </div>
+    `;
+    b.onclick = () => { selDia = i; renderDias(); renderPanelProd(); };
+    row.appendChild(b);
+  }
+  lucide.createIcons();
+}
+async function renderPanelProd() {
+  let maquinas = await getAll("maquinas");
+  let turnos = await getAll("turnos");
+  let operadores = await getAll("operadores");
+  let datos = await getAll("datos");
+  let areas = [...new Set(maquinas.map(m=>m.area))];
+  let anioInput = document.getElementById("anioPanel");
+  anioInput.value = selAnio;
+  anioInput.onchange = e=>{ selAnio=+e.target.value; renderDias(); renderPanelProd(); };
+  let mesSel = document.getElementById("mesPanel");
+  mesSel.innerHTML = MES_NOMBRES.map((m,i)=>`<option value="${i+1}">${m}</option>`).join("");
+  mesSel.value = selMes;
+  mesSel.onchange = e=>{ selMes=+e.target.value; renderDias(); renderPanelProd(); };
+  let areaSel = document.getElementById("areaPanel");
+  let areaSeleccionada = areaSel.value || areas[0];
+  areaSel.innerHTML = areas.map(a=>`<option${a===areaSeleccionada?' selected':''}>${a}</option>`).join("");
+  areaSel.onchange = function() { renderDias(); renderPanelProd(); };
+  let area = areaSel.value || areas[0];
+  let maquinasArea = maquinas.filter(m=>m.area === area);
+
+  await renderResumenGlobalYAreas();
+  renderDias();
+
+  // Formulario para agregar turno, solo máquinas y operadores del área seleccionada
+  let formHtml = `
+    <div style="margin-bottom:10px;">
+      Máquina:
+      <select id="maquinaAgregarTurno" class="input-iluo">
+        ${maquinasArea.map(m=>`<option value="${m.id}">${m.nombre}</option>`).join("")}
+      </select>
+      Turno:
+      <select id="turnoAgregarTurno" class="input-iluo">
+        ${turnos.map(t=>`<option value="${t.id}">${t.nombre}</option>`).join("")}
+      </select>
+      Operador:
+      <select id="operadorAgregarTurno" class="input-iluo">
+        <option value="">-- Sin asignar --</option>
+        ${operadores.filter(o=>o.area===area).map(o=>`<option value="${o.id}">${o.nombre}</option>`).join("")}
+      </select>
+      <button class="btn-iluo yellow" onclick="agregarTurnoGlobal(event)">Agregar turno</button>
+    </div>
+  `;
+  document.getElementById("formAgregarTurno").innerHTML = formHtml;
+
+  // INICIALIZA LOS TOTALES
+  let totalProducido = 0;
+  let totalObjetivo = 0;
+
+  // Tabla principal de turnos por máquina, solo muestra los turnos del área y del día seleccionado
+  let html = `<table class="tabla-iluo">
+  <tr>
+    <th>Máquina</th><th>Turno</th><th>Operador</th><th>Hora inicio</th><th>Hora fin</th>
+    <th>Min Planeados</th><th>Producido</th><th>Calidad (malas)</th><th>Objetivo</th><th>Unidad</th><th>% Cumpl.</th><th>Eliminar</th>
+  </tr>`;
+  for (let m of maquinasArea) {
+    let fila = datos.find(d=>d.anio===selAnio&&d.mes===selMes&&d.dia===selDia&&d.maquinaId===m.id);
+    if(fila && fila.turnos && fila.turnos.length>0){
+      for(let [idx, t] of fila.turnos.entries()){
+        let turnoObj = turnos.find(tr=>tr.id===t.turnoId) || {};
+        let operadorObj = operadores.find(o=>o.id===t.operadorId) || {};
+        let minutos = turnoObj.inicio&&turnoObj.fin ? calcMinutosPlaneados(turnoObj.inicio,turnoObj.fin) : '';
+        let objetivo = minutos * (m.objetivo||0);
+        let producido = t.producido||0;
+        let defectuosa = t.defectuosa||0;
+        let cumpl = objetivo>0 ? (producido/objetivo)*100 : 0;
+
+        // SUMAR TOTALES
+        totalProducido += producido;
+        totalObjetivo += objetivo;
+
+        html += `<tr>
+          <td>${m.nombre}</td>
+          <td>${turnoObj.nombre||""}</td>
+          <td>${operadorObj.nombre||"--"}</td>
+          <td>${turnoObj.inicio||""}</td>
+          <td>${turnoObj.fin||""}</td>
+          <td>${minutos||""}</td>
+          <td>
+            <input style="width:90px;" type="number" min="0" value="${producido}" onchange="guardarProd(${fila.id},${idx},this.value)">
+          </td>
+          <td>
+            <input style="width:70px;" type="number" min="0" value="${defectuosa}" onchange="guardarMalas(${fila.id},${idx},this.value)">
+          </td>
+          <td>${objetivo?Number(objetivo.toFixed(1)).toLocaleString("en-US"):"--"}</td>
+          <td>${m.unidad||""}</td>
+          <td>${objetivo?cumpl.toFixed(1)+"%":"--"}</td>
+          <td><button class="btn-iluo red" onclick="eliminarTurno(${fila.id},${idx})"><i data-lucide="trash-2"></i></button></td>
+        </tr>`;
+      }
+    }
+  }
+
+  // AGREGA LOS TOTALES AL FINAL
+  html += `
+    <tfoot>
+      <tr style="font-weight:900; background:#eaf2fa;">
+        <td colspan="6" style="text-align:right;">Total</td>
+        <td>${totalProducido.toLocaleString("en-US")}</td>
+        <td></td>
+        <td>${totalObjetivo.toLocaleString("en-US")}</td>
+        <td colspan="3"></td>
+      </tr>
+    </tfoot>
+  `;
+
+  html += `</table>`;
+  document.getElementById("tablaPanelProd").innerHTML = html;
+  lucide.createIcons();
+}
+
+
+// ====== CRUD para catálogos =======
+async function renderCatMaq() {
+  let maquinas = (await getAll("maquinas")).sort((a,b)=>a.nombre.localeCompare(b.nombre));
+  let html = `<table class="tabla-iluo"><tr><th>Nombre</th><th>Área</th><th>Objetivo/min</th><th>Unidad</th><th>Eliminar</th></tr>`;
+  maquinas.forEach(m=>{
+    html+=`<tr><td>${m.nombre}</td><td>${m.area}</td><td>${m.objetivo||""}</td><td>${m.unidad||""}</td>
+      <td><button class="btn-iluo red" onclick="eliminarMaquina(${m.id})"><i data-lucide="trash-2"></i></button></td></tr>`;
+  });
+  html+=`</table>`;
+  document.getElementById("tablaCatMaq").innerHTML = html;
+  lucide.createIcons();
+}
+async function agregarMaquina(e) {
+  e.preventDefault();
+  let nombre=document.getElementById("nomMaq").value.trim();
+  let area=document.getElementById("areaMaq").value.trim();
+  let objetivo=Number(document.getElementById("objMaq").value)||0;
+  let unidad=document.getElementById("unidadMaq").value.trim();
+  if(!nombre||!area||!objetivo||!unidad) return;
+  await put("maquinas",{nombre,area,objetivo,unidad});
+  document.getElementById("nomMaq").value="";
+  document.getElementById("areaMaq").value="";
+  document.getElementById("objMaq").value="";
+  document.getElementById("unidadMaq").value="";
+  renderCatMaq();
+}
+async function eliminarMaquina(id) {
+  await remove("maquinas",id);
+  renderCatMaq();
+}
+async function renderCatTurnos() {
+  let turnos = await getAll("turnos");
+  let html = `<table class="tabla-iluo"><tr><th>Nombre</th><th>Inicio</th><th>Fin</th><th>Eliminar</th></tr>`;
+  turnos.forEach(t=>{
+    html+=`<tr><td>${t.nombre}</td><td>${t.inicio}</td><td>${t.fin}</td>
+      <td><button class="btn-iluo red" onclick="eliminarTurnoCat(${t.id})"><i data-lucide="trash-2"></i></button></td></tr>`;
+  });
+  html+=`</table>`;
+  document.getElementById("tablaCatTurnos").innerHTML = html;
+  lucide.createIcons();
+}
+async function agregarTurnoCat(e) {
+  e.preventDefault();
+  let nombre=document.getElementById("nomTurno").value.trim();
+  let inicio=document.getElementById("inicioTurno").value;
+  let fin=document.getElementById("finTurno").value;
+  if(!nombre||!inicio||!fin) return;
+  await put("turnos",{nombre,inicio,fin});
+  document.getElementById("nomTurno").value="";
+  document.getElementById("inicioTurno").value="";
+  document.getElementById("finTurno").value="";
+  renderCatTurnos();
+}
+async function eliminarTurnoCat(id) {
+  await remove("turnos",id);
+  renderCatTurnos();
+}
+async function renderCatOperadores() {
+  let operadores = (await getAll("operadores") || []).sort((a,b)=>a.nombre.localeCompare(b.nombre));
+  let html = `<table class="tabla-iluo"><tr><th>Nombre</th><th>Área</th><th>Eliminar</th></tr>`;
+  operadores.forEach(o=>{
+    html+=`<tr><td>${o.nombre}</td><td>${o.area||""}</td>
+      <td><button class="btn-iluo red" onclick="eliminarOperador(${o.id})"><i data-lucide="trash-2"></i></button></td></tr>`;
+  });
+  html+=`</table>`;
+  document.getElementById("tablaCatOperadores").innerHTML = html;
+  lucide.createIcons();
+}
+async function agregarOperador(e) {
+  e.preventDefault();
+  let nombre = document.getElementById("nomOperador").value.trim();
+  let area = document.getElementById("areaOperador").value;
+  if(!nombre || !area) return;
+  await put("operadores",{nombre, area});
+  document.getElementById("nomOperador").value="";
+  renderCatOperadores();
+}
+async function eliminarOperador(id) {
+  await remove("operadores",id);
+  renderCatOperadores();
+}
+
+// Turnos
+async function agregarTurnoGlobal(ev){
+  ev.preventDefault && ev.preventDefault();
+  let mId = Number(document.getElementById("maquinaAgregarTurno").value);
+  let tId = Number(document.getElementById("turnoAgregarTurno").value);
+  let opId = Number(document.getElementById("operadorAgregarTurno").value)||null;
+  let datos = await getAll("datos");
+  let fila = datos.find(d=>d.anio===selAnio&&d.mes===selMes&&d.dia===selDia&&d.maquinaId===mId);
+  let nuevoTurno = {turnoId:tId, operadorId:opId, producido:0, defectuosa:0};
+  if(fila){
+    if(!fila.turnos) fila.turnos=[];
+    fila.turnos.push(nuevoTurno);
+    await put("datos", fila);
+  } else {
+    await put("datos",{anio:selAnio, mes:selMes, dia:selDia, maquinaId:mId, turnos:[nuevoTurno]});
+  }
+  renderPanelProd();
+}
+async function guardarProd(filaId, idx, val){
+  let datos = await getAll("datos");
+  let fila = datos.find(d=>d.id===filaId);
+  if(fila && fila.turnos && fila.turnos[idx]){
+    fila.turnos[idx].producido = Number(val)||0;
+    await put("datos",fila);
+    renderPanelProd();
+  }
+}
+async function guardarMalas(filaId, idx, val){
+  let datos = await getAll("datos");
+  let fila = datos.find(d=>d.id===filaId);
+  if(fila && fila.turnos && fila.turnos[idx]){
+    fila.turnos[idx].defectuosa = Number(val)||0;
+    await put("datos",fila);
+    renderPanelProd();
+  }
+}
+async function eliminarTurno(filaId, idx){
+  let datos = await getAll("datos");
+  let fila = datos.find(d=>d.id===filaId);
+  if(fila && fila.turnos){
+    fila.turnos.splice(idx,1);
+    await put("datos",fila);
+    renderPanelProd();
+  }
+}
+function selectTab(n) {
+  document.querySelectorAll(".tab-btn").forEach((b,i)=>b.classList.toggle("active",i===n));
+  document.querySelectorAll(".tab-content").forEach((c,i)=>c.classList.toggle("active",i===n));
+  if(n===1) renderCatMaq();
+  if(n===2) renderCatTurnos();
+  if(n===3) renderCatOperadores();
+  if(n===0) renderPanelProd();
+  setTimeout(()=>lucide.createIcons(), 10);
+}
+
+abrirBD().then(()=>renderPanelProd());
+setTimeout(()=>lucide.createIcons(),100);
+
+// --- COPIA TURNOS DE DÍA ANTERIOR ---
+// Insertar al final del script principal
+
+let turnosAEditar = [];
+
+document.getElementById('btnCopiarTurnos').onclick = async function() {
+  let area = document.getElementById("areaPanel").value;
+  let maquinas = await getAll("maquinas");
+  let turnos = await getAll("turnos");
+  let operadores = await getAll("operadores");
+  let datos = await getAll("datos");
+  let maquinasArea = maquinas.filter(m=>m.area===area);
+
+  let diaActual = selDia, diaAnterior = selDia-1;
+  if (diaAnterior <= 0) {
+    alert("No hay día anterior disponible.");
+    return;
+  }
+
+  // Buscar datos del día anterior para cada máquina del área
+  let filas = [];
+  for (let m of maquinasArea) {
+    let fila = datos.find(d=>d.anio===selAnio&&d.mes===selMes&&d.dia===diaAnterior&&d.maquinaId===m.id);
+    if (fila && fila.turnos && fila.turnos.length>0) {
+      for (let t of fila.turnos) {
+        let turnoObj = turnos.find(tr=>tr.id===t.turnoId) || {};
+        let operadorObj = operadores.find(o=>o.id===t.operadorId) || {};
+        filas.push({
+          maquinaId: m.id,
+          maquina: m.nombre,
+          turnoId: t.turnoId,
+          turno: turnoObj.nombre || "",
+          operadorId: t.operadorId,
+          operador: operadorObj.nombre || "",
+          producido: "",
+          defectuosa: ""
+        });
+      }
+    }
+  }
+  if (!filas.length) {
+    alert("No hay turnos del día anterior para copiar.");
+    return;
+  }
+  mostrarModalEdicionTurnos(filas);
+};
+
+function mostrarModalEdicionTurnos(turnos) {
+  turnosAEditar = turnos;
+  let html = `<h3 style="margin-top:0;color:#045194;font-size:1.08em;">Editar turnos antes de copiar</h3>
+    <table class="tabla-iluo"><tr>
+      <th>Máquina</th><th>Turno</th><th>Operador</th><th>Producido</th><th>Malas</th></tr>`;
+  for (let i=0; i<turnos.length; i++) {
+    const t = turnos[i];
+    html += `<tr>
+      <td>${t.maquina}</td>
+      <td>${t.turno}</td>
+      <td>${t.operador}</td>
+      <td><input value="${t.producido}" data-idx="${i}" data-campo="producido" style="width:68px"></td>
+      <td><input value="${t.defectuosa}" data-idx="${i}" data-campo="defectuosa" style="width:68px"></td>
+    </tr>`;
+  }
+  html += "</table>";
+  document.getElementById("contenedorEdicionTurnos").innerHTML = html;
+  document.getElementById("modalEdicionTurnos").style.display = "flex";
+  document.querySelectorAll('#contenedorEdicionTurnos input').forEach(input => {
+    input.oninput = function() {
+      const idx = +input.dataset.idx;
+      const campo = input.dataset.campo;
+      turnosAEditar[idx][campo] = input.value;
+    }
+  });
+}
+
+function cerrarModalEdicionTurnos() {
+  document.getElementById('modalEdicionTurnos').style.display = 'none';
+  turnosAEditar = [];
+}
+
+async function guardarTurnosDesdeModal() {
+  let datos = await getAll("datos");
+  for (let t of turnosAEditar) {
+    // Busca si ya hay fila de datos para ese día/maquina
+    let fila = datos.find(d=>d.anio===selAnio&&d.mes===selMes&&d.dia===selDia&&d.maquinaId===t.maquinaId);
+    let nuevoTurno = {
+      turnoId: t.turnoId,
+      operadorId: t.operadorId,
+      producido: Number(t.producido)||0,
+      defectuosa: Number(t.defectuosa)||0
+    };
+    if (fila) {
+      if (!fila.turnos) fila.turnos=[];
+      fila.turnos.push(nuevoTurno);
+      await put("datos", fila);
+    } else {
+      await put("datos", {anio:selAnio, mes:selMes, dia:selDia, maquinaId:t.maquinaId, turnos:[nuevoTurno]});
+    }
+  }
+  cerrarModalEdicionTurnos();
+  renderPanelProd();
+  alert("Turnos copiados del día anterior.");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+<div id="modalEdicionTurnos" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,.25);align-items:center;justify-content:center;">
+  <div style="background:#fff;padding:24px 18px;border-radius:13px;max-width:98vw;width:420px;">
+    <div id="contenedorEdicionTurnos"></div>
+    <button onclick="guardarTurnosDesdeModal()" class="btn-iluo yellow" style="margin-top:14px;">Guardar</button>
+    <button onclick="cerrarModalEdicionTurnos()" class="btn-iluo red" style="margin-left:8px;">Cancelar</button>
+  </div>
+</div>
+
+</body>
+</html>

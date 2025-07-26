@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Matriz de Capacitacion</title>
+  <link rel="icon" type="image/png" href="Isovolta.ico">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f7fb; margin: 0; padding: 0 0 80px 0; }
+    .main-container { max-width: 1480px; margin: 40px auto 30px auto; background: #fff; border-radius: 13px; box-shadow: 0 5px 18px rgba(0,32,91,0.08); padding: 32px 22px 22px 22px; }
+    header { display: flex; align-items: center; justify-content: flex-start; padding: 0 12px 12px 0; border-bottom: 4px solid #004990; background: #fff; border-top-left-radius: 13px; border-top-right-radius: 13px;}
+    header img { height: 56px; margin-right: 22px; }
+    h1 { color: #004990; text-align: left; margin: 0 0 0 12px; font-size: 2em; letter-spacing: 1.3px; flex: 1; }
+    .controls { display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; margin: 28px 0 12px 0; gap: 18px;}
+    .controls input { padding: 9px 14px; border: 1px solid #bccbe2; border-radius: 7px; width: 260px; font-size: 1em; background: #f7fafc; transition: border-color .2s, background .18s;}
+    .controls input:focus { border-color: #004990; background: #e6f1fc; }
+    .controls > div { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn { background-color: #004990; color: white; padding: 9px 17px; border: none; border-radius: 7px; cursor: pointer; font-weight: bold; margin: 0 5px 8px 0; font-size: 1em; transition: background .18s, transform .13s; box-shadow: 0 2px 8px rgba(0,32,91,0.09);}
+    .btn:hover { background-color: #006ad1; transform: translateY(-2px) scale(1.04);}
+    .summary { margin: 10px 0 0 0; font-size: 1.15em; font-weight: bold; color: #004990; text-align: right;}
+    .tarjetas-container { display: flex; flex-wrap: wrap; gap: 18px; margin: 32px 0 18px 0; justify-content: center;}
+    .tarjeta { background: white; border-radius: 12px; box-shadow: 0 2px 7px rgba(0,0,0,0.10); padding: 19px 22px 14px 22px; width: 245px; border-left: 9px solid #004990; transition: box-shadow .18s;}
+    .tarjeta h3 { margin: 0 0 8px 0; font-size: 1.18em; color: #004990;}
+    .tarjeta p { margin: 5px 0; font-size: 15px; }
+    .verde { border-left-color: #20b960; }
+    .amarillo { border-left-color: #f6c800; }
+    .rojo { border-left-color: #e74c3c; }
+    table { width: 100%; border-collapse: collapse; background: white; margin: 22px 0 0 0; box-shadow: 0 0 12px rgba(0,0,0,0.07); font-size: 14px;}
+    th, td { border: 1px solid #d6dae3; padding: 9px 7px; text-align: center; font-size: 14px; background: #fff;}
+    th { background-color: #f2f4f8 !important; color: #003366; font-weight: 600; letter-spacing: 0.2px; border-bottom: 2px solid #a7b7c9; font-size: 15px;}
+    tr:nth-child(even) td { background: #f6fafd; }
+    @media (max-width: 1200px) {
+      .main-container { padding: 6px 1vw 10px 1vw; }
+      table { font-size: 12px; }
+      th, td { padding: 6px 2px; }
+      .tarjeta { width: 98vw; min-width: 150px; }
+      h1 { font-size: 1.05em; }
+      .btn { font-size: 0.96em; }
+    }
+    @media (max-width: 650px) {
+      .main-container { padding: 2px 1vw 5px 1vw; }
+      .tarjetas-container { flex-direction: column; }
+      .tarjeta { width: 99vw; min-width: 120px; }
+      th, td { padding: 4px 2px; }
+      .btn { padding: 8px 8px; }
+      .controls { flex-direction: column; align-items: stretch; gap: 8px;}
+    }
+    footer { width: 100vw; background: #00529b; color: #fff; text-align: center; padding: 13px 0 10px 0; position: fixed; left: 0; bottom: 0; font-size: 1.09em; letter-spacing: 0.8px; z-index: 50; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;}
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <header>
+      <img src="https://www.isovolta.com/logo_isovolta.png" alt="Isovolta Logo" />
+      <h1>Matriz de Capacitacion</h1>
+      <div class="summary" id="totalEmpleadosGlobal" style="text-align:left; margin:8px 0 7px 18px; color:#222; font-weight:500;"></div>
+
+    </header>
+    <div class="controls">
+      <input type="text" id="filtro" placeholder="Buscar por número, nombre o área" oninput="aplicarFiltro()" />
+      <div>
+        <button class="btn" onclick="actualizarDatos()">Actualizar</button>
+       </div>
+    </div>
+    <div class="summary" id="capacitacionGlobal">% Capacitacion Global: 0%</div>
+    <div class="tarjetas-container" id="tarjetasContainer"></div>
+    <table id="resumenTabla">
+      <thead>
+        <tr id="headerRow">
+          <!-- Cabecera dinámica -->
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+<script>
+  // ---------- IndexedDB Helper ----------
+  const DB_NAME = 'ILUO_DB';
+  const DB_VERSION = 1;
+  const STORE_NAME = 'respaldo';
+
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, DB_VERSION);
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME, { keyPath: 'clave' });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = (event) => reject(event.target.error);
+    });
+  }
+  async function guardarEnIndexedDB(clave, valor) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      store.put({ clave, valor });
+      tx.oncomplete = () => resolve();
+      tx.onerror = (e) => reject(e.target.error);
+    });
+  }
+  async function leerDeIndexedDB(clave) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.get(clave);
+      req.onsuccess = () => resolve(req.result ? req.result.valor : null);
+      req.onerror = (e) => reject(e.target.error);
+    });
+  }
+  async function migrarLocalStorageAIndexedDB() {
+    const claves = ["matrizILUO", "documentosILUO"];
+    for (let clave of claves) {
+      const val = localStorage.getItem(clave);
+      if (val && !(await leerDeIndexedDB(clave))) {
+        await guardarEnIndexedDB(clave, JSON.parse(val));
+      }
+    }
+  }
+
+  // --- PRINCIPAL ---
+  let operadores = [];
+  let documentos = [];
+  let categorias = {};
+
+  // Extrae todas las categorías dinámicamente del catálogo de documentos
+  function obtenerCategoriasDinamicas() {
+    // Ponderaciones por defecto; agrega aquí si alguna no tiene default
+    let defaultPonderaciones = {
+      "Normatividad": 5,
+      "Valores": 5,
+      "Seguridad": 15,
+      "Lean": 15,
+      "Calidad": 30,
+      "Eficiencia": 30,
+      "Sin Clasificar": 0
+    };
+    let cats = {};
+    (documentos || []).forEach(d => {
+      if (d.tipoCategoria) {
+        cats[d.tipoCategoria] = typeof d.ponderacion === "number" ? d.ponderacion : (defaultPonderaciones[d.tipoCategoria] || 0);
+      }
+    });
+    // Completa las categorías fijas y asegura su orden
+    Object.keys(defaultPonderaciones).forEach(c => {
+      if (!(c in cats)) cats[c] = defaultPonderaciones[c];
+    });
+    // Si hay columnas adicionales (por ejemplo "Nivel 1", "Capacitaciones", etc.), agrégalas
+    (documentos || []).forEach(d => {
+      if (d.tipoCategoria && !(d.tipoCategoria in cats)) {
+        cats[d.tipoCategoria] = 0;
+      }
+    });
+    return cats;
+  }
+
+  // Calcula promedios y puntos ponderados (como en la ficha de talento)
+  function calcularResumen(op, categorias) {
+    const calificaciones = {};
+    Object.keys(categorias).forEach(cat => calificaciones[cat] = []);
+    let evaluados = 0;
+    let totalDocs = 0;
+    (op.documentacion || []).forEach(doc => {
+      const ref = documentos.find(d => d.codigo === doc.codigo);
+      const tipo = ref?.tipoCategoria || "Sin Clasificar";
+      if (calificaciones.hasOwnProperty(tipo)) {
+        const val = parseFloat(doc.calificacion);
+        if (!isNaN(val)) {
+          calificaciones[tipo].push(val);
+          evaluados++;
+        }
+      }
+    });
+
+    // Promedios por categoría y suma de puntos ponderados reales
+    const promedios = {};
+    const puntosPorCategoria = {};
+    let puntosTotal = 0;
+
+    Object.keys(categorias).forEach(cat => {
+      const vals = calificaciones[cat] || [];
+      const ponderacion = categorias[cat];
+      const prom = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+      promedios[cat] = prom.toFixed(1);
+
+      // SOLO suma los puntos si hay documentos en esa categoría
+      let puntos = (prom * (ponderacion / 100));
+      if (vals.length > 0 && ponderacion > 0) {
+        puntosTotal += puntos;
+      }
+      puntosPorCategoria[cat] = puntos.toFixed(1);
+    });
+
+    // Docs posibles para el área
+    const docsFiltrados = documentos.filter(d => d.area && op.area && d.area.toLowerCase() === op.area.toLowerCase());
+    totalDocs = docsFiltrados.length;
+
+    return {
+      numero: op.numero,
+      nombre: op.nombre,
+      area: op.area,
+      ...promedios,
+      ...puntosPorCategoria,
+      resultadoTotal: (puntosTotal).toFixed(1), // <-- Coincide con la suma de puntos (Total de Puntos)
+      categoriaFinal: calcularCategoria(puntosTotal),
+      porcentajeCap: totalDocs ? ((evaluados / totalDocs) * 100).toFixed(1) : 0,
+      totalDocs
+    };
+  }
+
+  function calcularCategoria(total) {
+    total = parseFloat(total);
+    if (total >= 95) return "A - Maestro";
+    if (total >= 90) return "B - Experto";
+    if (total >= 80) return "C - Competente";
+    if (total >= 70) return "D - Semicompetente";
+    if (total >= 50) return "E - Entrenamiento";
+    return "- Sin Clasificar";
+  }
+
+  function renderHeaderRow() {
+    const headerRow = document.getElementById("headerRow");
+    headerRow.innerHTML = `
+      <th>Número</th>
+      <th>Nombre</th>
+      <th>Área</th>
+      ${Object.keys(categorias).map(cat => `<th>${cat}</th>`).join("")}
+      <th>Total de Puntos</th>
+      <th>Categoría</th>
+      <th>% Cap.</th>
+    `;
+  }
+
+  function renderTabla(data) {
+    const tbody = document.querySelector("#resumenTabla tbody");
+    tbody.innerHTML = "";
+    let totalGlobal = 0;
+    let sumaCap = 0;
+    data.forEach(op => {
+      const resumen = calcularResumen(op, categorias);
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${resumen.numero}</td>
+        <td>${resumen.nombre}</td>
+        <td>${resumen.area}</td>
+        ${Object.keys(categorias).map(cat => `<td>${resumen[cat] !== undefined ? resumen[cat] : "0.0"}</td>`).join("")}
+        <td>${resumen.resultadoTotal}%</td>
+        <td>${resumen.categoriaFinal}</td>
+        <td>${resumen.porcentajeCap}%</td>
+      `;
+      tbody.appendChild(fila);
+      sumaCap += parseFloat(resumen.porcentajeCap);
+      totalGlobal++;
+    });
+
+    const promedioGlobal = totalGlobal ? (sumaCap / totalGlobal).toFixed(1) : 0;
+    document.getElementById("capacitacionGlobal").textContent = `% Capacitacion Global: ${promedioGlobal}%`;
+
+    renderTarjetas(data);
+  }
+
+  function renderTarjetas(data) {
+    const container = document.getElementById("tarjetasContainer");
+    container.innerHTML = "";
+    const porArea = {};
+    data.forEach(op => {
+      if (!porArea[op.area]) porArea[op.area] = [];
+      porArea[op.area].push(op);
+    });
+
+    for (let area in porArea) {
+      const operadoresArea = porArea[area];
+      let sumCap = 0;
+      let totalDocs = 0;
+      operadoresArea.forEach(op => {
+        const resumen = calcularResumen(op, categorias);
+        sumCap += parseFloat(resumen.porcentajeCap);
+        totalDocs = resumen.totalDocs;
+      });
+      const promedio = operadoresArea.length ? (sumCap / operadoresArea.length).toFixed(1) : 0;
+      let claseColor = "verde";
+      if (promedio < 70) claseColor = "rojo";
+      else if (promedio < 90) claseColor = "amarillo";
+
+      const tarjeta = document.createElement("div");
+      tarjeta.className = `tarjeta ${claseColor}`;
+      tarjeta.innerHTML = `
+        <h3>${area}</h3>
+        <p>👥 Personas: ${operadoresArea.length}</p>
+        <p>📄 Documentos evaluados: ${totalDocs}</p>
+        <p>📈 Promedio capacitación: ${promedio}%</p>
+      `;
+      container.appendChild(tarjeta);
+    }
+  }
+
+  function aplicarFiltro() {
+    const texto = document.getElementById("filtro").value.toLowerCase();
+    const filtrados = operadores.filter(op =>
+      (op.nombre||"").toLowerCase().includes(texto) ||
+      (op.numero||"").toString().includes(texto) ||
+      (op.area||"").toLowerCase().includes(texto)
+    );
+    renderTabla(filtrados);
+  }
+
+  async function actualizarDatos() {
+    await migrarLocalStorageAIndexedDB();
+    operadores = await leerDeIndexedDB("matrizILUO") || [];
+    documentos = await leerDeIndexedDB("documentosILUO") || [];
+    categorias = obtenerCategoriasDinamicas();
+    renderHeaderRow();
+    aplicarFiltro();
+      document.getElementById("totalEmpleadosGlobal").textContent = `👥 Total de empleados: ${operadores.length}`;
+
+  }
+
+  async function inicializar() {
+    await actualizarDatos();
+  
+  }
+  inicializar();
+</script>
+
+<footer>
+  Herramienta diseñada por el departamento de Producción & Mejora Continua
+</footer>
+</body>
+</html>

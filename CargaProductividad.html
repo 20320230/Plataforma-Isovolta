@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Seguimiento y Planificación de Pedidos — ISOVOLTA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="isovolta.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    body { background: #f4f8fc; font-family: 'Roboto', Arial, sans-serif; margin: 0; }
+    .barra-superior {
+      background: #045194; color: #fff; min-height: 58px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 25px 0 10px; box-shadow: 0 2px 12px #04519412;
+    }
+    .logo { height: 37px; margin: 6px 20px 6px 2px; }
+    .titulo { font-weight: 800; font-size: 1.33em; letter-spacing: .02em;}
+    .filtros-pedidos { display: flex; gap: 17px; align-items: center; padding: 17px 0 10px 0; flex-wrap: wrap;}
+    .panel-resumen { display: flex; gap: 24px; margin-bottom: 18px;}
+    .card-resumen { background: #fff; border-radius: 13px; box-shadow: 0 2px 16px #0451940d; padding: 13px 30px; color: #045194; font-weight: 700; min-width: 160px;}
+    .kanban-tablero { display: flex; gap: 15px; overflow-x: auto;}
+    .kanban-col { background: #fff; border-radius: 11px; box-shadow: 0 2px 12px #0451940d; padding: 9px 8px 15px 8px; min-width: 240px; flex: 1;}
+    .kanban-title { font-weight: 800; color: #045194; font-size: 1.08em; margin-bottom: 8px;}
+    .pedido-card { background: #eaf3fc; border-radius: 8px; margin-bottom: 10px; padding: 10px 8px; font-weight: 600; color: #184060;}
+    .footer { width: 100vw; background: #004990; color: #fff; text-align: center; padding: 11px 0 9px 0; position: fixed; left: 0; bottom: 0; font-size: 1.07em; border-bottom-left-radius: 9px; border-bottom-right-radius: 9px; box-shadow: 0 0 14px #00499027;}
+    @media (max-width:900px){ .kanban-col { min-width: 180px; } }
+    @media (max-width:700px){ .filtros-pedidos, .panel-resumen { flex-direction: column; gap: 10px;} }
+  </style>
+</head>
+<body>
+  <div class="barra-superior">
+    <div style="display:flex;align-items:center;">
+      <img class="logo" src="https://www.isovolta.com/logo_isovolta.png" alt="ISOVOLTA">
+      <span class="titulo">Seguimiento y Planificación de Pedidos</span>
+    </div>
+  </div>
+  <div style="max-width:1250px;margin:0 auto 50px auto;padding: 0 10px;">
+    <!-- FILTROS PRINCIPALES -->
+    <div class="filtros-pedidos">
+      <label>
+        Mes: 
+        <select id="mesFiltro"></select>
+      </label>
+      <label>
+        Año: 
+        <input id="anioFiltro" type="number" min="2022" max="2100" style="width:70px;">
+      </label>
+      <label>
+        Área:
+        <select id="areaFiltro"></select>
+      </label>
+      <label>
+        Buscar pedido:
+        <input id="buscarPedido" type="text" placeholder="N° Pedido, Cliente...">
+      </label>
+      <button onclick="filtrarPedidos()" style="padding:7px 21px;border-radius:8px;font-weight:700;background:#ffe031;color:#045194;border:none;box-shadow:0 2px 8px #ffe03136;cursor:pointer;">Filtrar</button>
+    </div>
+    <!-- PANEL RESUMEN -->
+    <div class="panel-resumen" id="panelResumen">
+      <div class="card-resumen">Total Pedidos: <span id="totalPedidos">0</span></div>
+      <div class="card-resumen">Completados: <span id="completados">0</span></div>
+      <div class="card-resumen">Atrasados: <span id="atrasados">0</span></div>
+      <div class="card-resumen">En Proceso: <span id="enProceso">0</span></div>
+    </div>
+    <!-- TABLERO KANBAN / ÁREAS PRODUCTIVAS -->
+    <div class="kanban-tablero" id="kanbanTablero">
+      <!-- Aquí se llenan las áreas y los pedidos por área en tarjetas -->
+    </div>
+  </div>
+  <div class="footer">
+    Herramienta diseñada por el departamento de Producción & Mejora Continua
+  </div>
+  <script>
+    // ------ CONFIGURA LAS ÁREAS PRODUCTIVAS DE TU PLANTA ------
+    const AREAS = ["Laminado", "Corte", "Formado", "Maquinado", "Resinas"];
+    const MES_NOMBRES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+    // ----- PEDIDOS DE EJEMPLO -----
+    let PEDIDOS = [
+      {id:1, pedido:"ORD-01234", cliente:"NEMAK", promesa:"2025-07-25", area:"Laminado", estado:"En Proceso"},
+      {id:2, pedido:"ORD-01239", cliente:"BMW", promesa:"2025-07-20", area:"Corte", estado:"Completado"},
+      {id:3, pedido:"ORD-01245", cliente:"Bosch", promesa:"2025-07-23", area:"Formado", estado:"Atrasado"},
+      {id:4, pedido:"ORD-01246", cliente:"Continental", promesa:"2025-07-27", area:"Maquinado", estado:"En Proceso"},
+      {id:5, pedido:"ORD-01256", cliente:"GM", promesa:"2025-07-24", area:"Laminado", estado:"Atrasado"},
+      {id:6, pedido:"ORD-01257", cliente:"TESLA", promesa:"2025-07-21", area:"Corte", estado:"En Proceso"},
+      // ... agrega tus pedidos aquí ...
+    ];
+
+    // ------ RELLENAR FILTROS ------
+    document.getElementById("mesFiltro").innerHTML = MES_NOMBRES.map((m,i)=>`<option value="${i+1}">${m}</option>`).join("");
+    document.getElementById("anioFiltro").value = new Date().getFullYear();
+    document.getElementById("areaFiltro").innerHTML = `<option value="">Todas</option>` + AREAS.map(a=>`<option>${a}</option>`).join("");
+    
+    function filtrarPedidos() {
+      const mes = +document.getElementById("mesFiltro").value;
+      const anio = +document.getElementById("anioFiltro").value;
+      const area = document.getElementById("areaFiltro").value;
+      const buscar = document.getElementById("buscarPedido").value.trim().toLowerCase();
+      let filtrados = PEDIDOS.filter(p=>{
+        let fecha = new Date(p.promesa);
+        let coincideMes = (fecha.getMonth()+1)===mes && fecha.getFullYear()===anio;
+        let coincideArea = !area || p.area===area;
+        let coincideBuscar = !buscar || p.pedido.toLowerCase().includes(buscar) || (p.cliente && p.cliente.toLowerCase().includes(buscar));
+        return coincideMes && coincideArea && coincideBuscar;
+      });
+      renderKanban(filtrados);
+      renderResumen(filtrados);
+    }
+    function renderResumen(pedidos) {
+      document.getElementById("totalPedidos").textContent = pedidos.length;
+      document.getElementById("completados").textContent = pedidos.filter(p=>p.estado==="Completado").length;
+      document.getElementById("atrasados").textContent = pedidos.filter(p=>p.estado==="Atrasado").length;
+      document.getElementById("enProceso").textContent = pedidos.filter(p=>p.estado==="En Proceso").length;
+    }
+    function renderKanban(pedidos) {
+      let html = '';
+      for(let area of AREAS){
+        let pArea = pedidos.filter(p=>p.area===area);
+        html += `<div class="kanban-col">
+          <div class="kanban-title">${area}</div>
+          ${pArea.length ? pArea.map(p=>`
+            <div class="pedido-card">
+              <div><b>${p.pedido}</b> - ${p.cliente}</div>
+              <div>Promesa: ${p.promesa}</div>
+              <div>Estado: <span style="color:${p.estado==="Atrasado"?"#d81b11":(p.estado==="Completado"?"#15b326":"#e7b600")};font-weight:700;">${p.estado}</span></div>
+            </div>
+          `).join('') : `<div style="color:#b3b8be;font-size:.98em;text-align:center;">Sin pedidos</div>`}
+        </div>`;
+      }
+      document.getElementById("kanbanTablero").innerHTML = html;
+    }
+    // ---- Render inicial con todos los pedidos del mes actual ---
+    filtrarPedidos();
+  </script>
+</body>
+</html>

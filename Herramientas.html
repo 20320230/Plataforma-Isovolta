@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Herramientas de Cálculo ISOVOLTA</title>
+  <link rel="icon" type="image/x-icon" href="isovolta.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --azul: #003366;
+      --azul-fondo: #f4f7fb;
+      --amarillo: #f4d307;
+      --blanco: #fff;
+      --gris-input: #f7faff;
+      --verde: #e8f5e9;
+      --verde-texto: #1b5e20;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Roboto', Arial, sans-serif;
+      background-color: var(--azul-fondo);
+    }
+    .logo { text-align: center; padding-top: 12px; }
+    .logo img { width: 205px; max-width: 95%; height: auto; }
+    .title-bar {
+      text-align: center;
+      font-size: 1.38em;
+      font-weight: bold;
+      color: var(--azul);
+      padding: 6px 0 6px 0;
+      letter-spacing: 0.2px;
+      margin-bottom: 4px;
+    }
+    .file-loader {
+      text-align: center;
+      margin: 5px 0 0 0;
+    }
+    .file-loader input[type="file"] { font-size: 13px; }
+    .file-loader p { font-size: 13px; color: #888; margin: 4px 0 0 0; }
+    .main-calc-layout {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      max-width: 1100px;
+      margin: 28px auto 60px auto;
+      min-height: 500px;
+    }
+    .sidebar-tabs {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      background: #f6f7fa;
+      border-radius: 18px 0 0 18px;
+      box-shadow: 0 2px 14px #00499012;
+      margin-right: 0px;
+      min-width: 210px;
+      width: 220px;
+      gap: 0;
+      border-right: 3px solid #f4d30722;
+      padding: 24px 0 24px 0;
+      height: 100%;
+    }
+    .tab-vertical {
+      padding: 22px 16px;
+      border: none;
+      border-radius: 0 12px 12px 0;
+      background: none;
+      color: #003366;
+      font-weight: 600;
+      font-size: 1.12em;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.16s, color 0.12s, font-weight 0.11s;
+      border-left: 5px solid transparent;
+      outline: none;
+      margin: 0;
+    }
+    .tab-vertical.active {
+      background: var(--amarillo);
+      color: var(--azul);
+      font-weight: 800;
+      border-left: 5px solid var(--azul);
+      box-shadow: 0 2px 16px #ffe06636;
+    }
+    .tab-vertical:hover {
+      background: #f9f9f2;
+      color: #bd9000;
+    }
+    .content-tabs {
+      flex: 1;
+      min-width: 340px;
+      max-width: 560px;
+      margin-left: 0;
+    }
+    .container {
+      width: 100%;
+      background: var(--blanco);
+      border-radius: 12px;
+      padding: 26px 22px 16px 22px;
+      box-shadow: 0 0 15px #00336611;
+      margin-bottom: 32px;
+      margin-top: 0;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    h2 {
+      text-align: center;
+      color: var(--azul);
+      font-size: 1.13em;
+      margin-bottom: 12px;
+      margin-top: 4px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 700;
+      font-size: 1em;
+      color: var(--azul);
+    }
+    input, input[readonly] {
+      width: 100%;
+      padding: 9px 10px;
+      margin-top: 4px;
+      border: 1px solid #c1c7d2;
+      border-radius: 7px;
+      font-size: 15px;
+      background: var(--gris-input);
+      color: #283250;
+    }
+    input[readonly] { background: #f5f5f5; color: #888; }
+    input[type="checkbox"] { width: auto; margin: 0 7px 0 0; }
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 16px;
+      background-color: var(--amarillo);
+      color: var(--azul);
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background .14s, color .11s;
+      box-shadow: 0 2px 8px #f4d30722;
+    }
+    button:hover {
+      background-color: #ffe066;
+      color: #4d4200;
+    }
+    .btn-cargar-url {
+      background: #0099e6;
+      color: #fff;
+      width: auto;
+      padding: 8px 20px;
+      border-radius: 7px;
+      margin-left: 20px;
+      margin-top: 5px;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 2px 8px #0099e622;
+    }
+    #resultado1, #resultado2, #resultado3, #resultado4 {
+      margin-top: 14px;
+      padding: 12px;
+      background-color: var(--verde);
+      color: var(--verde-texto);
+      text-align: center;
+      font-weight: bold;
+      border-radius: 7px;
+      display: none;
+      font-size: 1.13em;
+    }
+    #resultadoDiametro1 {
+      margin-top: 10px;
+      padding: 11px;
+      background-color: #e3fafc;
+      color: #09595e;
+      text-align: center;
+      font-weight: 600;
+      border-radius: 7px;
+      display: none;
+    }
+    .aviso {
+      text-align: center;
+      color: #d81b11;
+      font-size: 14px;
+      display: none;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    @media (max-width: 900px) {
+      .main-calc-layout {
+        flex-direction: column;
+        align-items: stretch;
+        margin: 10px 2vw 70px 2vw;
+      }
+      .sidebar-tabs {
+        flex-direction: row;
+        width: 100vw;
+        min-width: 0;
+        border-radius: 14px 14px 0 0;
+        box-shadow: none;
+        border-right: none;
+        border-bottom: 3px solid #f4d30722;
+        margin-bottom: 7px;
+        padding: 0 0 0 0;
+      }
+      .tab-vertical, .tab-vertical.active {
+        border-radius: 12px 12px 0 0;
+        padding: 14px 2vw;
+        font-size: 1em;
+        border-left: none;
+        border-bottom: 5px solid transparent;
+      }
+      .tab-vertical.active {
+        border-bottom: 5px solid var(--azul);
+        border-left: none;
+        box-shadow: none;
+      }
+      .content-tabs {
+        margin-left: 0;
+        max-width: 98vw;
+      }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 7vw 2vw 6vw 2vw; }
+      label { font-size: 0.98em; }
+      input, button { font-size: 15px; }
+      h2 { font-size: 1em; }
+      .content-tabs { min-width: 0; }
+      .tab-vertical, .tab-vertical.active { font-size: 0.93em; }
+    }
+    footer {
+      width: 100vw;
+      background: #004990;
+      color: #fff;
+      text-align: center;
+      padding: 13px 0 10px 0;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      font-size: 1.09em;
+      letter-spacing: 0.8px;
+      z-index: 50;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      box-shadow: 0 0 14px #00499027;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <img src="https://www.isovolta.com/logo_isovolta.png" alt="Logo Isovolta" />
+  </div>
+  <div class="title-bar">
+    Herramientas de Cálculo ISOVOLTA
+  </div>
+  <div class="file-loader">
+    <input type="file" id="input-excel" accept=".xlsx" />
+    <button class="btn-cargar-url" onclick="cargarExcelDropbox()">Cargar Excel de Dropbox</button>
+    <p>Sube la base de datos Excel o cárgala desde Dropbox</p>
+  </div>
+  <div class="main-calc-layout">
+    <div class="sidebar-tabs">
+      <button class="tab-vertical active" onclick="openTab('retales', event)">Kg a Metros o Diámetro</button>
+      <button class="tab-vertical" onclick="openTab('rigidas', event)">Peso de Placas</button>
+      <button class="tab-vertical" onclick="openTab('diametros', event)">Diámetro a Kg o Metros</button>
+      <button class="tab-vertical" onclick="openTab('metrosADiametros', event)">Metros a Diámetro o Kg</button>
+    </div>
+    <div class="content-tabs">
+      <!-- ... Tus formularios y campos tal cual los tenías ... -->
+      <!-- (Aquí van los div de cada tab, igual que tu versión anterior) -->
+      <!-- No modifiques nada de esto, mantenlo igual que el HTML original -->
+      <!-- ... copié todo tu contenido, aquí no hay cambios ... -->
+      <!-- ... empieza aquí ... -->
+      <div class="container tab-content active" id="retales">
+        <h2>Cálculo de Metraje a partir del peso de una bobina</h2>
+        <label for="codigoSap1">Código SAP</label>
+        <input type="text" id="codigoSap1" style="background-color:#fff8e1;" />
+        <div style="margin: 10px 0;">
+          <input type="checkbox" id="modoManual1" onchange="toggleManual('1')" />
+          <label for="modoManual1" style="font-weight: normal;">Ingresar datos manualmente</label>
+        </div>
+        <label for="descripcion1">Descripción del Material</label>
+        <input type="text" id="descripcion1" readonly />
+        <label for="gramaje">Gramaje (kg)</label>
+        <input type="text" id="gramaje" readonly />
+        <label for="espesor1">Espesor (mm)</label>
+        <input type="text" id="espesor1" readonly />
+        <label for="kilos">Kilos (kg)</label>
+        <input type="number" id="kilos" style="background-color:#fff8e1;" />
+        <label for="anchoRetal">Ancho de Retal (mm)</label>
+        <input type="number" id="anchoRetal" style="background-color:#fff8e1;" />
+        <label for="diametroInterno1">Diámetro Interno (mm)</label>
+        <input type="number" id="diametroInterno1" style="background-color:#fff8e1;" />
+        <div class="aviso" id="aviso1"></div>
+        <button onclick="calcularMetros()">Calcular</button>
+        <div id="resultado1"></div>
+        <div id="resultadoDiametro1"></div>
+      </div>
+      <div class="container tab-content" id="rigidas">
+        <h2>Cálculo del peso de una placa a partir de la densidad</h2>
+        <label for="codigoSap2">Código SAP</label>
+        <input type="text" id="codigoSap2" style="background-color:#fff8e1;" />
+        <div style="margin: 10px 0;">
+          <input type="checkbox" id="modoManual2" onchange="toggleManual('2')" />
+          <label for="modoManual2" style="font-weight: normal;">Ingresar datos manualmente</label>
+        </div>
+        <label for="descripcion2">Descripción del Material</label>
+        <input type="text" id="descripcion2" readonly />
+        <label for="densidad">Densidad (g/cm³)</label>
+        <input type="text" id="densidad" readonly />
+        <label for="largo">Largo (mm)</label>
+        <input type="text" id="largo" readonly />
+        <label for="ancho">Ancho (mm)</label>
+        <input type="text" id="ancho" readonly />
+        <label for="espesor">Espesor (mm)</label>
+        <input type="text" id="espesor" readonly />
+        <div class="aviso" id="aviso2"></div>
+        <button onclick="calcularPeso()">Calcular Peso</button>
+        <div id="resultado2"></div>
+      </div>
+      <div class="container tab-content" id="diametros">
+        <h2>Cálculo del peso de una bobina a partir del diámetro</h2>
+        <label for="codigoSap3">Código SAP</label>
+        <input type="text" id="codigoSap3" style="background-color:#fff8e1;" />
+        <div style="margin: 10px 0;">
+          <input type="checkbox" id="modoManual3" onchange="toggleManual('3')" />
+          <label for="modoManual3" style="font-weight: normal;">Ingresar datos manualmente</label>
+        </div>
+        <label for="descripcion3">Descripción del Material</label>
+        <input type="text" id="descripcion3" readonly />
+        <label for="gramaje3">Gramaje (g/m²)</label>
+        <input type="text" id="gramaje3" readonly />
+        <label for="ancho3">Ancho (mm)</label>
+        <input type="text" id="ancho3" readonly />
+        <label for="espesor3">Espesor (mm)</label>
+        <input type="text" id="espesor3" readonly />
+        <div style="background-color: #fff8e1; padding: 10px; border-radius: 6px; margin-top: 16px;">
+          <label for="diametroExterno">Diámetro Externo (mm)</label>
+          <input type="number" id="diametroExterno" />
+          <label for="diametroInterno">Diámetro Interno (mm)</label>
+          <input type="number" id="diametroInterno" />
+        </div>
+        <div class="aviso" id="aviso3"></div>
+        <button onclick="calcularPeso3()">Calcular Peso</button>
+        <div id="resultado3"></div>
+      </div>
+      <div class="container tab-content" id="metrosADiametros">
+        <h2>Cálculo del diámetro a partir de Metros Lineales</h2>
+        <label for="codigoSap4">Código SAP</label>
+        <input type="text" id="codigoSap4" style="background-color:#fff8e1;" />
+        <div style="margin: 10px 0;">
+          <input type="checkbox" id="modoManual4" onchange="toggleManual('4')" />
+          <label for="modoManual4" style="font-weight: normal;">Ingresar datos manualmente</label>
+        </div>
+        <label for="descripcion4">Descripción del Material</label>
+        <input type="text" id="descripcion4" readonly />
+        <label for="gramaje4">Gramaje (g/m²)</label>
+        <input type="text" id="gramaje4" readonly />
+        <label for="ancho4">Ancho (mm)</label>
+        <input type="text" id="ancho4" readonly />
+        <label for="espesor4">Espesor (mm)</label>
+        <input type="text" id="espesor4" readonly />
+        <div style="background-color: #fff8e1; padding: 10px; border-radius: 6px; margin-top: 16px;">
+          <label for="metrosLineales4">Metros Lineales</label>
+          <input type="number" id="metrosLineales4" />
+          <label for="diametroInterno4">Diámetro Interno (mm)</label>
+          <input type="number" id="diametroInterno4" />
+        </div>
+        <div class="aviso" id="aviso4"></div>
+        <button onclick="calcularDiametro4()">Calcular Diámetro</button>
+        <div id="resultado4"></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    Herramienta diseñada por el departamento de Producción & Mejora Continua
+  </footer>
+  <script>
+    let baseDatos = [];
+    // Cargar Excel manual
+    document.getElementById('input-excel').addEventListener('change', function (e) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        baseDatos = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        alert("📁 Base de datos cargada correctamente.");
+      };
+      reader.readAsArrayBuffer(e.target.files[0]);
+    });
+    // Cargar Excel desde Dropbox
+    async function cargarExcelDropbox() {
+      const url = "https://dl.dropboxusercontent.com/scl/fi/yyz8bf5via23geh3dc8df/Master.xlsx?rlkey=twm1geyo46akowzqvp32fhudf&st=wwaypwyv";
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("No se pudo descargar el archivo");
+        const arrayBuffer = await res.arrayBuffer();
+        const data = new Uint8Array(arrayBuffer);
+        const workbook = XLSX.read(data, {type:'array'});
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        baseDatos = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        alert("📁 Base de datos cargada desde Dropbox correctamente.");
+      } catch (e) {
+        alert("❌ Error al cargar desde Dropbox: " + e.message);
+      }
+    }
+    function openTab(tabId, event) {
+      document.querySelectorAll('.tab-vertical').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+    function buscarSAP(tab) {
+      const codigo = document.getElementById(`codigoSap${tab}`).value.trim();
+      const aviso = document.getElementById(`aviso${tab}`);
+      aviso.style.display = 'none';
+      if (!codigo || baseDatos.length === 0) return;
+      const fila = baseDatos.find(row => String(row.Material).trim() === codigo);
+      if (!fila) {
+        aviso.innerHTML = `⚠️ El código SAP "<strong>${codigo}</strong>" no fue encontrado en la base.<br>
+        Favor de notificar a <a href="mailto:omar.gutierrez@isovolta.com.mx">omar.gutierrez@isovolta.com.mx</a>`;
+        aviso.style.display = 'block';
+        return;
+      }
+      if (tab === "1") {
+        document.getElementById("descripcion1").value = fila["Texto breve de material"] || "";
+        document.getElementById("gramaje").value = Number(fila["gra"]).toLocaleString("en-US");
+        document.getElementById("espesor1").value = Number(fila["Espesor MM"]).toLocaleString("en-US");
+      }
+      if (tab === "2") {
+        const densidadKey = Object.keys(fila).find(k => k.toLowerCase().includes("dens"));
+        document.getElementById("descripcion2").value = fila["Texto breve de material"] || "";
+        document.getElementById("densidad").value = fila[densidadKey] || "";
+        document.getElementById("largo").value = Number(fila["Largo MM"]).toLocaleString("en-US");
+        document.getElementById("ancho").value = Number(fila["Ancho MM"]).toLocaleString("en-US");
+        document.getElementById("espesor").value = Number(fila["Espesor MM"]).toLocaleString("en-US");
+      }
+      if (tab === "3") {
+        document.getElementById("descripcion3").value = fila["Texto breve de material"] || "";
+        document.getElementById("gramaje3").value = Number(fila["gra"]).toLocaleString("en-US");
+        document.getElementById("ancho3").value = Number(fila["Ancho MM"]).toLocaleString("en-US");
+        document.getElementById("espesor3").value = Number(fila["Espesor MM"]).toLocaleString("en-US");
+      }
+      if (tab === "4") {
+        document.getElementById("descripcion4").value = fila["Texto breve de material"] || "";
+        document.getElementById("gramaje4").value = Number(fila["gra"]).toLocaleString("en-US");
+        document.getElementById("ancho4").value = Number(fila["Ancho MM"]).toLocaleString("en-US");
+        document.getElementById("espesor4").value = Number(fila["Espesor MM"]).toLocaleString("en-US");
+      }
+    }
+    document.getElementById("codigoSap1").addEventListener("blur", () => buscarSAP("1"));
+    document.getElementById("codigoSap2").addEventListener("blur", () => buscarSAP("2"));
+    document.getElementById("codigoSap3").addEventListener("blur", () => buscarSAP("3"));
+    document.getElementById("codigoSap4").addEventListener("blur", () => buscarSAP("4"));
+    function calcularMetros() {
+      const kilos = parseFloat(document.getElementById("kilos").value);
+      const gramaje = parseFloat(document.getElementById("gramaje").value.replace(/,/g, ""));
+      const anchoRetal = parseFloat(document.getElementById("anchoRetal").value);
+      const espesor = parseFloat(document.getElementById("espesor1")?.value.replace(/,/g, "") || "");
+      const dInt = parseFloat(document.getElementById("diametroInterno1").value);
+      if ([kilos, gramaje, anchoRetal].some(v => isNaN(v) || v <= 0)) {
+        alert("Completa todos los campos correctamente.");
+        return;
+      }
+      const m2 = kilos / gramaje;
+      const mLineales = m2 / (anchoRetal / 1000);
+      let resultado = `📏 Metros Lineales: ${mLineales.toFixed(2).toLocaleString()} m<br>` +
+                      `📐 Metros Cuadrados: ${m2.toFixed(2).toLocaleString()} m²`;
+      document.getElementById("resultado1").innerHTML = resultado;
+      document.getElementById("resultado1").style.display = 'block';
+      // Si también se proporcionó espesor, calcular diámetro externo
+      if (!isNaN(espesor) && espesor > 0 && !isNaN(dInt) && dInt > 0) {
+        const areaBobina = mLineales * espesor * 1000; // mm²
+        const radioInterno = dInt / 2;
+        const radioExterno = Math.sqrt((areaBobina / Math.PI) + Math.pow(radioInterno, 2));
+        const dExterno = radioExterno * 2;
+        document.getElementById("resultadoDiametro1").innerHTML =
+          `🌀 Diámetro Externo Aproximado: <strong>${dExterno.toFixed(2)} mm</strong>`;
+        document.getElementById("resultadoDiametro1").style.display = 'block';
+      } else {
+        document.getElementById("resultadoDiametro1").style.display = 'none';
+      }
+    }
+    function calcularPeso() {
+      const largo = parseFloat(document.getElementById("largo").value.replace(/,/g, ""));
+      const ancho = parseFloat(document.getElementById("ancho").value.replace(/,/g, ""));
+      const espesor = parseFloat(document.getElementById("espesor").value.replace(/,/g, ""));
+      const densidad = parseFloat(document.getElementById("densidad").value);
+      if ([largo, ancho, espesor, densidad].some(v => isNaN(v) || v <= 0)) {
+        alert("Completa todos los campos correctamente.");
+        return;
+      }
+      const volumen = (largo / 1000) * (ancho / 1000) * (espesor / 1000);
+      const peso = volumen * densidad * 1000;
+      document.getElementById("resultado2").innerText = `Peso Aproximado: ${peso.toFixed(2).toLocaleString()} kg`;
+      document.getElementById("resultado2").style.display = 'block';
+    }
+    function calcularPeso3() {
+      const gramajeInput = parseFloat(document.getElementById("gramaje3").value.replace(/,/g, ""));
+      const gramaje = gramajeInput * 1000;
+      const ancho = parseFloat(document.getElementById("ancho3").value.replace(/,/g, ""));
+      const espesor = parseFloat(document.getElementById("espesor3").value.replace(/,/g, ""));
+      const dExt = parseFloat(document.getElementById("diametroExterno").value);
+      const dInt = parseFloat(document.getElementById("diametroInterno").value);
+      if ([gramaje, ancho, espesor, dExt, dInt].some(v => isNaN(v) || v <= 0)) {
+        alert("Completa todos los campos correctamente.");
+        return;
+      }
+      const metrosLineales = ((Math.PI * (Math.pow(dExt / 2, 2) - Math.pow(dInt / 2, 2))) / espesor) / 1000;
+      const areaM2 = metrosLineales * (ancho / 1000);
+      const pesoKg = (areaM2 * gramaje) / 1000;
+      document.getElementById("resultado3").innerText =
+        `Longitud Aproximada: ${metrosLineales.toFixed(2).toLocaleString()} m\n` +
+        `Peso Aproximado: ${pesoKg.toFixed(2).toLocaleString()} kg`;
+      document.getElementById("resultado3").style.display = 'block';
+    }
+    function toggleManual(tab) {
+      const esManual = document.getElementById(`modoManual${tab}`).checked;
+      let campos = [];
+      if (tab === "1") {
+        campos = ["descripcion1", "gramaje", "espesor1", "anchoRetal", "kilos"];
+      } else if (tab === "2") {
+        campos = ["descripcion2", "densidad", "largo", "ancho", "espesor"];
+      } else if (tab === "3") {
+        campos = ["descripcion3", "gramaje3", "ancho3", "espesor3"];
+      } else if (tab === "4") {
+        campos = ["descripcion4", "gramaje4", "ancho4", "espesor4"];
+      }
+      campos.forEach(id => {
+        const campo = document.getElementById(id);
+        if (campo) campo.readOnly = !esManual;
+      });
+    }
+    function calcularDiametro4() {
+      const metros = parseFloat(document.getElementById("metrosLineales4").value);
+      const espesor = parseFloat(document.getElementById("espesor4").value.replace(/,/g, ""));
+      const dInt = parseFloat(document.getElementById("diametroInterno4").value);
+      const ancho = parseFloat(document.getElementById("ancho4").value.replace(/,/g, ""));
+      const gramaje = parseFloat(document.getElementById("gramaje4").value.replace(/,/g, "")) * 1000;
+      if ([metros, espesor, dInt, ancho, gramaje].some(v => isNaN(v) || v <= 0)) {
+        alert("Completa todos los campos correctamente.");
+        return;
+      }
+      const areaM2 = metros * (ancho / 1000);
+      const pesoKg = (areaM2 * gramaje) / 1000;
+      const areaBobina = metros * espesor * 1000;
+      const radioInterno = dInt / 2;
+      const radioExterno = Math.sqrt((areaBobina / Math.PI) + Math.pow(radioInterno, 2));
+      const diametroExterno = radioExterno * 2;
+      document.getElementById("resultado4").innerHTML =
+        `🌀 Diámetro Externo Aproximado: <strong>${diametroExterno.toFixed(2).toLocaleString()} mm</strong><br>` +
+        `⚖️ Peso Aproximado: <strong>${pesoKg.toFixed(2).toLocaleString()} kg</strong>`;
+      document.getElementById("resultado4").style.display = 'block';
+    }
+  </script>
+</body>
+</html>

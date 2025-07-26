@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Atrasos — ISOVOLTA</title>
+  <link rel="icon" type="image/png" href="Isovolta.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --azul: #045194;
+      --azul-oscuro: #00376e;
+      --azul-claro: #eaf2fa;
+      --amarillo: #E5B100;
+      --rojo: #fe415b;
+      --verde: #0ac270;
+      --gris: #f3f8fb;
+      --blanco: #fff;
+      --borde: #e0e6ee;
+      --sombra: 0 4px 24px #00499018;
+      --radius: 17px;
+      --fondo-card: #fff;
+      --fondo-barra: #eaf3fc;
+    }
+    html, body { background:var(--gris); margin:0; padding:0; font-family:'Roboto',Arial,sans-serif; }
+    .barra-iluo {
+      display:flex; align-items:center; justify-content:space-between;
+      background:var(--blanco); color:var(--azul); min-height:65px;
+      border-bottom:2.5px solid var(--azul);
+      box-shadow: 0 1px 15px #04519408;
+      padding:0 24px 0 10px;
+    }
+    .logo-iluo { height:43px; margin:9px 22px 9px 7px;}
+    .usuario-ico { background:var(--azul-claro); border-radius:50%; padding:7px; }
+    .tabs-iluo {
+      display: flex;
+      background: var(--azul); color: #fff;
+      align-items: center; min-height:46px;
+      box-shadow: 0 2px 14px #00376e12;
+    }
+    .tab-btn {
+      padding: 9px 19px; cursor:pointer; font-weight:700;
+      background: none; border:none; outline:none; font-size: 1.01em;
+      color:#fff; transition: background .14s, color .13s;
+      border-radius: 10px 10px 0 0;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: #fff; color: var(--azul); border-bottom: 3px solid var(--amarillo);
+    }
+    .tab-content { display:none; padding:18px 8px 10px 8px;}
+    .tab-content.active { display:block; animation: fadeIn .32s;}
+    @keyframes fadeIn {from {opacity:.5;} to {opacity:1;}}
+    .filtros-panel {
+      display:flex; align-items:center; gap:11px; margin:17px 0 16px 0;
+      background:var(--fondo-card); padding:13px 23px; border-radius:var(--radius);
+      box-shadow: var(--sombra); flex-wrap:wrap;
+    }
+    .input-iluo {
+      border:1.5px solid var(--borde); border-radius:8px;
+      padding:6px 7px; font-size:1.06em; background:#fafcff; min-width:43px;
+      font-weight:500;
+    }
+    .btn-iluo {
+      background: var(--azul); color:#fff; border:none;
+      border-radius:9px; padding:7px 16px; font-weight:700; cursor:pointer;
+      font-size:1.01em; transition: background .13s, color .14s, box-shadow .13s;
+      box-shadow:var(--sombra);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .btn-iluo.yellow { background: var(--amarillo); color: #20293a;}
+    .btn-iluo.red { background: var(--rojo);}
+    .btn-iluo:active, .btn-iluo:hover { filter:brightness(1.08);}
+    .main-content-atrasos {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+    #tablaPanelAtrasos {
+      flex: 2;
+      min-width: 480px;
+      max-width: 950px;
+    }
+   #panelPareto {
+  flex: 1.4;
+  min-width: 480px;       /* Antes 330px */
+  max-width: 680px;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--sombra);
+  padding: 26px 35px 28px 35px;  /* Padding aumentado */
+  margin-top: 9px;
+  margin-left: 22px;
+}
+    @media (max-width:1150px){
+      .main-content-atrasos { flex-direction: column; }
+      #panelPareto { margin-left:0;margin-top:16px;}
+    }
+    .pareto-title {
+      font-size: 1.09em; color: #045194; font-weight: 800; margin-bottom: 12px;
+      text-align: left; margin-top:2px;
+    }
+    .pareto-row {
+      display: flex; align-items: center; gap: 11px;
+      font-size: 1.05em; margin-bottom: 6px;
+    }
+    .pareto-bar {
+      background: var(--azul-claro);
+      height: 16px; border-radius: 8px;
+      min-width: 14px;
+      transition: width .27s;
+    }
+    .pareto-motivo { min-width: 90px; max-width:140px; flex:1 1 90px; overflow: hidden; text-overflow:ellipsis; white-space:nowrap;}
+    .pareto-num { font-weight: 700; min-width: 37px; text-align:right;}
+    .pareto-pct { min-width: 52px; color: #E5B100; font-weight:600;}
+    .resumen-areas-global {
+      display:flex;
+      flex-wrap:wrap;
+      gap:13px;
+      margin:18px 0 7px 0;
+    }
+    .area-card-global {
+      background: #fff;
+      border-radius: 13px;
+      box-shadow: var(--sombra);
+      padding: 10px 22px 8px 22px;
+      min-width: 210px;
+      font-size: 1.09em;
+      font-weight: 700;
+      color: var(--azul);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap:3px;
+    }
+    .area-cumpl-global {
+      font-size: 1.1em;
+      font-weight: 900;
+      margin-left: 6px;
+      margin-right: 14px;
+    }
+    .area-planes-global {
+      color:#045194; font-size:.97em;font-weight:500;margin-left:3px;margin-right:5px;
+    }
+    /* El resto de tu CSS ... */
+    .dias-iluo {
+      display:flex;gap:7px;flex-wrap:wrap;align-items:center;
+      padding:13px 0 13px 0;
+      background:var(--fondo-card); border-radius:var(--radius); box-shadow:var(--sombra);
+      margin-bottom:17px; justify-content:center;
+    }
+    .dia-chip {
+      border:none; border-radius:12px; padding:7px 0 3px 0; width:64px; text-align:center;
+      font-size:1.12em; font-weight:800;
+      background:var(--fondo-barra); color:#184060; cursor:pointer;
+      transition: background .13s, color .13s, transform .11s;
+      box-shadow:0 1px 7px #b0e2ff14;
+      line-height:1.09;
+      margin-bottom:2px;
+    }
+    .dia-chip.sel, .dia-chip:focus { box-shadow:0 2px 12px #04519418; border:2.4px solid #045194;}
+    .chip-verde { background: var(--verde); color: #fff; }
+    .chip-amarillo { background: var(--amarillo); color: #184060;}
+    .chip-rojo { background: var(--rojo); color: #fff;}
+    .chip-empty { background: #e0e6ed; color:#8a97ad;}
+    .tabla-iluo {width:100%; border-collapse:separate; border-spacing:0;}
+    .tabla-iluo th, .tabla-iluo td {
+      border-bottom:1.5px solid #e6eaf4; padding:6px 4px; text-align:center;
+      font-size:1.11em;
+    }
+    .tabla-iluo th {
+      background: #f6fafd; color: var(--azul); font-weight:800; border-top:1.5px solid #e6eaf4;
+    }
+    .tabla-iluo tr:last-child td { border-bottom:none;}
+    .tabla-iluo input { width:65px; border-radius:6px; border:1px solid #d3e2f2; font-size:1em; text-align:right;}
+    .tabla-iluo select { border-radius:6px; }
+    .acciones-btns { display:flex; gap:5px; justify-content:center;}
+    .footer-iluo {
+      width: 100%;
+      background: #eaf2fa;
+      text-align: center;
+      color: #045194;
+      font-size: 1.08em;
+      font-weight: 700;
+      padding: 10px 0 13px 0;
+      margin-top: 42px;
+      border-top: 2px solid #e0e6ee;
+      letter-spacing: .03em;
+    }
+    @media (max-width:950px){
+      .barra-iluo { flex-direction:column; min-height:60px;}
+      .filtros-panel { flex-direction:column; gap:9px;}
+      .tabla-iluo th, .tabla-iluo td { font-size:.99em;}
+      .tabla-iluo input { width:48px;}
+      .dia-chip { width:46px; font-size:0.98em;}
+      .resumen-areas-global { flex-direction:column;gap:8px;}
+      .area-card-global { min-width:unset;width:98%;}
+    }
+
+.pareto-motivo,
+.pareto-row td:first-child,
+.motivo-pareto,
+td.motivo-pareto {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  max-width: 340px;  /* O más si quieres aún más ancho */
+  word-break: break-word !important;
+  font-size: 1.1em; /* Opcional, más grande */
+  line-height: 1.35;
+}
+
+
+
+
+  </style>
+</head>
+<body>
+  <div class="barra-iluo">
+    <div style="display:flex;align-items:center;">
+      <img class="logo-iluo" src="https://www.isovolta.com/logo_isovolta.png" alt="ISOVOLTA">
+      <span style="font-weight:800; font-size:1.33em; color:#045194;letter-spacing:.015em;">Panel de Atrasos</span>
+    </div>
+    <span class="usuario-ico"><i data-lucide="user" style="color:#045194;"></i></span>
+  </div>
+  <div class="tabs-iluo">
+    <button class="tab-btn active" onclick="selectTab(0)">Atrasos</button>
+    <button class="tab-btn" onclick="selectTab(1)">Motivos</button>
+  </div>
+  <div class="tab-content active" id="panelAtrasos">
+    <div class="filtros-panel">
+      <label>Año: <input id="anioPanel" class="input-iluo" type="number" min="2022" max="2100" style="width:70px;"></label>
+      <label>Mes: <select id="mesPanel" class="input-iluo"></select></label>
+      <button class="btn-iluo yellow" onclick="renderPanelAtrasos()"><i data-lucide="refresh-cw"></i>Actualizar</button>
+    </div>
+    <div id="resumenGlobal" style="margin-bottom:6px;"></div>
+    <div id="resumenAreasGlobal"></div>
+    <div id="diasRow" class="dias-iluo"></div>
+    <div class="main-content-atrasos">
+      <div id="tablaPanelAtrasos"></div>
+      <div id="panelPareto"></div>
+    </div>
+  </div>
+  <div class="tab-content" id="panelMotivos">
+    <div style="font-size:1.14em;font-weight:700;color:var(--azul);margin:7px 0 12px 0;">Catálogo de Motivos</div>
+    <form onsubmit="agregarMotivo(event)" style="margin-bottom:10px;">
+      <input id="motivoNuevo" class="input-iluo" placeholder="Nuevo motivo" required>
+      <button class="btn-iluo" type="submit"><i data-lucide="plus"></i> Agregar</button>
+    </form>
+    <div id="tablaMotivos"></div>
+  </div>
+  <div class="footer-iluo">
+    Herramienta diseñada por el departamento de Producción &amp; Mejora Continua
+  </div>
+<!-- ...todo tu head y estilos igual... -->
+<!-- Reemplaza el script JS original completo por esto: -->
+
+<script>
+const MES_NOMBRES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+let db;
+let selAnio = new Date().getFullYear();
+let selMes = new Date().getMonth()+1;
+let selDia = new Date().getDate();
+
+function abrirBD() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open("Atrasos_Produccion", 4);
+    req.onupgradeneeded = e => {
+      db = e.target.result;
+      if(!db.objectStoreNames.contains("motivos")) db.createObjectStore("motivos",{keyPath:"id",autoIncrement:true});
+      if(!db.objectStoreNames.contains("atrasos")) db.createObjectStore("atrasos",{keyPath:"id",autoIncrement:true});
+    };
+    req.onsuccess = e => {db = e.target.result; resolve();}
+    req.onerror = ()=>reject();
+  });
+}
+function getAll(store) {
+  return new Promise((resolve)=>{
+    const tx=db.transaction([store],"readonly");
+    const req=tx.objectStore(store).getAll();
+    req.onsuccess=()=>resolve(req.result);
+  });
+}
+function put(store,obj) {
+  return new Promise((resolve)=>{
+    const tx=db.transaction([store],"readwrite");
+    tx.objectStore(store).put(obj).onsuccess=()=>resolve();
+  });
+}
+function remove(store,id) {
+  return new Promise((resolve)=>{
+    const tx=db.transaction([store],"readwrite");
+    tx.objectStore(store).delete(id).onsuccess=()=>resolve();
+  });
+}
+function diasEnMes(mes,anio) { return new Date(anio,mes,0).getDate(); }
+
+async function cargarAreas() {
+  return ["Laminado", "Corte", "Formado", "Maquinado", "Resinas"];
+}
+
+// ----------- MOTIVOS CRUD -------------
+async function renderMotivos() {
+  let motivos = await getAll("motivos");
+  let html = `<table class="tabla-iluo"><tr><th>Motivo</th><th>Eliminar</th></tr>`;
+  motivos.forEach(m=>{
+    html+=`<tr><td>${m.nombre}</td>
+      <td><button class="btn-iluo red" onclick="eliminarMotivo(${m.id})"><i data-lucide="trash-2"></i></button></td>
+    </tr>`;
+  });
+  html+=`</table>`;
+  document.getElementById("tablaMotivos").innerHTML = html;
+  lucide.createIcons();
+}
+async function agregarMotivo(e) {
+  e.preventDefault();
+  let nombre=document.getElementById("motivoNuevo").value.trim();
+  if(!nombre) return;
+  await put("motivos",{nombre});
+  document.getElementById("motivoNuevo").value="";
+  renderMotivos();
+}
+async function eliminarMotivo(id) {
+  await remove("motivos",id);
+  renderMotivos();
+}
+
+// ----------- RESUMEN GLOBAL Y POR ÁREA -------------
+async function renderResumenGlobal() {
+  let atrasos = await getAll("atrasos");
+  let areas = await cargarAreas();
+  let dias = diasEnMes(selMes, selAnio);
+  let totalPlaneadas = 0, totalIncumplidas = 0;
+  for (let i = 1; i <= dias; i++) {
+    for(let area of areas){
+      let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===i&&a.area===area);
+      totalPlaneadas += fila?.planeadas||0;
+      totalIncumplidas += fila?.incumplidas||0;
+    }
+  }
+  let cumpl = totalPlaneadas>0 ? ((totalPlaneadas-totalIncumplidas)/totalPlaneadas)*100 : 0;
+  let color = cumpl >= 98 ? "#0ac270" : (cumpl >= 90 ? "var(--amarillo)" : "#fe415b");
+  document.getElementById("resumenGlobal").innerHTML = `
+    <div style="background:#fff;box-shadow:var(--sombra);border-radius:15px;
+      padding:8px 22px 8px 22px;font-size:1.19em;font-weight:700;
+      display:inline-flex;align-items:center;gap:17px;color:var(--azul);">
+      <span style="font-weight:700;">Cumplimiento Global del Mes:</span>
+      <span style="color:${color};margin:0 12px 0 7px;font-weight:900;">${totalPlaneadas>0?cumpl.toFixed(2)+"%":"--"}</span>
+      <span style="color:#045194;">Planeadas: <b>${totalPlaneadas}</b></span>
+      <span style="color:#045194;">Incumplidas: <b>${totalIncumplidas}</b></span>
+    </div>
+  `;
+  renderResumenAreasGlobal(atrasos, areas, dias);
+}
+
+function colorPorcentaje(p){
+  if(p >= 98) return "#0ac270";
+  if(p >= 90) return "var(--amarillo)";
+  return "#fe415b";
+}
+function renderResumenAreasGlobal(atrasos, areas, dias){
+  let html = `<div class="resumen-areas-global">`;
+  for(let area of areas){
+    let plan = 0, inc = 0;
+    for(let i=1;i<=dias;i++){
+      let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===i&&a.area===area);
+      plan += fila?.planeadas||0;
+      inc += fila?.incumplidas||0;
+    }
+    let cumpl = plan>0 ? ((plan-inc)/plan)*100 : 0;
+    let color = colorPorcentaje(cumpl);
+    html += `
+      <div class="area-card-global">
+        <div style="display:flex;align-items:center;">
+          <span>${area}</span>
+          <span class="area-cumpl-global" style="color:${color};">${plan>0?cumpl.toFixed(1)+'%':'--'}</span>
+        </div>
+        <div class="area-planes-global">Planeadas: <b>${plan}</b>  |  Incumplidas: <b>${inc}</b></div>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  document.getElementById("resumenAreasGlobal").innerHTML = html;
+}
+
+// ----------- PARETO MENSUAL DE MOTIVOS -------------
+async function renderParetoMotivos() {
+  let atrasos = await getAll("atrasos");
+  let areas = await cargarAreas();
+  let dias = diasEnMes(selMes, selAnio);
+  let conteoMotivos = {}, totalIncumplidasMes = 0;
+  for (let i = 1; i <= dias; i++) {
+    for(let area of areas){
+      let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===i&&a.area===area);
+      if (fila && fila.motivos && fila.motivos.length>0) {
+        fila.motivos.forEach(m=>{
+          conteoMotivos[m.motivo] = (conteoMotivos[m.motivo]||0) + (m.lineas||0);
+        });
+      }
+      totalIncumplidasMes += fila?.incumplidas||0;
+    }
+  }
+  let motivosOrdenados = Object.entries(conteoMotivos).sort((a,b)=>b[1]-a[1]);
+  let html = `<div class="pareto-title">Pareto mensual de motivos de incumplimiento</div>`;
+  if (motivosOrdenados.length === 0) {
+    html += `<div style="color:#888; font-weight:500; font-size:1.03em;">Sin datos capturados para este mes.</div>`;
+  } else {
+    let maxVal = motivosOrdenados[0][1]||1;
+    motivosOrdenados.forEach(([motivo, cantidad])=>{
+      let pct = totalIncumplidasMes>0 ? 100*cantidad/totalIncumplidasMes : 0;
+      html += `
+        <div class="pareto-row">
+          <span class="pareto-motivo" title="${motivo}">${motivo}</span>
+          <div class="pareto-bar" style="width:${Math.max(7,180*cantidad/maxVal)}px"></div>
+          <span class="pareto-num">${cantidad}</span>
+          <span class="pareto-pct">${pct.toFixed(1)}%</span>
+        </div>
+      `;
+    });
+  }
+  document.getElementById("panelPareto").innerHTML = html;
+}
+
+// ----------- PESTAÑA ATRASOS/CAPTURA (con Comentarios) -------------
+async function renderPanelAtrasos() {
+  let motivos = await getAll("motivos");
+  let atrasos = await getAll("atrasos");
+  let areas = await cargarAreas();
+  let anioInput = document.getElementById("anioPanel");
+  anioInput.value = selAnio;
+  anioInput.onchange = e=>{ selAnio=+e.target.value; renderDias(); renderPanelAtrasos(); };
+  let mesSel = document.getElementById("mesPanel");
+  mesSel.innerHTML = MES_NOMBRES.map((m,i)=>`<option value="${i+1}">${m}</option>`).join("");
+  mesSel.value = selMes;
+  mesSel.onchange = e=>{ selMes=+e.target.value; renderDias(); renderPanelAtrasos(); };
+
+  await renderResumenGlobal();
+  renderDias();
+
+  let html = `<table class="tabla-iluo"><tr>
+    <th>Área</th>
+    <th>Líneas Planeadas</th>
+    <th>Líneas Incumplidas</th>
+    <th>Motivos de Incumplimiento</th>
+    <th>Comentarios</th>
+  </tr>`;
+  for(let area of areas){
+    let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===selDia&&a.area===area);
+    let planeadas = fila?.planeadas||0;
+    let incumplidas = fila?.incumplidas||0;
+    let motivosArray = fila?.motivos||[];
+    let comentario = fila?.comentario || "";
+    html += `<tr>
+      <td>${area}</td>
+      <td>
+        <input type="number" min="0" value="${planeadas}" onchange="guardarPlaneadas('${area}',this.value)">
+      </td>
+      <td>
+        <input type="number" min="0" value="${incumplidas}" onchange="guardarIncumplidas('${area}',this.value)">
+      </td>
+      <td>
+        <div id="motivosArea_${area}" style="margin-bottom:5px;">
+          ${motivosArray.map((m,i)=>`
+            <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;">
+              <select onchange="actualizarMotivo('${area}',${i},this.value)">
+                ${motivos.map(mt=>`<option${mt.nombre===m.motivo?' selected':''}>${mt.nombre}</option>`).join("")}
+              </select>
+              <input type="number" min="0" value="${m.lineas||0}" style="width:55px;" onchange="actualizarLineaMotivo('${area}',${i},this.value)">
+              <button class="btn-iluo red" style="padding:2px 6px;font-size:.96em;" onclick="eliminarLineaMotivo('${area}',${i})">–</button>
+            </div>
+          `).join("")}
+        </div>
+        <button class="btn-iluo" onclick="agregarLineaMotivo('${area}')">+ Agregar motivo</button>
+      </td>
+     <td>
+  <textarea style="width:360px;min-height:45px;border-radius:8px;border:1.2px solid #b4d6ff;padding:6px;font-size:0.98em;resize:vertical;"
+    placeholder="Comentario..." onchange="guardarComentario('${area}', this.value)">${comentario}</textarea>
+</td>
+    </tr>`;
+  }
+  html += `</table>`;
+  document.getElementById("tablaPanelAtrasos").innerHTML = html;
+  renderParetoMotivos();
+}
+
+// CRUD atrasos
+async function guardarPlaneadas(area,val){
+  let atrasos = await getAll("atrasos");
+  let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===selDia&&a.area===area);
+  if(fila){ fila.planeadas=Number(val)||0; await put("atrasos",fila);}
+  else { await put("atrasos",{anio:selAnio,mes:selMes,dia:selDia,area,planeadas:Number(val)||0,incumplidas:0,motivos:[],comentario:""}); }
+  renderPanelAtrasos();
+}
+async function guardarIncumplidas(area,val){
+  let atrasos = await getAll("atrasos");
+  let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===selDia&&a.area===area);
+  if(fila){ fila.incumplidas=Number(val)||0; await put("atrasos",fila);}
+  else { await put("atrasos",{anio:selAnio,mes:selMes,dia:selDia,area,planeadas:0,incumplidas:Number(val)||0,motivos:[],comentario:""}); }
+  renderPanelAtrasos();
+}
+async function agregarLineaMotivo(area){
+  let atrasos = await getAll("atrasos");
+  let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===selDia&&a.area===area);
+  if(!fila){ fila={anio:selAnio,mes:selMes,dia:selDia,area,planeadas:0,incumplidas:0,motivos:[],comentario:""}; }
+  fila.motivos = fila.motivos||[];
+  fila.comentario = fila.comentario || "";
+  fila.motivos.push({motivo:"",lineas:0});
+  await put("atrasos",fila);
+  renderPanelAtrasos();
+}
+async function actualizarMotivo(area,idx,val){
+  let atrasos = await getAll("atrasos");
+  let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===selDia&&a.area===area);
+  if(fila && fila.motivos && fila.motivos[idx]){
+    fila.motivos[idx].motivo=val;
+    await put("atrasos",fila);
+    renderPanelAtrasos();
+  }
+}
+async function actualizarLineaMotivo(area,idx,val){
+  let atrasos = await getAll("atrasos");
+  let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===selDia&&a.area===area);
+  if(fila && fila.motivos && fila.motivos[idx]){
+    fila.motivos[idx].lineas=Number(val)||0;
+    await put("atrasos",fila);
+    renderPanelAtrasos();
+  }
+}
+async function eliminarLineaMotivo(area,idx){
+  let atrasos = await getAll("atrasos");
+  let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===selDia&&a.area===area);
+  if(fila && fila.motivos){
+    fila.motivos.splice(idx,1);
+    await put("atrasos",fila);
+    renderPanelAtrasos();
+  }
+}
+
+// NUEVO: Guardar comentario
+async function guardarComentario(area, val){
+  let atrasos = await getAll("atrasos");
+  let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===selDia&&a.area===area);
+  if(fila){
+    fila.comentario = val;
+    await put("atrasos", fila);
+  } else {
+    await put("atrasos", {anio:selAnio,mes:selMes,dia:selDia,area,planeadas:0,incumplidas:0,motivos:[],comentario:val});
+  }
+  // No recargar para evitar que se pierda el foco del textarea
+}
+
+// Días visual
+async function renderDias() {
+  let row = document.getElementById("diasRow");
+  row.innerHTML = "";
+  let atrasos = await getAll("atrasos");
+  let areas = await cargarAreas();
+  let dias = diasEnMes(selMes, selAnio);
+
+  for (let i = 1; i <= dias; i++) {
+    let planeadasDia = 0, incumplidasDia = 0;
+    for(let area of areas){
+      let fila = atrasos.find(a=>a.anio===selAnio&&a.mes===selMes&&a.dia===i&&a.area===area);
+      planeadasDia += fila?.planeadas||0;
+      incumplidasDia += fila?.incumplidas||0;
+    }
+    let cumplDia = planeadasDia > 0 ? ((planeadasDia - incumplidasDia) / planeadasDia) * 100 : 0;
+    let colorClass = "chip-empty";
+    if(planeadasDia > 0){
+      if(cumplDia >= 98) colorClass = "chip-verde";
+      else if(cumplDia >= 90) colorClass = "chip-amarillo";
+      else colorClass = "chip-rojo";
+    }
+    let fecha = new Date(selAnio, selMes - 1, i);
+    let diaSemana = fecha.toLocaleDateString("es-MX", { weekday: "short" });
+    let b = document.createElement("button");
+    b.className = "dia-chip " + colorClass + (selDia == i ? " sel" : "");
+    b.title = `Cumplimiento: ${planeadasDia>0?cumplDia.toFixed(1)+"%":"--"}`;
+    b.innerHTML = `
+      <div>${i}</div>
+      <div style="font-size:0.93em;line-height:1;">${diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)}</div>
+      <div style="font-size:0.89em;line-height:1.08; font-weight:600;">
+        ${planeadasDia>0? cumplDia.toFixed(0)+'%': '--'}
+      </div>
+    `;
+    b.onclick = () => { selDia = i; renderDias(); renderPanelAtrasos(); };
+    row.appendChild(b);
+  }
+  lucide.createIcons();
+}
+
+function selectTab(n) {
+  document.querySelectorAll(".tab-btn").forEach((b,i)=>b.classList.toggle("active",i===n));
+  document.querySelectorAll(".tab-content").forEach((c,i)=>c.classList.toggle("active",i===n));
+  if(n===0) renderPanelAtrasos();
+  if(n===1) renderMotivos();
+  setTimeout(()=>lucide.createIcons(), 10);
+}
+
+abrirBD().then(()=>renderPanelAtrasos());
+setTimeout(()=>lucide.createIcons(),100);
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>

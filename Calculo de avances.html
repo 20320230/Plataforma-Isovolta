@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cálculo de Broca y Avances para Machuelo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --azul: #004990;
+      --amarillo: #f4d307;
+      --amarillo-soft: #fffbe6;
+      --rojo: #ea5252;
+      --gris: #f4f7fb;
+      --borde: #cad3e3;
+      --sombra: 0 4px 18px #1b376c13;
+    }
+    html, body {
+      background: var(--gris);
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      min-height: 100%;
+    }
+    .titulo {
+      text-align: center;
+      margin-top: 35px;
+      color: var(--azul);
+      font-size: 2.2em;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      text-shadow: 0 2px 10px #c2d7ee12;
+    }
+    .container-main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 44px;
+      margin: 42px auto 24px auto;
+      max-width: 1150px;
+      min-height: 65vh;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: var(--sombra);
+      padding: 34px 32px 25px 32px;
+      min-width: 340px;
+      max-width: 480px;
+      flex: 1;
+      position: relative;
+      margin-bottom: 16px;
+      border-top: 5px solid var(--amarillo);
+      border-bottom: 3.5px solid #d2def8;
+      transition: box-shadow .18s, transform .14s;
+      animation: fadeInUp .55s;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px);}
+      to   { opacity: 1; transform: translateY(0);}
+    }
+    .card h2 {
+      color: var(--azul);
+      font-size: 1.3em;
+      text-align: left;
+      margin-top: 0;
+      letter-spacing: .7px;
+      margin-bottom: 9px;
+    }
+    .input-row {
+      display: flex;
+      align-items: center;
+      margin: 16px 0 0 0;
+      gap: 14px;
+    }
+    .input-row label {
+      flex: 1.4;
+      font-weight: bold;
+      color: var(--azul);
+      font-size: 1.03em;
+      letter-spacing: .1px;
+    }
+    .input-row input {
+      flex: 1;
+      font-size: 1.05em;
+      border-radius: 8px;
+      border: 1px solid var(--borde);
+      padding: 8px 8px;
+      background: #fffbe6;
+      outline: none;
+      transition: border-color .18s, box-shadow .15s;
+      box-shadow: 0 1px 5px #c3d3f41b inset;
+    }
+    .input-row input:focus {
+      border-color: var(--azul);
+      box-shadow: 0 1px 5px #f4d30735;
+    }
+    .help-block, .ejemplo {
+      background: #f7faff;
+      color: #233;
+      font-size: 1em;
+      border-left: 4px solid var(--amarillo);
+      border-radius: 10px;
+      padding: 9px 16px;
+      margin: 16px 0 0 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      box-shadow: 0 1.5px 8px #e6e6fa12;
+    }
+    .help-block img, .ejemplo img {
+      width: 105px; max-width: 140px; border-radius: 8px; border: 1.5px solid var(--borde);
+      margin-right: 8px;
+      background: #fff;
+      box-shadow: 0 1.5px 6px #bccddb1c;
+    }
+    .ejemplo {
+      margin-bottom: 7px;
+      margin-top: 16px;
+    }
+    .result-box {
+      margin-top: 17px;
+      margin-bottom: 7px;
+      background: var(--amarillo-soft);
+      border-radius: 8px;
+      color: #0a1244;
+      font-weight: 800;
+      padding: 16px 18px;
+      font-size: 1.18em;
+      border: 1.4px solid var(--amarillo);
+      box-shadow: 0 2px 9px #fc0 0.07;
+      text-align: center;
+      min-height: 32px;
+      transition: all .18s;
+      letter-spacing: .1px;
+      opacity: 0.97;
+    }
+    .card button {
+      background: var(--amarillo);
+      color: var(--azul);
+      font-weight: 800;
+      padding: 13px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.11em;
+      cursor: pointer;
+      width: 100%;
+      margin: 20px 0 0 0;
+      box-shadow: 0 2px 9px #f4d3072e;
+      transition: background .15s, transform .09s;
+    }
+    .card button:hover {
+      background: #ffe066;
+      transform: scale(1.025);
+    }
+    .nota {
+      color: #888;
+      font-size: .96em;
+      margin-top: 13px;
+      text-align: left;
+      margin-bottom: 4px;
+      letter-spacing: 0.01em;
+    }
+    @media (max-width: 1050px) {
+      .container-main { flex-direction: column; align-items: center;}
+      .card { width: 97%; min-width: 0; }
+    }
+    footer {
+      width: 100vw;
+      background: var(--azul);
+      color: #fff;
+      text-align: center;
+      padding: 14px 0 11px 0;
+      font-size: 1.08em;
+      letter-spacing: 0.07em;
+      z-index: 50;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      box-shadow: 0 1px 7px #00336622;
+      opacity: 0.97;
+    }
+  </style>
+</head>
+<body>
+  <div class="titulo">Cálculo de Broca para Machuelo y Relación de Avance</div>
+  <div class="container-main">
+
+    <!-- CARD 1: Calculo de broca para machuelo -->
+    <div class="card">
+      <h2>🛠️ Cálculo de Broca para Machuelo</h2>
+      <div class="input-row">
+        <label for="diam-machuelo">Ø Machuelo (mm):</label>
+        <input id="diam-machuelo" type="number" min="1" step="any" value="5.1" />
+      </div>
+      <div class="input-row">
+        <label for="num-hilos">Núm. de hilos por pulgada:</label>
+        <input id="num-hilos" type="number" min="1" value="32" />
+      </div>
+      <button onclick="calcularBroca()">Calcular Broca</button>
+      <div class="result-box" id="broca-resultado">—</div>
+
+      <div class="help-block">
+        <img src="Medicion del machuelo.png" alt="Calibre Machuelo" />
+        <div>
+          <b>Ejemplo:</b> Mide el diámetro del machuelo con calibrador digital (foto real).<br>
+          <b>Número de hilos:</b> Generalmente viene grabado; si no, cuenta el número de hilos en una pulgada.
+        </div>
+      </div>
+      <div class="ejemplo">
+        <img src="Hilos por pulgada.png" alt="Hilos por pulgada" />
+        <div>
+          <b>¿No lo indica?</b> Cuenta los hilos de una pulgada como en la imagen.
+        </div>
+      </div>
+      <div class="nota">Fórmula utilizada: <code>=(((1/NumHilos)*25.4)-ØMachuelo)*-1</code></div>
+    </div>
+
+    <!-- CARD 2: Relación de velocidad y avance -->
+    <div class="card">
+      <h2>⚙️ Relación de Velocidad y Avance</h2>
+      <div class="input-row">
+        <label for="revs">Revoluciones (S):</label>
+        <input id="revs" type="number" min="1" value="100" />
+      </div>
+      <div class="input-row">
+        <label for="hilos2">Núm. de hilos por pulgada:</label>
+        <input id="hilos2" type="number" min="1" value="32" />
+      </div>
+      <button onclick="calcularAvance()">Calcular Avance (F)</button>
+      <div class="result-box" id="avance-resultado">—</div>
+      <div class="help-block">
+        <img src="Hilos por pulgada.png" alt="Hilos por pulgada" />
+        <div>
+          <b>Avance recomendado:</b> Usar valores entre 50 y 200 para revoluciones.<br>
+          <b>Fórmula:</b> <code>Avance = (1 / NumHilos) × 25.4 × S</code>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    Herramienta diseñada por el departamento de Producción &amp; Mejora Continua
+  </footer>
+  <script>
+    // Cálculo de broca para machuelo
+    function calcularBroca() {
+      const machuelo = parseFloat(document.getElementById('diam-machuelo').value);
+      const hilos = parseFloat(document.getElementById('num-hilos').value);
+      if (!machuelo || !hilos) {
+        document.getElementById('broca-resultado').innerHTML = 'Ingrese valores válidos.';
+        return;
+      }
+      // ((1/hilos)*25.4 - machuelo)*-1
+      const broca = (((1/hilos)*25.4) - machuelo)*-1;
+      document.getElementById('broca-resultado').innerHTML = 
+        `Diámetro de broca recomendado: <b>${broca.toFixed(3)} mm</b>`;
+    }
+    // Cálculo de avance
+    function calcularAvance() {
+      const revs = parseFloat(document.getElementById('revs').value);
+      const hilos = parseFloat(document.getElementById('hilos2').value);
+      if (!revs || !hilos) {
+        document.getElementById('avance-resultado').innerHTML = 'Ingrese valores válidos.';
+        return;
+      }
+      // avance = (1/hilos)*25.4*revs
+      const avance = (1/hilos)*25.4*revs;
+      document.getElementById('avance-resultado').innerHTML = 
+        `Avance (F): <b>${avance.toFixed(3)}</b>`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Programa de Capacitación - Todos los Documentos</title>
+<link href="Isovolta.ico" rel="icon" type="image/png"/>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef2f7;
+    margin: 0;
+    padding: 0 0 70px 0;
+    min-height: 100vh;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-bottom: 4px solid #004990;
+    box-shadow: 0 4px 14px rgba(0,32,91,0.08);
+    padding: 0 20px 0 18px;
+    min-height: 68px;
+  }
+  header img {
+    height: 55px;
+    margin-right: 18px;
+  }
+  header h1 {
+    color: #004990;
+    text-align: center;
+    font-size: 1.65em;
+    font-weight: 700;
+    flex: 1;
+    margin: 0 30px 0 0;
+    letter-spacing: 1.3px;
+  }
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn {
+    background-color: #004990;
+    color: white;
+    padding: 9px 19px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background .17s, box-shadow .12s, transform .11s;
+    box-shadow: 0 2px 7px rgba(0,32,91,0.10);
+  }
+  .btn:hover { background-color: #006ad1; transform: translateY(-2px) scale(1.035);}
+  .filters-bar {
+    background: #f4f7fb;
+    margin: 0 auto;
+    padding: 25px 0 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
+    max-width: 1280px;
+    border-radius: 0 0 15px 15px;
+    box-shadow: 0 3px 8px rgba(0,32,91,0.06);
+  }
+  label {
+    font-weight: 600;
+    color: #294766;
+    font-size: 1em;
+  }
+  select {
+    padding: 8px 13px;
+    margin-left: 7px;
+    border-radius: 7px;
+    border: 1px solid #bdd5f2;
+    background: #fff;
+    font-size: 15px;
+    color: #004990;
+    font-weight: 500;
+    transition: border-color .15s;
+  }
+  .main-container {
+    max-width: 1260px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,32,91,0.08);
+    padding: 34px 22px 18px 22px;
+    margin-bottom: 30px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 0;
+    box-shadow: 0 3px 13px rgba(0,32,91,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 15px;
+  }
+  th, td {
+    border: 1px solid #c8d0e0;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 15px;
+    vertical-align: middle;
+  }
+  th {
+    background-color: #004990;
+    color: #fff;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    letter-spacing: 0.2px;
+    border-bottom: 3px solid #01407a;
+  }
+  tr:nth-child(even) td { background: #f8fafd;}
+  tbody tr:hover td { background: #eaf1fb;}
+  @media (max-width: 1100px) {
+    .main-container { padding: 10px 2vw 12px 2vw;}
+    .filters-bar { flex-direction: column; gap: 10px; align-items: flex-start;}
+    table, th, td { font-size: 13px;}
+    header h1 { font-size: 1.08em; margin: 0;}
+    header img { height: 40px;}
+  }
+  @media (max-width: 750px) {
+    header { flex-direction: column; align-items: flex-start; padding: 8px 10px 6px 10px;}
+    .main-container { padding: 3px 2vw 2px 2vw;}
+    table, th, td { font-size: 10.7px;}
+    .header-actions { gap: 2px;}
+  }
+  footer {
+    width: 100vw;
+    background: #00529b;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0 11px 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    font-size: 1.08em;
+    letter-spacing: 0.8px;
+    z-index: 100;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="https://www.isovolta.com/logo_isovolta.png" alt="Logo Isovolta"/>
+  <h1>Programa de Capacitación - Todos los Documentos</h1>
+  <div class="header-actions">
+    <button class="btn" onclick="window.location.href='matriz_iluo.html'">←ILUO</button>
+    <button class="btn" onclick="location.reload()">Actualizar</button>
+  </div>
+</header>
+<div class="filters-bar">
+  <label for="filtroILUO">Filtrar por Nivel ILUO:</label>
+  <select id="filtroILUO" onchange="filtrarPorNivel()">
+    <option value="todos">Todos</option>
+    <option value="NA">NA</option>
+    <option value="I">I</option>
+    <option value="L">L</option>
+    <option value="U">U</option>
+    <option value="O">O</option>
+  </select>
+</div>
+<div class="main-container">
+  <table id="tablaNA">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Nombre</th>
+        <th>Área</th>
+        <th>Código</th>
+        <th>Documento</th>
+        <th>Calificación</th>
+        <th>Nivel ILUO</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+// ========== IndexedDB Helper ==========
+const DB_NAME = 'ILUO_DB';
+const DB_VERSION = 1;
+const STORE_NAME = 'respaldo';
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'clave' });
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = (event) => reject(event.target.error);
+  });
+}
+
+async function guardarEnIndexedDB(clave, valor) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put({ clave, valor });
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function leerDeIndexedDB(clave) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.get(clave);
+    req.onsuccess = () => resolve(req.result ? req.result.valor : null);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+// ========== Migrar de localStorage si hace falta ==========
+async function migrarLocalStorageAIndexedDB() {
+  const claves = ["matrizILUO", "documentosILUO"];
+  for (let clave of claves) {
+    const val = localStorage.getItem(clave);
+    if (val && !(await leerDeIndexedDB(clave))) {
+      await guardarEnIndexedDB(clave, JSON.parse(val));
+      // localStorage.removeItem(clave); // Opcional: borra si ya migraste.
+    }
+  }
+}
+
+// ========== Lógica principal ==========
+function calcularNivelILUO(valor) {
+  if (valor >= 95) return "O";
+  if (valor >= 90) return "U";
+  if (valor >= 80) return "L";
+  if (valor >= 70) return "I";
+  if (valor >= 50) return "NA";
+  return "-";
+}
+
+async function cargarDatos() {
+  await migrarLocalStorageAIndexedDB();
+  const operadores = await leerDeIndexedDB("matrizILUO") || [];
+  const documentos = await leerDeIndexedDB("documentosILUO") || [];
+  const tbody = document.querySelector("#tablaNA tbody");
+  tbody.innerHTML = ""; // Limpia antes de llenar
+
+  operadores.forEach(op => {
+    if (Array.isArray(op.documentacion)) {
+      op.documentacion.forEach(doc => {
+        const ref = documentos.find(d => d.codigo === doc.codigo);
+        if (!ref) return;  // omitir si el documento no existe
+        const nivel = calcularNivelILUO(parseFloat(doc.calificacion));
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td>${op.numero}</td>
+          <td>${op.nombre}</td>
+          <td>${op.area}</td>
+          <td>${doc.codigo}</td>
+          <td>${ref.documento}</td>
+          <td>${doc.calificacion}</td>
+          <td>${nivel}</td>
+        `;
+        fila.dataset.nivel = nivel;
+        tbody.appendChild(fila);
+      });
+    }
+  });
+}
+
+function filtrarPorNivel() {
+  const nivel = document.getElementById("filtroILUO").value;
+  document.querySelectorAll("#tablaNA tbody tr").forEach(row => {
+    if (nivel === "todos" || row.dataset.nivel === nivel) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+}
+
+// Inicializa
+window.onload = cargarDatos;
+</script>
+
+<footer>
+  Herramienta diseñada por el departamento de Producción & Mejora Continua
+</footer>
+</body>
+</html>

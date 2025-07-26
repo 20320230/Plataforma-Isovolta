@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Control de Productos - Isovolta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+            background-color: #00274D;
+            padding: 20px;
+            color: white;
+            font-size: 20px;
+        }
+        img {
+            max-width: 200px;
+        }
+        .rack-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 20px;
+        }
+        .rack {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(4, 100px);
+            gap: 10px;
+        }
+        .rack-position {
+            background-color: #ccc;
+            border: 2px solid #00274D;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+        .ocupado { background-color: #FFD700; }
+        .alerta { background-color: #FF4C4C; color: white; }
+        .salida-table {
+            margin-top: 20px;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="isovolta-logo.png" alt="Isovolta Logo">
+    <h1>Horno de Productos - Isovolta</h1>
+</header>
+
+<h2>Selecciona una Posición del Horno</h2>
+<div class="rack-container">
+    <div>
+        <h3>Frente</h3>
+        <div id="rackFrente" class="rack"></div>
+    </div>
+    <div>
+        <h3>Atrás</h3>
+        <div id="rackAtras" class="rack"></div>
+    </div>
+</div>
+
+<h2>Materiales Pendientes por Liberar</h2>
+<table class="salida-table">
+    <thead>
+        <tr>
+            <th>Posición</th>
+            <th>Producto</th>
+            <th>Tiempo Total en Horno</th>
+            <th>Tiempo de Reingreso</th>
+            <th>Fecha de Ingreso</th>
+            <th>Fecha y Hora de Salida</th>
+            <th>Acciones por Calidad</th>
+        </tr>
+    </thead>
+    <tbody id="tablaPendientes"></tbody>
+</table>
+
+<h2>Registros de Aprobación</h2>
+<table class="salida-table">
+    <thead>
+        <tr>
+            <th>Inspector</th>
+            <th>Posición</th>
+            <th>Producto</th>
+            <th>Tiempo Total</th>
+        </tr>
+    </thead>
+    <tbody id="tablaAprobados"></tbody>
+</table>
+
+<script>
+    const rackFrente = document.getElementById("rackFrente");
+    const rackAtras = document.getElementById("rackAtras");
+    const tablaPendientes = document.getElementById("tablaPendientes");
+    const tablaAprobados = document.getElementById("tablaAprobados");
+
+    const posiciones = 12;
+    let rackData = {};
+    let temporizadores = {};
+
+    const inspectores = {
+        "2435": "Angel García",
+        "3567": "Edgar Hernández"
+    };
+
+    function crearRack(rack, lado) {
+        for (let i = 1; i <= posiciones; i++) {
+            let posicion = `${lado}-${i}`;
+            let div = document.createElement("div");
+            div.classList.add("rack-position");
+            div.dataset.posicion = posicion;
+            div.innerHTML = `<strong>${posicion}</strong><br><span class="timer">00:00</span>`;
+            div.addEventListener("click", () => seleccionarPosicion(posicion, div));
+            rack.appendChild(div);
+            rackData[posicion] = null;
+        }
+    }
+
+    crearRack(rackFrente, "Frente");
+    crearRack(rackAtras, "Atrás");
+
+    function seleccionarPosicion(posicion, div) {
+        if (rackData[posicion]) return;
+
+        let nuevoProducto = prompt("Ingrese el número de producto:");
+        let tiempoMinutos = parseInt(prompt("Tiempo en horno (minutos):"));
+
+        if (!nuevoProducto || isNaN(tiempoMinutos) || tiempoMinutos <= 0) {
+            alert("Ingrese datos válidos.");
+            return;
+        }
+
+        let fechaIngreso = new Date().toLocaleString();
+
+        rackData[posicion] = {
+            numero: nuevoProducto,
+            inicio: new Date().getTime(),
+            tiempoEstadia: tiempoMinutos * 60000,
+            div: div,
+            fechaIngreso: fechaIngreso
+        };
+
+        div.classList.add("ocupado");
+        div.innerHTML = `<strong>${nuevoProducto}</strong><br><span class="timer">${tiempoMinutos}:00</span>`;
+        iniciarTemporizador(posicion);
+
+        agregarMaterialPendiente(posicion, nuevoProducto, tiempoMinutos, fechaIngreso);
+    }
+
+    function iniciarTemporizador(posicion) {
+        let producto = rackData[posicion];
+
+        temporizadores[posicion] = setInterval(() => {
+            let tiempoRestante = Math.max(0, producto.inicio + producto.tiempoEstadia - new Date().getTime());
+            let minutos = Math.floor(tiempoRestante / 60000);
+            let segundos = Math.floor((tiempoRestante % 60000) / 1000);
+            producto.div.querySelector(".timer").textContent = `${minutos}:${segundos < 10 ? '0' : ''}${segundos}`;
+
+            if (tiempoRestante === 0) {
+                producto.div.classList.add("alerta");
+                clearInterval(temporizadores[posicion]);
+            }
+        }, 1000);
+    }
+
+    function agregarMaterialPendiente(posicion, producto, tiempoTotal, fechaIngreso) {
+        let fila = document.createElement("tr");
+        fila.dataset.posicion = posicion;
+        fila.innerHTML = `
+            <td>${posicion}</td>
+            <td>${producto}</td>
+            <td>${tiempoTotal} min</td>
+            <td id="reingreso-${posicion}">-</td>
+            <td>${fechaIngreso}</td>
+            <td>-</td>
+            <td>
+                <button onclick="aprobarProducto('${posicion}')">Aprobar</button>
+                <button onclick="reingresarProducto('${posicion}')">Reingresar</button>
+            </td>
+        `;
+        tablaPendientes.appendChild(fila);
+    }
+
+    function aprobarProducto(posicion) {
+        let contraseña = prompt("Ingrese la contraseña del inspector:");
+        if (!inspectores[contraseña]) {
+            alert("Contraseña incorrecta.");
+            return;
+        }
+
+        let fila = document.querySelector(`tr[data-posicion='${posicion}']`);
+        let inspector = inspectores[contraseña];
+        let producto = fila.children[1].textContent;
+        let tiempoTotal = fila.children[2].textContent;
+
+        tablaAprobados.innerHTML += `<tr><td>${inspector}</td><td>${posicion}</td><td>${producto}</td><td>${tiempoTotal}</td></tr>`;
+        fila.remove();
+    }
+
+    function reingresarProducto(posicion) {
+        let minutos = prompt("Ingrese los minutos de reingreso:");
+        document.getElementById(`reingreso-${posicion}`).textContent = `${minutos} min`;
+    }
+</script>
+
+</body>
+</html>

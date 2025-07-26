@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Unir Documentos PDFs ISOVOLTA</title>
+  <link href="Isovolta.ico" rel="icon" type="image/png"/>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
+  <style>
+    body { background: #f4f7fb; font-family: 'Roboto', Arial, sans-serif; margin:0; }
+    .container {
+      max-width: 900px; background: #fff; margin: 40px auto 48px auto;
+      border-radius: 18px; box-shadow: 0 4px 18px #00336622; padding: 32px 32px 32px 32px;
+    }
+    .logo-header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .logo-header img {
+      max-height: 54px;
+      margin-bottom: 8px;
+    }
+    h2 { text-align: center; color: #003366; font-weight: 800; letter-spacing: .5px; margin-bottom: 8px;}
+    .upload-box { border: 2px dashed #00336655; padding: 32px 12px 20px 12px; border-radius: 14px; text-align: center; background: #f4f7fb;}
+    .upload-box input { display: none; }
+    .upload-label { font-weight: bold; color: #045194; cursor: pointer; }
+    .docs-list {
+      margin: 34px 0 0 0; display: flex; flex-wrap: wrap; gap: 32px;
+      justify-content: center; /* Centra las tarjetas */
+      min-height: 110px;
+    }
+    .doc-card {
+      display: flex; flex-direction: column; align-items: center; background: #f4d30718; border-radius: 13px;
+      padding: 12px 20px 15px 20px; min-width: 156px; max-width: 180px; box-shadow: 0 2px 10px #00336614;
+      border: 1.5px solid #e2e2e7; cursor: grab; position: relative;
+      transition: background 0.18s;
+      margin-bottom: 12px;
+    }
+    .doc-card.dragging { background: #e7eaf0; opacity: .65; }
+    .doc-type { font-size: 1.15em; margin: 2px 0 1px 0; color: #003366; }
+    .doc-thumb { width: 100px; height: 138px; background: #ececec; margin: 6px 0 8px 0; border-radius: 7px; object-fit: contain; }
+    .doc-name {
+      text-align: center; font-size: 1em; color: #045194; min-height: 33px; max-width: 138px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 7px;
+    }
+    .btns-move { display: flex; gap: 5px; margin-top: 8px;}
+    .btn-move, .btn-delete {
+      border: none; padding: 5px 8px; border-radius: 6px; cursor: pointer;
+      background: #eee; color: #666; font-size: 1em; font-weight: 700;
+      margin: 0;
+    }
+    .btn-move:active { color: #003366; background: #f4d30733; }
+    .btn-delete { background: #e75d46; color: #fff; margin-left: 10px;}
+    .btn-merge { margin: 34px auto 8px auto; display: block; background: #045194; color: #fff; padding: 14px 46px; border: none; border-radius: 10px; font-size: 1.18em; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px #00336619; }
+    .btn-merge:active { background: #003366;}
+    #status { text-align: center; color: #045194; margin-top: 18px; min-height: 28px;}
+
+    footer {
+      width: 100vw;
+      background: #00529b;
+      color: #fff;
+      text-align: center;
+      padding: 15px 0 11px 0;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      font-size: 1.08em;
+      letter-spacing: 0.8px;
+      z-index: 100;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+
+    @media (max-width:700px) {
+      .container { padding: 8px; }
+      .docs-list { gap: 12px; }
+      .doc-card { min-width: 110px; max-width: 120px; }
+      .doc-thumb { width: 65px; height: 89px; }
+      .doc-name { font-size: .89em; }
+      footer { font-size: .98em; padding: 13px 0 8px 0;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-header">
+      <img src="https://www.isovolta.com/logo_isovolta.png" alt="Isovolta Group Logo">
+    </div>
+    <h2>Unir Documentos en PDF</h2>
+    <div class="upload-box" onclick="document.getElementById('inputArchivos').click()">
+      <span class="upload-label">Haz clic aquí o arrastra archivos (PDF, JPG, PNG)</span>
+      <input type="file" id="inputArchivos" multiple accept="application/pdf,image/png,image/jpeg" onchange="manejarArchivos(event)">
+    </div>
+    <div class="docs-list" id="docsList"></div>
+    <button class="btn-merge" onclick="unirArchivos()">Unir y Descargar PDF</button>
+    <div id="status"></div>
+  </div>
+  <footer>
+    Herramienta diseñada por el departamento de Producción  &amp; Mejora Continua
+  </footer>
+<script>
+let docs = [];
+
+function manejarArchivos(evt) {
+  let files = Array.from(evt.target.files || evt.dataTransfer.files);
+  for (const file of files) {
+    docs.push({ file, preview: null });
+    mostrarPreview(docs.length - 1);
+  }
+  renderDocs();
+}
+function renderDocs() {
+  const lista = document.getElementById('docsList');
+  lista.innerHTML = "";
+  docs.forEach((doc, i) => {
+    let icon = doc.file.type === "application/pdf" ? "📄" : "🖼️";
+    let div = document.createElement("div");
+    div.className = "doc-card";
+    div.draggable = true;
+    div.ondragstart = ev => { ev.dataTransfer.setData("idx", i); div.classList.add('dragging'); };
+    div.ondragend = ev => div.classList.remove('dragging');
+    div.ondragover = ev => ev.preventDefault();
+    div.ondrop = ev => {
+      ev.preventDefault();
+      let from = +ev.dataTransfer.getData("idx");
+      let to = i;
+      let [moved] = docs.splice(from, 1);
+      docs.splice(to, 0, moved);
+      renderDocs();
+    };
+
+    let thumbHTML = doc.preview ?
+      `<img class="doc-thumb" src="${doc.preview}" alt="preview">` :
+      `<div class="doc-thumb"></div>`;
+
+    // Si el nombre es largo, lo cortamos y mostramos el nombre completo en tooltip
+    let nombre = doc.file.name;
+    let nombreCorto = nombre.length > 25 ? nombre.slice(0, 24) + "…" : nombre;
+    let docNameHTML = `<div class="doc-name" title="${nombre}">${nombreCorto}</div>`;
+
+    div.innerHTML = `
+      <div class="doc-type">${icon}</div>
+      ${thumbHTML}
+      ${docNameHTML}
+      <div class="btns-move">
+        <button class="btn-move" title="Subir" onclick="moverDoc(${i}, -1)">⬆️</button>
+        <button class="btn-move" title="Bajar" onclick="moverDoc(${i}, 1)">⬇️</button>
+        <button class="btn-delete" onclick="eliminarDoc(${i})">Eliminar</button>
+      </div>
+    `;
+    lista.appendChild(div);
+  });
+}
+function moverDoc(idx, dir) {
+  if ((dir < 0 && idx === 0) || (dir > 0 && idx === docs.length - 1)) return;
+  [docs[idx], docs[idx+dir]] = [docs[idx+dir], docs[idx]];
+  renderDocs();
+}
+function eliminarDoc(idx) {
+  docs.splice(idx,1);
+  renderDocs();
+}
+document.querySelector('.upload-box').ondragover = e => { e.preventDefault(); };
+document.querySelector('.upload-box').ondrop = function(e) {
+  e.preventDefault();
+  manejarArchivos(e);
+};
+
+// Mostrar miniatura
+async function mostrarPreview(idx) {
+  let doc = docs[idx];
+  if (doc.file.type.startsWith("image/")) {
+    const url = URL.createObjectURL(doc.file);
+    doc.preview = url;
+    renderDocs();
+  } else if (doc.file.type === "application/pdf") {
+    // Usar pdf.js para renderizar la primera página como preview
+    const buffer = await doc.file.arrayBuffer();
+    const pdf = await window['pdfjsLib'].getDocument({data: buffer}).promise;
+    const page = await pdf.getPage(1);
+    const viewport = page.getViewport({ scale: 0.6 });
+    const canvas = document.createElement("canvas");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext('2d');
+    await page.render({ canvasContext: ctx, viewport }).promise;
+    doc.preview = canvas.toDataURL();
+    renderDocs();
+  }
+}
+
+async function unirArchivos() {
+  if (docs.length < 2) {
+    document.getElementById('status').innerText = "Selecciona al menos 2 archivos para unir.";
+    return;
+  }
+  document.getElementById('status').innerText = "Procesando...";
+  const mergedPdf = await PDFLib.PDFDocument.create();
+  for (const doc of docs) {
+    const file = doc.file;
+    if (file.type === "application/pdf") {
+      const pdfBytes = await file.arrayBuffer();
+      const pdf = await PDFLib.PDFDocument.load(pdfBytes);
+      const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      pages.forEach(p => mergedPdf.addPage(p));
+    } else if (file.type.startsWith("image/")) {
+      const imgBytes = await file.arrayBuffer();
+      let imgEmbed;
+      if (file.type === "image/png") imgEmbed = await mergedPdf.embedPng(imgBytes);
+      else imgEmbed = await mergedPdf.embedJpg(imgBytes);
+      const page = mergedPdf.addPage([imgEmbed.width, imgEmbed.height]);
+      page.drawImage(imgEmbed, { x: 0, y: 0, width: imgEmbed.width, height: imgEmbed.height });
+    }
+  }
+  const pdfFinal = await mergedPdf.save();
+  const blob = new Blob([pdfFinal], { type: "application/pdf" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "documentos_unidos.pdf";
+  link.click();
+  document.getElementById('status').innerText = "¡PDF final descargado!";
+}
+</script>
+</body>
+</html>

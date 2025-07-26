@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Menú Principal | ISOVOLTA</title>
+  <link rel="icon" type="image/png" href="Isovolta.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --azul: #004990;
+      --amarillo: #f4d307;
+      --gris: #f4f7fb;
+      --blanco: #fff;
+      --gris-borde: #e0e6ee;
+      --verde: #7fd388;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--gris);
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    body {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 220px;
+      background: var(--blanco);
+      box-shadow: 2px 0 18px #0049900c;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      border-right: 4px solid var(--azul);
+      transition: width 0.21s cubic-bezier(.4,0,.2,1);
+      z-index: 20;
+      min-width: 64px;
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+    }
+    .sidebar.collapsed {
+      width: 64px;
+    }
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--azul);
+      font-size: 1.6em;
+      position: absolute;
+      top: 12px;
+      right: -22px;
+      z-index: 22;
+      cursor: pointer;
+      background: var(--blanco);
+      border-radius: 50%;
+      box-shadow: 0 2px 8px #0049901a;
+      width: 38px; height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: right .18s;
+    }
+    .sidebar.collapsed .sidebar-toggle {
+      right: -18px;
+    }
+    .logo-block {
+      text-align: center;
+      padding: 20px 0 16px 0;
+      border-bottom: 2px solid var(--gris-borde);
+      transition: padding .2s;
+    }
+    .sidebar.collapsed .logo-block h1 {
+      display: none;
+    }
+    .sidebar.collapsed .logo-block img {
+      width: 44px;
+    }
+    .logo-block img {
+      width: 120px;
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 5px;
+      transition: width .2s;
+    }
+    .logo-block h1 {
+      margin: 0;
+      font-size: 1.02rem;
+      color: var(--azul);
+      font-weight: 800;
+      letter-spacing: .5px;
+      white-space: nowrap;
+      transition: opacity .2s;
+    }
+    .menu-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 0 6px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .menu-group {
+      width: 100%;
+      margin-bottom: 4px;
+    }
+    .btn-main {
+      background: var(--azul);
+      color: var(--blanco);
+      border: none;
+      border-radius: 6px;
+      font-size: 1.02rem;
+      font-weight: 600;
+      padding: 11px 8px;
+      cursor: pointer;
+      text-align: left;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      outline: none;
+      transition: background .15s, color .13s, border-left .17s;
+      border-left: 5px solid transparent;
+      position: relative;
+      min-height: 36px;
+    }
+    .btn-main .fa {
+      font-size: 1.15em;
+      min-width: 22px;
+      text-align: center;
+    }
+    .sidebar.collapsed .btn-main span.label {
+      display: none;
+    }
+    .btn-main.selected,
+    .btn-main:focus {
+      background: var(--amarillo);
+      color: var(--azul);
+      border-left: 5px solid var(--azul);
+    }
+    .icon-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .arrow {
+      font-size: 1.07em;
+      color: #6180c6;
+      pointer-events: none;
+      transition: transform 0.18s;
+    }
+    .arrow.open {
+      transform: rotate(90deg);
+      color: #004990;
+    }
+    .submenu {
+      background: #e9f2fc;
+      border-radius: 6px;
+      margin: 1px 0 6px 0;
+      padding: 4px 0 4px 14px;
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      box-shadow: 0 2px 8px #c3e6fd13;
+      animation: showSubmenu .17s;
+    }
+    @keyframes showSubmenu {
+      from { opacity: 0; transform: translateY(-8px);}
+      to   { opacity: 1; transform: translateY(0);}
+    }
+    .submenu button {
+      background: none;
+      color: #004990;
+      border: none;
+      text-align: left;
+      font-size: .99em;
+      padding: 5px 0 5px 7px;
+      cursor: pointer;
+      font-weight: 500;
+      border-radius: 5px;
+      transition: background .13s, color .13s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .submenu button.selected,
+    .submenu button:hover {
+      background: #f4d30722;
+      color: #d28d00;
+    }
+    .sidebar.collapsed .submenu {
+      position: absolute;
+      left: 64px;
+      min-width: 170px;
+      z-index: 99;
+      box-shadow: 3px 3px 15px #00499022;
+    }
+    .sidebar.collapsed .submenu {
+      padding-left: 12px;
+    }
+    .backup-section {
+      background: #e6fff3;
+      margin: 10px 0 8px 0;
+      border-radius: 11px;
+      box-shadow: 0 2px 11px #7fd38817;
+      padding: 13px 10px 12px 14px;
+      border-left: 6px solid var(--verde);
+      font-size: .99em;
+      transition: display 0.2s;
+    }
+    .sidebar.collapsed .backup-section {
+      display: none !important;
+    }
+    .backup-section h2 {
+      color: #057855;
+      margin: 0 0 7px 0;
+      font-size: 1.06rem;
+      font-weight: 700;
+      letter-spacing: .4px;
+      white-space: nowrap;
+    }
+    .main-panel {
+      flex: 1;
+      margin-left: 220px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: margin-left .21s cubic-bezier(.4,0,.2,1);
+    }
+    .sidebar.collapsed ~ .main-panel {
+      margin-left: 64px;
+    }
+    .main-panel-header {
+      padding: 22px 3vw 10px 3vw;
+      font-size: 1.2rem;
+      color: var(--azul);
+      font-weight: 800;
+      letter-spacing: .4px;
+      min-height: 50px;
+      background: #f7faff;
+      border-bottom: 2px solid #dde2ea;
+      margin-bottom: 0;
+    }
+    .iframe-panel {
+      flex: 1;
+      width: 100%;
+      background: #f4f7fb;
+      border: none;
+      box-shadow: 0 0 18px #0049900c;
+      border-radius: 10px;
+      margin: 0 auto 14px auto;
+      min-height: 480px;
+      transition: box-shadow .18s;
+      display: block;
+    }
+    .iframe-placeholder {
+      width: 100%;
+      min-height: 320px;
+      background: #fff;
+      border-radius: 11px;
+      box-shadow: 0 2px 10px #00336614;
+      margin: 24px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #004990;
+      font-size: 1em;
+      padding: 30px 0 44px 0;
+      text-align: center;
+    }
+    footer {
+      width: 100vw;
+      background: var(--azul);
+      color: var(--blanco);
+      text-align: center;
+      padding: 8px 0 6px 0;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      z-index: 9;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 1px 7px #00336622;
+      transition: opacity .18s;
+    }
+    @media (max-width: 900px) {
+      .sidebar { width: 54vw; min-width: 56px;}
+      .main-panel { margin-left: 54vw; }
+      .sidebar.collapsed { width: 44px;}
+      .sidebar.collapsed ~ .main-panel { margin-left: 44px; }
+    }
+    @media (max-width: 650px) {
+      .sidebar {
+        position: fixed;
+        left: -100vw;
+        top: 0;
+        height: 100vh;
+        width: 85vw;
+        min-width: 0;
+        border-right: 4px solid var(--azul);
+        transition: left .23s cubic-bezier(.4,0,.2,1), width .2s;
+      }
+      .sidebar.open {
+        left: 0;
+        box-shadow: 2px 0 15px #00499033;
+      }
+      .sidebar-toggle {
+        position: fixed;
+        top: 12px; left: 8px; right: auto;
+        z-index: 999;
+      }
+      .main-panel { margin-left: 0 !important; }
+      footer { font-size: 13px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+    <button class="sidebar-toggle" id="toggleSidebar" title="Expandir/Colapsar menú">
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="logo-block">
+      <img src="https://www.isovolta.com/logo_isovolta.png" alt="Isovolta Logo"/>
+      <h1>Menú Principal</h1>
+    </div>
+    <div class="menu-btns">
+
+      <!-- Menús completos con iconos -->
+      <div class="menu-group">
+        <button class="btn-main" onclick="toggleSubMenu('submenu-iluo', this)">
+          <i class="fa fa-users"></i>
+          <span class="label">ILUO</span>
+          <span class="icon-actions"><span class="arrow" id="arrow-iluo">▶</span></span>
+        </button>
+        <div id="submenu-iluo" class="submenu">
+          <button onclick="cargarModulo('Matriz_iluo.html', this)">Ficha de Talento</button>
+          <button onclick="cargarModulo('Personas_iluo.html', this)">Personal</button>
+          <button onclick="cargarModulo('Administrador.html', this)">Documentos</button>
+          <button onclick="cargarModulo('Indice_IATF.html', this)">Indice de Documentos</button>
+          <button onclick="cargarModulo('Calificaciones.html', this)">Calificaciones</button>
+          <button onclick="cargarModulo('Examenes.html', this)">Examenes</button>
+          <button onclick="cargarModulo('Matriz de capacitacion.html', this)">Matriz de Capacitacion</button>
+          <button onclick="cargarModulo('Matriz equipos.html', this)">Matriz de Competencias</button>
+          <button onclick="cargarModulo('Pendientes_reentrenar.html', this)">Reentrenamiento</button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button class="btn-main" onclick="toggleSubMenu('submenu-capacitacion', this)">
+          <i class="fa fa-wrench"></i>
+          <span class="label">UTILERIAS</span>
+          <span class="icon-actions"><span class="arrow" id="arrow-capacitacion">▶</span></span>
+        </button>
+        <div id="submenu-capacitacion" class="submenu">
+          <button onclick="cargarModulo('Herramientas.html', this)">Conversor</button>
+          <button onclick="cargarModulo('Calculo de avances.html', this)">Calculo de Avances</button>
+          <button onclick="cargarModulo('Optimizador Placas.html', this)">Optimizador Placas</button>
+          <button onclick="cargarModulo('Calculadora de PZ.html', this)">Calculadora de Pz x Rollo</button>
+          <button onclick="cargarModulo('Unir Pdf.html', this)">Unir PDFs</button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button class="btn-main" onclick="toggleSubMenu('submenu-docs', this)">
+          <i class="fa fa-lightbulb"></i>
+          <span class="label">IDEA ON</span>
+          <span class="icon-actions"><span class="arrow" id="arrow-docs">▶</span></span>
+        </button>
+        <div id="submenu-docs" class="submenu">
+          <button onclick="cargarModulo('https://apps.powerapps.com/play/e/default-c40088c8-5ead-4e84-8d1b-ef4f0ef5f2b7/a/d966fa07-173b-4b99-957d-d150511aaaed?tenantId=c40088c8-5ead-4e84-8d1b-ef4f0ef5f2b7&hidenavbar=true', this)">Crear IDEAS</button>
+          <button onclick="window.open('https://app.powerbi.com/groups/64f12fed-367a-42b3-ab5d-446770a63cbb/reports/5d4ef50c-b104-477f-a909-f361c9e9a9f2/41b0f276b0a9d6708ec4?experience=power-bi','_blank')">Index IDEAON</button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button class="btn-main" onclick="toggleSubMenu('submenu-powerbi', this)">
+          <i class="fa fa-chart-bar"></i>
+          <span class="label">INFORMES</span>
+          <span class="icon-actions"><span class="arrow" id="arrow-powerbi">▶</span></span>
+        </button>
+        <div id="submenu-powerbi" class="submenu">
+          <button onclick="window.open('https://app.powerbi.com/groups/me/reports/2d46447b-7f11-4e64-b60c-f57346e2a653/2751cbd8daa2ccdeec50?experience=power-bi','_blank')">Incidentes de Producción ↗</button>
+          <button onclick="window.open('https://app.powerbi.com/links/6NwM0LxTe6?ctid=c40088c8-5ead-4e84-8d1b-ef4f0ef5f2b7&pbi_source=linkShare','_blank')">Operaciones ↗</button>
+          <button onclick="window.open('https://constantiaindustries-my.sharepoint.com/:u:/r/personal/omar_gutierrez_isovolta_com/Documents/Documentos%20compartidos/Indicadores/1.%20Horas%20extras.pbix?csf=1&web=1&e=euTiBF','_blank')">Horas extra ↗</button>
+          <button onclick="window.open('https://app.powerbi.com/groups/me/apps/f6b089ff-5f62-467c-8b0d-249e00329eab/reports/a391eb87-322c-4517-aec4-0287b1642795/1558fc8ca13da100f74d?experience=power-bi','_blank')">Service Level ↗</button>
+          <button onclick="window.open('https://constantiaindustries-my.sharepoint.com/:u:/r/personal/omar_gutierrez_isovolta_com/Documents/Documentos%20compartidos/Indicadores/ILUO.pbix?csf=1&web=1&e=XXBnfD')">ILUO ↗</button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button class="btn-main" onclick="toggleSubMenu('submenu-formularios', this)">
+          <i class="fa fa-list-check"></i>
+          <span class="label">FORMULARIOS</span>
+          <span class="icon-actions"><span class="arrow" id="arrow-formularios">▶</span></span>
+        </button>
+        <div id="submenu-formularios" class="submenu">
+          <button onclick="cargarModulo('https://forms.microsoft.com/Pages/ResponsePage.aspx?id=yIgAxK1ehE6NG-9PDvXyt9aAU6qdWixDj9oTC22L33dUN1FaQjYwWDg0QjQ5RTMzOEFBU0pCWFZVRSQlQCNjPTEkJUAjdD1n', this)">Formulario 5's</button>
+          <button onclick="cargarModulo('https://forms.microsoft.com/Pages/ResponsePage.aspx?id=yIgAxK1ehE6NG-9PDvXyt4fY2nNv7zpCuTzBQTWolNRUREQ1S1ZISFUxVzM2OFg1UEszODVZTElYVy4u', this)">Normatividad/Seguridad</button>
+          <button onclick="cargarModulo('https://forms.microsoft.com/Pages/ResponsePage.aspx?id=yIgAxK1ehE6NG-9PDvXyt4fY2nNv7zpCuTzBQTWolNRURFRCWTZOSkVDNzY3RVIzNVBHVE9HVDI2Sy4u', this)">Horas extras</button>
+          <button onclick="cargarModulo('https://forms.microsoft.com/Pages/ResponsePage.aspx?id=yIgAxK1ehE6NG-9PDvXyt6uCCcrrmVhNkio0KD8jjq5UNFBVT1lQOFBTNVkzMk1NMzhWQ0ZBWUxBMy4u', this)">Control de Residuos</button>
+          <button onclick="cargarModulo('https://forms.microsoft.com/Pages/ResponsePage.aspx?id=yIgAxK1ehE6NG-9PDvXyt6uCCcrrmVhNkio0KD8jjq5UMllSR1E4MEE5WEdMN1o4OVZEOVVXV0I4UC4u', this)">Productividad Maquinados</button>
+          <button onclick="cargarModulo('https://forms.microsoft.com/Pages/ResponsePage.aspx?id=yIgAxK1ehE6NG-9PDvXyt9aAU6qdWixDj9oTC22L33dUNVVIQllPTzAwS1NMWkdMUDdXTlNNUENGNyQlQCN0PWcu', this)">Check list de Limpiezas</button>
+          <button onclick="cargarModulo('https://forms.microsoft.com/Pages/ResponsePage.aspx?id=yIgAxK1ehE6NG-9PDvXyt6uCCcrrmVhNkio0KD8jjq5UOUgzNFpNUTdFR0I1NlBDUVFHSUhYQklWUC4u', this)">Incidentes</button>
+          <button onclick="cargarModulo('https://forms.microsoft.com/Pages/ResponsePage.aspx?id=yIgAxK1ehE6NG-9PDvXyt3cP045ntdJMvoCIesGLKhZUMjlIQklaMTZQT1FCMzFFTFRSRkk2TDhLQS4u', this)">Bitacora de Herramentales</button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button class="btn-main" onclick="toggleSubMenu('submenu-mantenimiento', this)">
+          <i class="fa fa-screwdriver-wrench"></i>
+          <span class="label">MANTENIMIENTO</span>
+          <span class="icon-actions"><span class="arrow" id="arrow-mantenimiento">▶</span></span>
+        </button>
+        <div id="submenu-mantenimiento" class="submenu">
+          <button onclick="window.open('https://community.fracttal.com/','_blank')">Fracttal One</button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button class="btn-main" onclick="toggleSubMenu('submenu-planner', this)">
+          <i class="fa fa-calendar-check"></i>
+          <span class="label">PLANNER</span>
+          <span class="icon-actions"><span class="arrow" id="arrow-planner">▶</span></span>
+        </button>
+        <div id="submenu-planner" class="submenu">
+          <button onclick="cargarModulo('https://planner.cloud.microsoft/webui/premiumplan/e447014f-4bdd-450c-89b2-43a0c49d4d93/org/34ff2f8d-7408-4f5b-86dd-3b966e3cffb7?tid=c40088c8-5ead-4e84-8d1b-ef4f0ef5f2b7', this)">Obeya</button>
+          <button onclick="cargarModulo('https://planner.cloud.microsoft/webui/premiumplan/7be711a4-80f3-4a6c-9a46-62f7625e92de/org/34ff2f8d-7408-4f5b-86dd-3b966e3cffb7?tid=c40088c8-5ead-4e84-8d1b-ef4f0ef5f2b7', this)">Lean Road Map</button>
+          <button onclick="cargarModulo('https://planner.cloud.microsoft/webui/plan/SOdv1qgdQkWGf5TK1Qj75pcAHZRw/view/board?tid=c40088c8-5ead-4e84-8d1b-ef4f0ef5f2b7', this)">E-Mobility</button>
+          <button onclick="cargarModulo('https://planner.cloud.microsoft/webui/premiumplan/c42327fe-dfcf-4db7-855a-53f4cb81411e/org/34ff2f8d-7408-4f5b-86dd-3b966e3cffb7?tid=c40088c8-5ead-4e84-8d1b-ef4f0ef5f2b7', this)">IdeaON</button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button class="btn-main" onclick="toggleSubMenu('submenu-productividad', this)">
+          <i class="fa fa-industry"></i>
+          <span class="label">PRODUCCION</span>
+          <span class="icon-actions"><span class="arrow" id="arrow-productividad">▶</span></span>
+        </button>
+        <div id="submenu-productividad" class="submenu">
+          <button onclick="cargarModulo('Produccion.html', this)">Productividad</button>
+          <button onclick="cargarModulo('Roll de turnos.html', this)">Rol de Turnos</button>
+          <button onclick="cargarModulo('Control Service Level.html', this)">Incumplimiento SL</button>
+        </div>
+      </div>
+    </div>
+    <div class="backup-section" id="backupSection">
+      <h2>Respaldo Global</h2>
+      <div style="display: flex; gap: 9px; flex-wrap: wrap; align-items: center;">
+        <button onclick="respaldoGlobalISOVOLTA()" style="background: #7fd388; color: #004990; border: none; border-radius: 7px; padding: 10px 12px; font-size: 1em; font-weight: bold; box-shadow: 0 2px 8px #c7ffe0; cursor: pointer;">
+          ⬇️ Descargar respaldo
+        </button>
+        <input type="file" id="inputRestoreGlobal" style="display:none" accept=".json" onchange="restaurarGlobalISOVOLTA(this.files[0])"/>
+        <button onclick="document.getElementById('inputRestoreGlobal').click()" style="background: #fff; color: #004990; border: 2px solid #7fd388; border-radius: 7px; padding: 10px 12px; font-size: 1em; font-weight: bold; cursor: pointer; margin-left: 0;">
+          ⬆️ Restaurar respaldo
+        </button>
+        <span id="statusBackupGlobal" style="margin-left: 6px; color: #004990; font-weight: 600; font-size: .99em;"></span>
+      </div>
+      <div style="color: #555; font-size: 12px; margin-top: 5px;">
+        Descarga y restaura <b>todos los datos</b>.<br>
+        ¡Ideal para migrar, respaldar o mover a otra PC!
+      </div>
+    </div>
+  </div>
+  <div class="main-panel" id="mainPanel">
+<div class="main-panel-header" id="mainPanelHeader" style="display: flex; align-items: center; justify-content: space-between;">
+  <span id="mainPanelTitle">Centro de Gestión Integral ISOVOLTA</span>
+  <button id="btnAbrirEnPestana" title="Abrir módulo en nueva pestaña" style="display:none; margin-left: 10px; background: #fff; border: 1.5px solid #004990; color: #004990; border-radius: 6px; font-size: 1em; padding: 6px 13px; cursor: pointer; font-weight:600; transition:background .13s;">
+    <i class="fa fa-up-right-from-square"></i> Abrir en nueva pestaña
+  </button>
+</div>
+
+    <div id="centralContent" style="flex:1;display:flex;flex-direction:column;">
+      <div class="iframe-placeholder" id="iframePlaceholder" style="flex:1;">
+        <img src="https://www.isovolta.com/logo_isovolta.png" style="width: 90px; margin-bottom: 14px;"/>
+        <div>Bienvenido(a) a la plataforma ISOVOLTA.<br>
+        Selecciona un módulo en el menú de la izquierda.</div>
+      </div>
+      <iframe id="iframePanel" class="iframe-panel" style="display:none" src=""></iframe>
+    </div>
+  </div>
+  <script>
+    // Sidebar colapsable / responsive
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleSidebar');
+    function updateSidebarState() {
+      if(window.innerWidth <= 650) {
+        sidebar.classList.remove('collapsed');
+      }
+    }
+    toggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if(window.innerWidth <= 650) {
+        sidebar.classList.toggle('open');
+        document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+      } else {
+        sidebar.classList.toggle('collapsed');
+      }
+      updateBackupVisibility();
+    });
+    window.addEventListener('resize', updateSidebarState);
+    document.body.addEventListener('click', function(e){
+      if(window.innerWidth <= 650 && sidebar.classList.contains('open') && !sidebar.contains(e.target)){
+        sidebar.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+    // Mostrar/ocultar backup según el estado del sidebar
+    function updateBackupVisibility() {
+      var backup = document.getElementById('backupSection');
+      if (!backup) return;
+      if (sidebar.classList.contains('collapsed')) {
+        backup.style.display = 'none';
+      } else {
+        backup.style.display = '';
+      }
+    }
+    updateBackupVisibility();
+    // Cierra todos los submenús menos el activo
+    function toggleSubMenu(id, btn) {
+      document.querySelectorAll('.submenu').forEach(e => {
+        if(e.id !== id) e.style.display = 'none';
+      });
+      document.querySelectorAll('.arrow').forEach(e => e.classList.remove('open'));
+      const el = document.getElementById(id);
+      const arrow = btn.querySelector('.arrow') || document.getElementById('arrow-' + id.replace('submenu-', ''));
+      if(el.style.display === 'flex') {
+        el.style.display = 'none';
+        if(arrow) arrow.classList.remove('open');
+      } else {
+        el.style.display = 'flex';
+        if(arrow) arrow.classList.add('open');
+      }
+    }
+    // Navegación de menús
+    function cargarModulo(url, btn) {
+      document.querySelectorAll('.btn-main, .submenu button').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('iframePanel').style.display = 'block';
+      document.getElementById('iframePanel').src = url;
+      document.getElementById('iframePlaceholder').style.display = 'none';
+      let tit = btn.textContent.trim().split('\n')[0];
+      document.getElementById('mainPanelTitle').textContent = tit;
+      if(window.innerWidth <= 650) {
+        sidebar.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+    // RESPALDO PRODUCTIVIDAD (idéntico a tu código original)
+    const DB_PRODUCTIVIDAD = "Productividad_MaqTurnoDias";
+    const DB_PROD_VERSION = 7;
+    function exportarRespaldoProductividad() {
+      document.getElementById('statusBackupProd').innerText = "Generando respaldo...";
+      let exportData = {};
+      let req = indexedDB.open(DB_PRODUCTIVIDAD, DB_PROD_VERSION);
+      req.onsuccess = function(event) {
+        let db = event.target.result;
+        let stores = Array.from(db.objectStoreNames);
+        if (!stores.length) {
+          document.getElementById('statusBackupProd').innerText = "No hay datos para respaldar.";
+          return;
+        }
+        let pending = stores.length;
+        stores.forEach(storeName => {
+          let tx = db.transaction(storeName, "readonly");
+          let store = tx.objectStore(storeName);
+          let getAll = store.getAll();
+          getAll.onsuccess = function() {
+            exportData[storeName] = getAll.result;
+            pending--;
+            if (pending === 0) {
+              let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+              let downloadAnchor = document.createElement('a');
+              downloadAnchor.setAttribute("href", dataStr);
+              downloadAnchor.setAttribute("download", `respaldo_productividad_${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
+              document.body.appendChild(downloadAnchor);
+              downloadAnchor.click();
+              downloadAnchor.remove();
+              document.getElementById('statusBackupProd').innerText = "¡Respaldo completado!";
+              setTimeout(()=>document.getElementById('statusBackupProd').innerText = "", 3500);
+            }
+          };
+          getAll.onerror = function() {
+            document.getElementById('statusBackupProd').innerText = `Error al leer datos de ${storeName}`;
+          }
+        });
+      };
+      req.onerror = function() {
+        document.getElementById('statusBackupProd').innerText = "No se pudo abrir la base de datos.";
+      }
+    }
+    function importarRespaldoProductividad(event) {
+      if (!confirm("¿Deseas SOBREESCRIBIR todos los datos actuales de Productividad? Esta acción no se puede deshacer.")) return;
+      document.getElementById('statusBackupProd').innerText = "Restaurando datos...";
+      let file = event.target.files[0];
+      if (!file) return;
+      let reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          let importData = JSON.parse(evt.target.result);
+          let req = indexedDB.open(DB_PRODUCTIVIDAD, DB_PROD_VERSION);
+          req.onsuccess = function(event) {
+            let db = event.target.result;
+            let tx = db.transaction(Object.keys(importData), "readwrite");
+            Object.entries(importData).forEach(([storeName, values]) => {
+              let store = tx.objectStore(storeName);
+              store.clear();
+              values.forEach(val => store.put(val));
+            });
+            tx.oncomplete = () => {
+              document.getElementById('statusBackupProd').innerText = "¡Restauración completada!";
+              setTimeout(()=>document.getElementById('statusBackupProd').innerText = "", 3500);
+              alert("¡Datos de Productividad restaurados correctamente! Actualiza la página para ver los cambios.");
+            };
+            tx.onerror = function() {
+              document.getElementById('statusBackupProd').innerText = "Error al restaurar los datos.";
+            }
+          };
+          req.onerror = function() {
+            document.getElementById('statusBackupProd').innerText = "No se pudo abrir la base de datos para restaurar.";
+          }
+        } catch(e) {
+          document.getElementById('statusBackupProd').innerText = "El archivo de respaldo no es válido.";
+        }
+      };
+      reader.readAsText(file);
+    }
+    // RESPALDO GLOBAL
+    const BDD_LIST = [
+      { name: "Productividad_MaqTurnoDias", version: 7 },
+      { name: "TurnosDB", version: 2 },
+      { name: "Atrasos_Produccion", version: 4 },
+    ];
+    function respaldoGlobalISOVOLTA() {
+      document.getElementById('statusBackupGlobal').innerText = "Generando respaldo...";
+      let exportData = {};
+      let pendientes = BDD_LIST.length;
+      BDD_LIST.forEach(({ name, version }) => {
+        let req = indexedDB.open(name, version);
+        req.onsuccess = function(event) {
+          let db = event.target.result;
+          let stores = Array.from(db.objectStoreNames);
+          let pendingStores = stores.length;
+          exportData[name] = {};
+          if(!stores.length) { pendientes--; if(pendientes===0) descargarExport(); return; }
+          stores.forEach(storeName => {
+            let transaction = db.transaction(storeName, "readonly");
+            let store = transaction.objectStore(storeName);
+            let getAll = store.getAll();
+            getAll.onsuccess = function() {
+              exportData[name][storeName] = getAll.result;
+              pendingStores--;
+              if (pendingStores === 0) {
+                pendientes--;
+                if (pendientes === 0) descargarExport();
+              }
+            };
+            getAll.onerror = function() {
+              exportData[name][storeName] = [];
+              pendingStores--;
+              if (pendingStores === 0) {
+                pendientes--;
+                if (pendientes === 0) descargarExport();
+              }
+            };
+          });
+        };
+        req.onerror = function() {
+          pendientes--;
+          if(pendientes===0) descargarExport();
+        };
+      });
+      function descargarExport() {
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+        let downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `respaldo_global_isovolta_${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        document.getElementById('statusBackupGlobal').innerText = "¡Respaldo completado!";
+        setTimeout(()=>document.getElementById('statusBackupGlobal').innerText = "", 3500);
+      }
+    }
+    function restaurarGlobalISOVOLTA(file) {
+      if (!confirm("¿Deseas SOBREESCRIBIR todas las bases de datos ISOVOLTA? Esta acción no se puede deshacer.")) return;
+      document.getElementById('statusBackupGlobal').innerText = "Restaurando datos...";
+      let reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          let importData = JSON.parse(evt.target.result);
+          let bases = Object.keys(importData);
+          let pendientes = bases.length;
+          bases.forEach(baseName => {
+            let req = indexedDB.open(baseName);
+            req.onsuccess = function(event) {
+              let db = event.target.result;
+              let stores = Object.keys(importData[baseName]);
+              if (!stores.length) { pendientes--; if(pendientes===0) okFin(); return; }
+              let tx = db.transaction(stores, "readwrite");
+              stores.forEach(storeName => {
+                let store = tx.objectStore(storeName);
+                store.clear();
+                importData[baseName][storeName].forEach(val => store.put(val));
+              });
+              tx.oncomplete = function() {
+                pendientes--;
+                if (pendientes === 0) okFin();
+              };
+              tx.onerror = function() {
+                pendientes--;
+                if (pendientes === 0) okFin();
+              }
+            };
+            req.onerror = function() {
+              pendientes--;
+              if (pendientes === 0) okFin();
+            };
+          });
+          function okFin() {
+            document.getElementById('statusBackupGlobal').innerText = "¡Restauración completada!";
+            setTimeout(()=>document.getElementById('statusBackupGlobal').innerText = "", 3500);
+            alert("¡Datos globales restaurados correctamente! Actualiza la página para ver los cambios.");
+          }
+        } catch(e) {
+          document.getElementById('statusBackupGlobal').innerText = "El archivo de respaldo no es válido.";
+        }
+      };
+      reader.readAsText(file);
+    }
+    // Botón "Abrir en nueva pestaña"
+const btnAbrirEnPestana = document.getElementById('btnAbrirEnPestana');
+const iframePanel = document.getElementById('iframePanel');
+btnAbrirEnPestana.addEventListener('click', function() {
+  let url = iframePanel.src;
+  if(url && url !== '' && url !== 'about:blank') {
+    window.open(url, '_blank');
+  }
+});
+
+// Mostrar u ocultar el botón según si hay módulo abierto
+function updateBtnAbrirPestana() {
+  if(iframePanel.style.display === 'block' && iframePanel.src && iframePanel.src !== '' && iframePanel.src !== 'about:blank') {
+    btnAbrirEnPestana.style.display = '';
+  } else {
+    btnAbrirEnPestana.style.display = 'none';
+  }
+}
+
+// Llama a esta función cada vez que cargas un módulo
+function cargarModulo(url, btn) {
+  document.querySelectorAll('.btn-main, .submenu button').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  iframePanel.style.display = 'block';
+  iframePanel.src = url;
+  document.getElementById('iframePlaceholder').style.display = 'none';
+  let tit = btn.textContent.trim().split('\n')[0];
+  document.getElementById('mainPanelTitle').textContent = tit;
+  updateBtnAbrirPestana();
+  if(window.innerWidth <= 650) {
+    sidebar.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+// Oculta el botón cuando cargas la página o vuelves al placeholder
+document.getElementById('iframePlaceholder').addEventListener('click', updateBtnAbrirPestana);
+iframePanel.addEventListener('load', updateBtnAbrirPestana);
+
+  </script>
+</body>
+</html>

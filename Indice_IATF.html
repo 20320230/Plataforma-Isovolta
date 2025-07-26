@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Índice de Documentos</title>
+<link rel="icon" type="image/png" href="Isovolta.ico">
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+    padding: 0 0 70px 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .encabezado {
+    width: 100vw;
+    background: #fff;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-shadow: 0 2px 16px 0 rgba(0,32,91,0.06);
+  }
+  .logo-isovolta {
+    height: 64px;
+    margin: 10px 34px 10px 0;
+  }
+  .main-container {
+    max-width: 1700px;
+    margin: 32px auto 32px auto; /* Centrado horizontal y márgenes arriba/abajo */
+    background: #fff;
+    border-radius: 13px;
+    box-shadow: 0 5px 18px rgba(0,32,91,0.09);
+    padding: 32px 22px 22px 22px;
+  }
+  h1 {
+    background: #fff;
+    color: #004990;
+    text-align: center;
+    font-size: 2em;
+    margin: 0 0 24px 0;
+    padding: 18px 0 10px 0;
+    border-radius: 12px;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 14px 0 rgba(0,32,91,0.04);
+  }
+  .top-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    gap: 8px;
+  }
+  .top-controls .btn {
+    margin-bottom: 4px;
+  }
+  .btn {
+    background: #0056a0;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    padding: 8px 19px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    box-shadow: 0 2px 7px rgba(0,32,91,0.07);
+    cursor: pointer;
+    transition: background 0.16s, box-shadow 0.16s, transform 0.14s;
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn:hover {
+    background: #003366;
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 4px 12px rgba(0,32,91,0.16);
+  }
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+    margin-top: 5px;
+  }
+  .filter-buttons .btn {
+    background: #e4ebf3;
+    color: #003366;
+    font-weight: 600;
+    border: 1px solid #b7cbe3;
+    transition: background 0.18s, color 0.18s;
+    box-shadow: none;
+    font-size: 0.98em;
+  }
+  .filter-buttons .btn:hover {
+    background: #0056a0;
+    color: #fff;
+    border: 1px solid #0056a0;
+  }
+  input[type="text"] {
+    padding: 7px;
+    border-radius: 8px;
+    border: 1px solid #cfd8dc;
+    font-size: 1em;
+    outline: none;
+    background: #f7fafc;
+    margin-right: 4px;
+    min-width: 210px;
+    margin-bottom: 2px;
+  }
+  input[type="text"]:focus {
+    border-color: #0077be;
+    background: #e2eaf7;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    background: #fafdff;
+    border-radius: 8px;
+    box-shadow: 0 1px 9px rgba(0,32,91,0.03);
+    overflow: hidden;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid #d5d7de;
+    padding: 10px 8px;
+    text-align: left;
+    font-size: 14px;
+    vertical-align: top;
+  }
+  th {
+    background-color: #f2f4f8 !important; /* Un gris claro y limpio */
+    color: #222;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    border-bottom: 2px solid #dde2ea;
+    white-space: nowrap;
+  }
+  tr:nth-child(even) td {
+    background: #f2f6fb;
+  }
+  td input[type="text"] {
+    padding: 5px;
+    font-size: 14px;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #d0d7df;
+    border-radius: 5px;
+  }
+  td input[type="text"]:focus {
+    background: #eaf6ff;
+    border: 1.3px solid #006ad1;
+  }
+  td:first-child, th:first-child {
+    min-width: 110px;
+    max-width: 160px;
+    white-space: pre-line;
+    font-size: 15px;
+    font-weight: 600;
+    vertical-align: top;
+    text-align: left;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  td:nth-child(2), th:nth-child(2) {
+    min-width: 200px;
+    max-width: 310px;
+    white-space: pre-line;
+    vertical-align: top;
+    text-align: left;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  td, th {
+    vertical-align: top;
+  }
+  .btn-abierto {
+    padding: 6px 12px;
+    background: #015197;
+    color: #fff;
+    border-radius: 7px;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .btn-abierto:hover {
+    background: #004990;
+  }
+  footer {
+    width: 100vw;
+    background: #00529b;
+    color: #fff;
+    text-align: center;
+    padding: 14px 0 12px 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    font-size: 1.08em;
+    letter-spacing: 0.8px;
+    z-index: 50;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+  @media (max-width: 1400px) {
+    .main-container {
+      max-width: 98vw;
+      padding: 12px 1vw 18px 1vw;
+    }
+  }
+  @media (max-width: 950px) {
+    .main-container { padding: 4px 2vw 14px 2vw; }
+    table { font-size: 12px; }
+    th, td { padding: 6px 2px; }
+    .logo-isovolta { height: 36px; margin: 6px 8px; }
+    h1 { font-size: 1.1em; }
+    .btn { font-size: 0.95em; }
+  }
+  @media (max-width: 680px) {
+    .main-container { padding: 2px 1vw 6px 1vw; }
+    th, td { padding: 4px 2px; }
+    .btn { padding: 7px 9px; }
+    input[type="text"] { min-width: 120px; }
+  }
+</style>
+</head>
+<body>
+<header class="encabezado">
+  <img alt="Isovolta Logo" class="logo-isovolta" src="https://www.isovolta.com/logo_isovolta.png"/>
+</header>
+<div class="main-container">
+<h1>Índice de Documentos</h1>
+<div class="top-controls">
+  <div>
+    <button class="btn" onclick="actualizarTabla()">Actualizar</button>
+    <button class="btn" onclick="guardarDatos()">Guardar Datos</button>
+    <button class="btn" onclick="descargarIndiceCSV()">Descargar Excel</button>
+  </div>
+  <div>
+    <input id="filtroCodigo" oninput="filtrarPorCodigo()" placeholder="Filtrar por Código..." type="text"/>
+  </div>
+</div>
+<div class="filter-buttons">
+  <button class="btn" onclick="filtrarPorPrefijo('IT')">Instructivos</button>
+  <button class="btn" onclick="filtrarPorPrefijo('DD')">Documentos de Datos</button>
+  <button class="btn" onclick="filtrarPorPrefijo('PR')">Procedimientos</button>
+  <button class="btn" onclick="filtrarPorPrefijo('H')">Habilidades</button>
+  <button class="btn" onclick="filtrarPorPrefijo('RQ')">Registros</button>
+  <button class="btn" onclick="filtrarPorPrefijo('Z')">Transacciones</button>
+  <button class="btn" onclick="filtrarPorPrefijo('DP')">Descripción de procesos</button>
+  <button class="btn" onclick="filtrarPorPrefijo('FP')">Fichas de Procesos</button>
+  <button class="btn" onclick="filtrarPorPrefijo('VA')">Ayudas Visuales</button>
+  <button class="btn" onclick="mostrarTodos()">Todos</button>
+</div>
+<table id="tablaDocumentos">
+<thead>
+<tr>
+<th>Código</th>
+<th>Documento</th>
+<th>Revisión</th>
+<th>Fecha de Revisión</th>
+<th>Emite</th>
+<th>Revisa</th>
+<th>Aprueba</th>
+<th>Ruta de Acceso</th>
+<th>Acceso</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+<script>
+// ========== IndexedDB Helper ==========
+const DB_NAME = 'ILUO_DB';
+const DB_VERSION = 1;
+const STORE_NAME = 'respaldo';
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'clave' });
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = (event) => reject(event.target.error);
+  });
+}
+
+async function guardarEnIndexedDB(clave, valor) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put({ clave, valor });
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function leerDeIndexedDB(clave) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.get(clave);
+    req.onsuccess = () => resolve(req.result ? req.result.valor : null);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+// ========== Migrar de localStorage si hace falta ==========
+async function migrarLocalStorageAIndexedDB() {
+  const claves = ["documentosILUO", "indiceDocumentosExtra"];
+  for (let clave of claves) {
+    const val = localStorage.getItem(clave);
+    if (val && !(await leerDeIndexedDB(clave))) {
+      await guardarEnIndexedDB(clave, JSON.parse(val));
+      // localStorage.removeItem(clave); // Opcional: borra si ya migraste.
+    }
+  }
+}
+
+// ========== Lógica principal ==========
+let documentos = [];
+let respaldoExtra = [];
+
+async function renderizarTabla() {
+  await migrarLocalStorageAIndexedDB();
+  documentos = await leerDeIndexedDB("documentosILUO") || [];
+  respaldoExtra = await leerDeIndexedDB("indiceDocumentosExtra") || [];
+  const tbody = document.querySelector("#tablaDocumentos tbody");
+  tbody.innerHTML = "";
+  respaldoExtra.forEach((doc, index) => {
+    const ruta = doc.rutaAcceso || "";
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${doc.codigo}</td>
+      <td>${doc.documento}</td>
+      <td>${doc.revision || ""}</td>
+      <td><input type="text" value="${doc.fechaRevision || ""}"></td>
+      <td><input type="text" value="${doc.emite || ""}"></td>
+      <td><input type="text" value="${doc.revisa || ""}"></td>
+      <td><input type="text" value="${doc.aprueba || ""}"></td>
+      <td><input type="text" id="ruta-${index}" value="${ruta}"></td>
+      <td><button class="btn" onclick="abrirDocumento(${index})">Abrir</button></td>
+    `;
+    tbody.appendChild(fila);
+  });
+}
+
+function abrirDocumento(index) {
+  const ruta = document.getElementById("ruta-" + index).value.trim();
+  if (ruta) {
+    window.open(ruta, '_blank');
+  } else {
+    alert("Ruta no especificada.");
+  }
+}
+
+async function actualizarTabla() {
+  documentos = await leerDeIndexedDB("documentosILUO") || [];
+  respaldoExtra = await leerDeIndexedDB("indiceDocumentosExtra") || [];
+  const nuevosDatos = [];
+  const codigosAgregados = new Set();
+
+  documentos.forEach(doc => {
+    if (!codigosAgregados.has(doc.codigo)) {
+      const existente = respaldoExtra.find(d => d.codigo === doc.codigo);
+      nuevosDatos.push({
+        codigo: doc.codigo,
+        documento: doc.documento,
+        revision: doc.revision,
+        fechaRevision: existente?.fechaRevision || "",
+        emite: existente?.emite || "",
+        revisa: existente?.revisa || "",
+        aprueba: existente?.aprueba || "",
+        rutaAcceso: existente?.rutaAcceso || ""
+      });
+      codigosAgregados.add(doc.codigo);
+    }
+  });
+
+  respaldoExtra = nuevosDatos;
+  await guardarEnIndexedDB("indiceDocumentosExtra", respaldoExtra);
+  renderizarTabla();
+  alert("Tabla actualizada. Documentos antiguos eliminados.");
+}
+
+async function guardarDatos() {
+  const filas = document.querySelectorAll("#tablaDocumentos tbody tr");
+  const nuevosDatos = [];
+  filas.forEach((fila, index) => {
+    const celdas = fila.querySelectorAll("td");
+    nuevosDatos.push({
+      codigo: celdas[0].textContent.trim(),
+      documento: celdas[1].textContent.trim(),
+      revision: celdas[2].textContent.trim(),
+      fechaRevision: celdas[3].querySelector("input").value.trim(),
+      emite: celdas[4].querySelector("input").value.trim(),
+      revisa: celdas[5].querySelector("input").value.trim(),
+      aprueba: celdas[6].querySelector("input").value.trim(),
+      rutaAcceso: fila.querySelector(`#ruta-${index}`).value.trim()
+    });
+  });
+  respaldoExtra = nuevosDatos;
+  await guardarEnIndexedDB("indiceDocumentosExtra", respaldoExtra);
+  alert("Datos guardados en el navegador.");
+}
+
+function filtrarPorCodigo() {
+  const filtro = document.getElementById("filtroCodigo").value.toLowerCase();
+  const filas = document.querySelectorAll("#tablaDocumentos tbody tr");
+  filas.forEach(fila => {
+    const codigo = fila.cells[0].textContent.toLowerCase();
+    fila.style.display = codigo.includes(filtro) ? "" : "none";
+  });
+}
+
+function filtrarPorPrefijo(prefijo) {
+  const filas = document.querySelectorAll("#tablaDocumentos tbody tr");
+  filas.forEach(fila => {
+    const codigo = fila.cells[0].textContent.trim().toUpperCase();
+    fila.style.display = codigo.startsWith(prefijo) ? "" : "none";
+  });
+}
+
+function mostrarTodos() {
+  document.querySelectorAll("#tablaDocumentos tbody tr").forEach(fila => fila.style.display = "");
+}
+
+function descargarIndiceCSV() {
+  const filas = document.querySelectorAll("#tablaDocumentos tbody tr");
+  if (filas.length === 0) {
+    alert("No hay datos en la tabla para exportar.");
+    return;
+  }
+  let csv = "\uFEFFCódigo,Documento,Revisión,Fecha de Revisión,Emite,Revisa,Aprueba,Ruta de Acceso\n";
+  filas.forEach((fila, index) => {
+    const celdas = fila.querySelectorAll("td");
+    const ruta = document.getElementById(`ruta-${index}`).value.trim();
+    csv += `"${celdas[0].textContent.trim()}","${celdas[1].textContent.trim()}","${celdas[2].textContent.trim()}","${celdas[3].querySelector('input').value.trim()}","${celdas[4].querySelector('input').value.trim()}","${celdas[5].querySelector('input').value.trim()}","${celdas[6].querySelector('input').value.trim()}","${ruta}"\n`;
+  });
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const enlace = document.createElement("a");
+  enlace.href = url;
+  enlace.download = `indice_documentos_${new Date().toISOString().slice(0,10)}.csv`;
+  enlace.click();
+  URL.revokeObjectURL(url);
+}
+
+renderizarTabla();
+</script>
+<footer>
+    Herramienta diseñada por el departamento de Producción & Mejora Continua
+</footer>
+</body>
+</html>

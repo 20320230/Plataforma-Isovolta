@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Matriz de competencias para la operación de equipos</title>
+<link rel="icon" type="image/png" href="Isovolta.ico">
+<style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f7fb; padding: 20px; margin: 0; }
+    h1 { text-align: center; color: #004990; }
+    .container { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 20px; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 16px; width: 320px; }
+    .card h3 { margin: 0 0 10px 0; color: #004990; font-size: 18px; }
+    .persona { display: flex; align-items: center; justify-content: space-between; background-color: #e0e0e0; color: #000; padding: 8px 12px; margin: 6px 0; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); border-left: 5px solid; }
+    .persona.prom-rojo { background-color: #ffdddd; color: #900; border-color: red; }
+    .persona.prom-naranja { background-color: #ffe6cc; color: #a35d00; border-color: orange; }
+    .persona.prom-amarillo { background-color: #fffacc; color: #857800; border-color: goldenrod; }
+    .persona.prom-azul { background-color: #dceeff; color: #004080; border-color: #007bff;}
+    .persona.prom-verde { background-color: #e0f8e9; color: #2d6a4f; border-color: green; }
+    .card.rojo { border-left: 8px solid red; }
+    .card.naranja { border-left: 8px solid orange; }
+    .card.amarillo { border-left: 8px solid goldenrod; }
+    .card.verde { border-left: 8px solid green; }
+    #filtros button { background-color: #004990; color: white; border: none; padding: 8px 14px; margin: 4px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    #filtros button:hover { background-color: #006ad1; }
+</style>
+</head>
+<body>
+<h1>Matriz de competencias para la operación de equipos</h1>
+<div style="background: #fff; padding: 12px 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto 20px;">
+<h3 style="color:#004990;">Leyenda de interpretación ILUO:</h3>
+<ul style="list-style: none; padding-left: 0; font-size: 14px;">
+<li><span style="color: red; font-weight: bold;">🔴 0% - 69% (N/A)</span> →No puede operar el equipo.</li>
+<li><span style="color: orange; font-weight: bold;">🟠 70% - 79% (I) </span>  →Puede operar bajo supervisión.</li>
+<li><span style="color: goldenrod; font-weight: bold;">🟡 80% - 89% (L)</span> →Opera con mínima intervención.</li>
+<li><span style="color: #007bff; font-weight: bold;">🔵 90% - 94% (U)</span> →Apto para operar de forma autónoma.</li>
+<li><span style="color: green; font-weight: bold;">🟢 95% - 100% (O)</span> →Apto para operar de forma autónoma y puede enseñar</li>
+</ul>
+</div>
+<div style="text-align: center; margin-bottom: 10px;">
+<button onclick="renderMatriz()" style="background-color: #004990; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 14px; margin: 5px;">🔄 Actualizar</button>
+
+</div>
+<div id="filtros" style="text-align:center; margin-top: 20px; margin-bottom: 20px;">
+<button onclick="filtrarArea('Todas')">Todas</button>
+</div>
+<div class="container" id="matrizOperaciones"></div>
+<script>
+// ---------- IndexedDB Helper ----------
+const DB_NAME = 'ILUO_DB';
+const DB_VERSION = 1;
+const STORE_NAME = 'respaldo';
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'clave' });
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = (event) => reject(event.target.error);
+  });
+}
+
+async function guardarEnIndexedDB(clave, valor) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put({ clave, valor });
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function leerDeIndexedDB(clave) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.get(clave);
+    req.onsuccess = () => resolve(req.result ? req.result.valor : null);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+// ---------- Migrar de localStorage ----------
+async function migrarLocalStorageAIndexedDB() {
+  const claves = ["matrizILUO", "documentosILUO"];
+  for (let clave of claves) {
+    const val = localStorage.getItem(clave);
+    if (val && !(await leerDeIndexedDB(clave))) {
+      await guardarEnIndexedDB(clave, JSON.parse(val));
+      // localStorage.removeItem(clave); // Puedes descomentar si deseas borrar tras migrar.
+    }
+  }
+}
+
+let areaSeleccionada = "Todas";
+
+// ---------- Render Matriz ----------
+async function renderMatriz() {
+  await migrarLocalStorageAIndexedDB();
+  const operadores = await leerDeIndexedDB("matrizILUO") || [];
+  const documentos = await leerDeIndexedDB("documentosILUO") || [];
+  const contenedor = document.getElementById("matrizOperaciones");
+  contenedor.innerHTML = "";
+
+  const docsEficiencia = documentos.filter(doc => doc.tipoCategoria === "Eficiencia");
+  const areasUnicas = [...new Set(docsEficiencia.map(d => d.area))];
+  const filtrosDiv = document.getElementById("filtros");
+  filtrosDiv.innerHTML = '<button onclick="filtrarArea(\'Todas\')">Todas</button>';
+  areasUnicas.forEach(area => {
+    const btn = document.createElement("button");
+    btn.textContent = area;
+    btn.onclick = () => filtrarArea(area);
+    filtrosDiv.appendChild(btn);
+  });
+
+  docsEficiencia
+    .filter(doc => areaSeleccionada === "Todas" || doc.area === areaSeleccionada)
+    .forEach(doc => {
+      const tarjeta = document.createElement("div");
+      let suma = 0;
+      let cantidad = 0;
+      operadores.forEach(op => {
+        const docOp = (op.documentacion || []).find(d => d.codigo === doc.codigo);
+        if (docOp && !isNaN(parseFloat(docOp.calificacion))) {
+          suma += parseFloat(docOp.calificacion);
+          cantidad++;
+        }
+      });
+      const promedio = cantidad > 0 ? suma / cantidad : 0;
+      let claseColor = "rojo";
+      if (promedio >= 90) {
+        claseColor = "verde";
+      } else if (promedio >= 80) {
+        claseColor = "amarillo";
+      } else if (promedio >= 70) {
+        claseColor = "naranja";
+      }
+
+      tarjeta.className = "card " + claseColor;
+      tarjeta.innerHTML = `
+        <h3>${doc.documento}</h3>
+        <p><strong>Código:</strong> ${doc.codigo}</p>
+        <p><strong>Área:</strong> ${doc.area}</p>
+        <p><strong>Promedio:</strong> ${promedio.toFixed(1)}%</p>
+      `;
+
+      let hayPersonas = false;
+
+      operadores.forEach(op => {
+        const docOp = (op.documentacion || []).find(d => d.codigo === doc.codigo);
+        if (docOp && docOp.calificacion && docOp.calificacion !== "N/A") {
+          hayPersonas = true;
+
+          let claseColorInd = "prom-rojo";
+          const cal = parseFloat(docOp.calificacion);
+          if (!isNaN(cal)) {
+            if (cal >= 95) claseColorInd = "prom-verde";
+            else if (cal >= 90) claseColorInd = "prom-azul";
+            else if (cal >= 80) claseColorInd = "prom-amarillo";
+            else if (cal >= 70) claseColorInd = "prom-naranja";
+          }
+
+          const persona = document.createElement("div");
+          persona.className = `persona ${claseColorInd}`;
+          persona.textContent = `${op.nombre} - ${docOp.calificacion}`;
+          tarjeta.appendChild(persona);
+        }
+      });
+
+      if (hayPersonas) contenedor.appendChild(tarjeta);
+    });
+}
+
+function filtrarArea(area) {
+  areaSeleccionada = area;
+  renderMatriz();
+}
+
+renderMatriz();
+</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Planificador Visual de Máquinas — ISOVOLTA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f4f7fb;}
+    .header {
+      background: #045194; color: #fff; padding: 14px 0 10px 0;
+      text-align: center; font-size: 1.6em; font-weight: bold; letter-spacing: .5px;
+      box-shadow: 0 3px 14px #04519426;
+    }
+    .header span { color: #FFD600; }
+    .toolbar { margin: 18px 0 12px 30px; }
+    .kanban-area {
+      display: flex; align-items: flex-start; gap: 16px;
+      overflow-x: auto; padding: 18px 0 0 18px;
+    }
+    .kanban-col {
+      min-width: 270px; max-width: 320px; background: #fff;
+      border-radius: 14px; box-shadow: 0 2px 12px #04519414;
+      padding: 0 0 12px 0; margin-bottom: 32px;
+      border: 3px solid #eaf1fb;
+      display: flex; flex-direction: column;
+    }
+    .kanban-title {
+      background: #045194; color: #fff; padding: 12px 10px; font-weight: bold;
+      border-radius: 11px 11px 0 0; font-size: 1.11em; text-align: center;
+      letter-spacing: .1em;
+    }
+    .kanban-tasks { flex:1; padding: 13px 12px 2px 12px; min-height: 70px;}
+    .kanban-task {
+      background: #137ad6; color: #fff; border-radius: 10px; margin-bottom: 12px;
+      padding: 12px 11px 10px 12px; box-shadow: 0 1px 9px #0451941a;
+      font-size: .98em; font-weight: 500; position: relative;
+      cursor: grab;
+      border-left: 5px solid #ffd600;
+      transition: box-shadow .14s, background .16s;
+      user-select: none;
+    }
+    .kanban-task .pedido-id { font-weight: bold; font-size: 1.01em; margin-bottom: 2px; display:block;}
+    .kanban-task .of { font-size: .92em; color: #ffd600; font-weight: 700;}
+    .kanban-task.done {
+      background: #41c87a; color: #fff; border-left: 5px solid #045194;
+      text-decoration: line-through;
+      opacity: .75;
+    }
+    .task-check {
+      position: absolute; top: 6px; right: 8px;
+      font-size: 1.2em; cursor: pointer; background: #fff;
+      color: #2bb246; border-radius: 50%; width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center; transition: box-shadow .15s;
+      box-shadow: 0 0 8px #2bb24622;
+      z-index: 5;
+    }
+    .task-check.done { color: #fff; background: #2bb246; box-shadow: 0 0 12px #2bb24655;}
+    .done-col { background: #e8fbe8 !important; border: 3px solid #36c282; }
+    .done-title { background: #36c282 !important;}
+    .done-tasks .kanban-task { background: #41c87a; color: #fff; border-left: 5px solid #045194;}
+    select { font-size: 1em; border-radius: 6px; padding: 6px 10px;}
+    @media (max-width:950px){
+      .kanban-area{flex-wrap:wrap;}
+      .kanban-col{min-width:85vw;}
+    }
+    @media (max-width:600px){
+      .kanban-title{font-size:1em;}
+      .kanban-col{min-width:99vw;}
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    Planificador Visual de Máquinas — <span>ISOVOLTA</span>
+  </div>
+  <div class="toolbar">
+    <label for="areaSel"><b>Filtrar por área:</b></label>
+    <select id="areaSel">
+      <option value="">(Todas)</option>
+    </select>
+  </div>
+  <div class="kanban-area" id="kanbanArea"></div>
+
+  <script>
+    // --- UTILIDADES Y DB (igual que en tu planificador anterior) ---
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open("PedidosDB", 2);
+        req.onupgradeneeded = e => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains("pedidos")) db.createObjectStore("pedidos", { keyPath: "idPedido" });
+          if (!db.objectStoreNames.contains("maquinas")) db.createObjectStore("maquinas", { keyPath: "area" });
+          if (!db.objectStoreNames.contains("asignaciones")) db.createObjectStore("asignaciones", { keyPath: "idPedido" });
+        };
+        req.onsuccess = e => resolve(e.target.result);
+        req.onerror = e => reject(e.target.error);
+      });
+    }
+    function cargarPedidos() {
+      return openDB().then(db => new Promise((resolve, reject) => {
+        const tx = db.transaction("pedidos", "readonly");
+        const store = tx.objectStore("pedidos");
+        const pedidos = [];
+        store.openCursor().onsuccess = e => {
+          const cursor = e.target.result;
+          if (cursor) { pedidos.push(cursor.value); cursor.continue(); }
+          else resolve(pedidos);
+        };
+        store.openCursor().onerror = e => reject(e);
+      }));
+    }
+    function cargarMaquinas() {
+      return openDB().then(db => new Promise((resolve, reject) => {
+        const tx = db.transaction("maquinas", "readonly");
+        const store = tx.objectStore("maquinas");
+        const maquinasObj = {};
+        store.openCursor().onsuccess = e => {
+          const cursor = e.target.result;
+          if (cursor) { maquinasObj[cursor.key] = cursor.value.maquinas; cursor.continue(); }
+          else resolve(maquinasObj);
+        };
+        store.openCursor().onerror = e => reject(e);
+      }));
+    }
+    function cargarAsignaciones() {
+      return openDB().then(db => new Promise((resolve, reject) => {
+        const tx = db.transaction("asignaciones", "readonly");
+        const store = tx.objectStore("asignaciones");
+        const asigns = {};
+        store.openCursor().onsuccess = e => {
+          const cursor = e.target.result;
+          if (cursor) { asigns[cursor.key] = cursor.value.maquina; cursor.continue(); }
+          else resolve(asigns);
+        };
+        store.openCursor().onerror = e => reject(e);
+      }));
+    }
+    function guardarAsignaciones(asignaciones) {
+      return openDB().then(db => {
+        const tx = db.transaction("asignaciones", "readwrite");
+        const store = tx.objectStore("asignaciones");
+        store.clear();
+        for (const id in asignaciones) store.put({ idPedido: id, maquina: asignaciones[id] });
+        return tx.complete;
+      });
+    }
+
+    // --- CARGA DATOS Y RENDER ---
+    let pedidos = [];
+    let maquinasPorArea = {};
+    let asignaciones = {};
+    let areaSeleccionada = "";
+
+    function actualizarAreasSelect() {
+      const select = document.getElementById('areaSel');
+      // Obtener todas las áreas de los pedidos y las máquinas
+      let areasSet = new Set();
+      pedidos.forEach(p => { if (p["Área"]) areasSet.add(p["Área"]); });
+      Object.keys(maquinasPorArea).forEach(a => areasSet.add(a));
+      let areas = Array.from(areasSet).sort();
+      select.innerHTML = `<option value="">(Todas)</option>`;
+      areas.forEach(area => {
+        const opt = document.createElement("option");
+        opt.value = area;
+        opt.textContent = area;
+        select.appendChild(opt);
+      });
+      select.value = areaSeleccionada;
+    }
+
+    function renderKanban() {
+      const kanban = document.getElementById('kanbanArea');
+      kanban.innerHTML = '';
+      // Áreas de máquinas filtradas
+      let areas = Object.keys(maquinasPorArea);
+      if (areaSeleccionada) areas = areas.filter(a => a === areaSeleccionada);
+      if (!areas.length) {
+        kanban.innerHTML = `<div style="color:#777; font-size:1.12em; margin:30px 0;">No hay máquinas definidas para esta área.</div>`;
+        return;
+      }
+      areas.forEach(area => {
+        // Una columna por máquina
+        maquinasPorArea[area].forEach(maquina => {
+          const col = document.createElement('div');
+          col.className = "kanban-col";
+          const title = document.createElement('div');
+          title.className = "kanban-title";
+          title.textContent = maquina;
+          col.appendChild(title);
+
+          const tasksDiv = document.createElement('div');
+          tasksDiv.className = "kanban-tasks";
+          // Filtra pedidos para esta máquina y área
+          const pedidosMaquina = pedidos
+            .filter(p => (asignaciones[p.idPedido] === maquina) && p["Área"] === area && !p._done)
+            .sort((a, b) => (a._fechaEntrega - b._fechaEntrega || (a["Documento de ventas"] || "").localeCompare(b["Documento de ventas"] || "")));
+          pedidosMaquina.forEach(pedido => {
+            const t = document.createElement("div");
+            t.className = "kanban-task";
+            t.draggable = true;
+            t.dataset.idPedido = pedido.idPedido;
+            t.innerHTML = `
+              <span class="pedido-id">${pedido["Documento de ventas"] || ""} — ${pedido["Concepto búsqueda 1"] || ""}</span>
+              <div class="of">OF: ${pedido["Orden de fabricación"] || ""}</div>
+              <div>Cantidad: <b>${pedido["Cantidad de pedido"] || ""} ${pedido["Unidad de medida"] || ""}</b></div>
+              <div>Fecha entrega: <b>${pedido._fechaEntrega ? new Date(pedido._fechaEntrega).toLocaleDateString() : ""}</b></div>
+              <div>Área: <b>${pedido["Área"] || ""}</b></div>
+            `;
+            // Paloma para marcar terminado
+            const paloma = document.createElement("span");
+            paloma.className = "task-check";
+            paloma.innerHTML = "&#10003;";
+            paloma.title = "Marcar pedido como terminado";
+            paloma.onclick = e => {
+              e.stopPropagation();
+              pedido._done = true;
+              renderKanban();
+              renderDoneCol();
+            };
+            t.appendChild(paloma);
+
+            // Drag events
+            t.addEventListener("dragstart", e => {
+              e.dataTransfer.setData("text/plain", pedido.idPedido);
+              t.classList.add("dragging");
+            });
+            t.addEventListener("dragend", e => {
+              t.classList.remove("dragging");
+            });
+            tasksDiv.appendChild(t);
+          });
+
+          // Soporta drag&drop
+          tasksDiv.addEventListener("dragover", e => {
+            e.preventDefault();
+            tasksDiv.style.background = "#eaf1fb";
+          });
+          tasksDiv.addEventListener("dragleave", e => {
+            tasksDiv.style.background = "";
+          });
+          tasksDiv.addEventListener("drop", async e => {
+            e.preventDefault();
+            tasksDiv.style.background = "";
+            const idPedido = e.dataTransfer.getData("text/plain");
+            if (!idPedido) return;
+            asignaciones[idPedido] = maquina;
+            await guardarAsignaciones(asignaciones);
+            renderKanban();
+          });
+
+          col.appendChild(tasksDiv);
+          kanban.appendChild(col);
+        });
+      });
+      renderDoneCol();
+    }
+
+    // --- Columna pedidos terminados ---
+    function renderDoneCol() {
+      let kanban = document.getElementById('kanbanArea');
+      let doneCol = document.getElementById("doneCol");
+      if (doneCol) kanban.removeChild(doneCol);
+      doneCol = document.createElement("div");
+      doneCol.id = "doneCol";
+      doneCol.className = "kanban-col done-col";
+      doneCol.innerHTML = `<div class="kanban-title done-title">Pedidos Terminados</div>
+      <div class="kanban-tasks done-tasks"></div>`;
+      // Agrega todos los pedidos con _done=true para el filtro de área
+      pedidos.filter(p => p._done && (!areaSeleccionada || p["Área"] === areaSeleccionada)).forEach(pedido => {
+        const t = document.createElement("div");
+        t.className = "kanban-task done";
+        t.innerHTML = `
+          <span class="pedido-id">${pedido["Documento de ventas"] || ""} — ${pedido["Concepto búsqueda 1"] || ""}</span>
+          <div class="of">OF: ${pedido["Orden de fabricación"] || ""}</div>
+          <div>Cantidad: <b>${pedido["Cantidad de pedido"] || ""} ${pedido["Unidad de medida"] || ""}</b></div>
+          <div>Fecha entrega: <b>${pedido._fechaEntrega ? new Date(pedido._fechaEntrega).toLocaleDateString() : ""}</b></div>
+          <div>Área: <b>${pedido["Área"] || ""}</b></div>
+        `;
+        // Permitir "desmarcar" para volver al kanban
+        const paloma = document.createElement("span");
+        paloma.className = "task-check done";
+        paloma.innerHTML = "&#10003;";
+        paloma.title = "Marcar como pendiente";
+        paloma.onclick = e => {
+          e.stopPropagation();
+          pedido._done = false;
+          renderKanban();
+        };
+        t.appendChild(paloma);
+        doneCol.querySelector(".done-tasks").appendChild(t);
+      });
+      kanban.appendChild(doneCol);
+    }
+
+    // --- Inicialización ---
+    document.getElementById('areaSel').onchange = function() {
+      areaSeleccionada = this.value;
+      renderKanban();
+    };
+
+    async function init() {
+      pedidos = await cargarPedidos();
+      maquinasPorArea = await cargarMaquinas();
+      asignaciones = await cargarAsignaciones();
+      // Asigna área a los pedidos si falta
+      pedidos.forEach(p => { if (!p["Área"] && p["area"]) p["Área"] = p["area"]; });
+      actualizarAreasSelect();
+      renderKanban();
+    }
+    init();
+  </script>
+</body>
+</html>

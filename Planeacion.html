@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seguimiento de Pedidos con Planificación</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {font-family: 'Roboto', Arial, sans-serif; background: #f4f7fb; margin: 0; font-size: 1em; color: #1a1a1a;}
+    .main-flex {display: flex; align-items: flex-start; max-width: 97vw; margin: 18px auto 48px auto; min-width: 700px;}
+    .sidebarL {width: 200px; min-width: 120px; background: #fff; border-radius: 18px 0 0 18px; box-shadow: 0 4px 20px rgba(0, 51, 102, 0.15); margin-right: 12px; padding: 12px 8px; display: flex; flex-direction: column; align-items: center; overflow-y: auto; max-height: 90vh;}
+    .mes-btn,.tab-btn,.area-btn {background: #045194; margin: 3px 6px 3px 0; border-radius: 12px; padding: 6px 12px; cursor: pointer; color: #fff; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center; white-space: nowrap; border: 1.5px solid #045194; transition: background 0.2s, color 0.2s, box-shadow 0.2s;}
+    .area-btn.selected,.area-btn:hover,.mes-btn.selected,.mes-btn:hover,.tab-btn.selected,.tab-btn:hover {background: #003366; box-shadow: 0 3px 10px rgba(0, 51, 102, 0.3); border-color: #003366;}
+    .area-badge,.mes-badge {margin-left: 6px; background: #f4d307; color: #1d1d1d; border-radius: 14px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700;}
+    #filtrosAreas,#filtrosSemanas {display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; scrollbar-width: thin;}
+    #filtrosAreas::-webkit-scrollbar,#filtrosSemanas::-webkit-scrollbar {height: 7px;}
+    #filtrosAreas::-webkit-scrollbar-thumb,#filtrosSemanas::-webkit-scrollbar-thumb {background-color: rgba(4, 81, 148, 0.5); border-radius: 10px;}
+    .container {flex: 1 1 0; background: #fff; border-radius: 0 18px 18px 0; box-shadow: 0 6px 25px rgba(0, 51, 102, 0.15); padding: 20px 20px 25px 20px; min-width: 320px; overflow-x: auto; display: flex; flex-direction: column;}
+    h2 {color: #045194; font-weight: 900; text-align: center; margin-bottom: 16px; font-size: 1.8rem;}
+    .tabs-bar {display: flex; gap: 14px; margin-bottom: 15px;}
+    .tab-btn {border-radius: 12px 12px 0 0; margin-bottom: 0; padding: 10px 18px; font-weight: 700; font-size: 1rem; user-select: none; border: 1.5px solid transparent; background: #eaf1fb; color: #003366;}
+    .tab-active {background: #045194; color: #fff; border-color: #045194 #045194 white #045194; box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);}
+    .tab-btn:hover:not(.tab-active) {background: #c3d5f3;}
+    table {border-collapse: collapse; width: 100%; font-size: 0.9rem; background: #fff; table-layout: auto; min-width: 700px; border-radius: 0 0 12px 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.1);}
+    th,td {border: 1px solid #e4e9f3; padding: 6px 10px; font-size: 0.9rem;}
+    th {background: #eaf1fb; color: #003366; font-weight: 700; position: sticky; top: 0; z-index: 1;}
+    td {white-space: pre-line; word-break: break-word; overflow: hidden;}
+    .badge {background: #045194; color: #fff; border-radius: 10px; padding: 4px 14px; margin-left: 7px; font-weight: 700; font-size: 0.9rem;}
+    .fila-nueva {background: #b4f4b8 !important; animation: nuevoFade 0.8s;}
+    @keyframes nuevoFade {from {background: #d3fadb;} to {background: #b4f4b8;}}
+    .tooltip {position: relative; cursor: pointer; color: #045194; font-weight: 700; font-size: 0.9rem;}
+    .tooltip .tooltiptext {visibility: hidden; width: 360px; max-width: 40vw; background: #003366; color: #fff; text-align: left; border-radius: 10px; padding: 10px 14px; position: absolute; z-index: 15; top: 50%; left: 100%; transform: translateY(-50%); margin-left: 18px; opacity: 0; transition: opacity 0.18s; box-shadow: 0 6px 24px #222a;}
+    .tooltip:hover .tooltiptext {visibility: visible; opacity: 1;}
+    #planContainer {display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; min-height: 300px; border: 1px solid #ddd; border-radius: 8px; background: #f9fbff;}
+    .maquina-group {background: #fff; border-radius: 12px; box-shadow: 0 4px 10px rgb(0 51 102 / 0.1); min-width: 250px; max-width: 320px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #ccc;}
+    .maquina-group h3 {margin: 0; padding: 10px 12px; background: #045194; color: #fff; font-weight: 700; font-size: 1.1rem;}
+    .dropzone {flex: 1 1 auto; padding: 10px; background: #f0f8ff; overflow-y: auto; min-height: 220px; transition: background 0.18s;}
+    .dropzone.drag-over {background-color: #d0e5ff;}
+    .pedido-item {
+      background: #045194;
+      color: white;
+      padding: 10px 13px 8px 13px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 0.96rem;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 1px 7px #0451941c;
+      transition: box-shadow 0.18s, background 0.18s;
+      border-left: 6px solid #e3b10e;
+    }
+    .pedido-item .pedido-header {
+      font-size: 1.02em;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .pedido-item .pedido-body {
+      font-size: 0.94em;
+      margin-bottom: 1px;
+    }
+    .pedido-item .pedido-footer {
+      font-size: 0.90em;
+      opacity: 0.96;
+    }
+    .pedido-item.dragging {opacity: 0.5; box-shadow: 0 4px 24px #04519499;}
+    #gestionMaquinas {padding: 10px; max-height: 80vh; overflow-y: auto;}
+    .area-gestion {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fefefe; padding: 10px;}
+    .area-gestion h4 {margin: 0 0 10px 0; font-weight: 700; color: #045194;}
+    .maquina-list {list-style: none; padding: 0; margin: 0 0 10px 0;}
+    .maquina-list li {display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; padding: 5px 10px; background: #045194; color: white; border-radius: 6px;}
+    .maquina-list li button {background: #e75d46; border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: 700; font-size: 0.85rem;}
+    .maquina-list li button:hover {background: #c9442f;}
+    .agregar-maquina-container {display: flex; gap: 8px; margin-top: 10px;}
+    .agregar-maquina-container input[type="text"] {flex: 1; padding: 6px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem;}
+    .agregar-maquina-container button {background: #045194; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 0.9rem;}
+    .agregar-maquina-container button:hover {background: #003366;}
+    #modalAsignarMaquina {position: fixed; top: 0; left: 0; right:0; bottom:0; background: rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center; z-index: 9999;}
+    #modalAsignarMaquina .modal-content {background: white; border-radius: 12px; padding: 20px; max-width: 400px; width: 100%;}
+    #modalAsignarMaquina h3 {margin-top: 0; color: #045194; font-weight: 700;}
+    #modalAsignarMaquina select {width: 100%; padding: 6px 10px; margin-top: 12px; margin-bottom: 18px; font-size: 1rem;}
+    #modalAsignarMaquina button {background: #045194; color: white; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 1rem;}
+    #modalAsignarMaquina button:hover {background: #003366;}
+    #modalAsignarMaquina .btn-cancel {background: #e75d46; margin-left: 10px;}
+    #modalAsignarMaquina .btn-cancel:hover {background: #c9442f;}
+    .loader {border: 6px solid #f3f3f3; border-top: 6px solid #045194; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin:auto;}
+    @keyframes spin {0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }}
+  </style>
+</head>
+<body>
+<div class="main-flex">
+  <aside class="sidebarL" id="mesSidebarL" aria-label="Selector de Meses"></aside>
+  <main class="container">
+    <h2 id="tituloPrincipal" tabindex="0">Seguimiento de Pedidos con Planificación</h2>
+    <div class="controls" style="margin-bottom: 8px;">
+      <label for="inputExcel" style="font-weight:700;">Importar Excel:</label>
+      <input type="file" id="inputExcel" accept=".xls,.xlsx" aria-label="Cargar archivo Excel" />
+      <span id="cuentaPedidos"></span>
+      <button onclick="borrarDatos()" aria-label="Borrar todos los datos" style="margin-left: 12px; background: #e75d46; color: #fff; padding: 6px 17px; border: none; border-radius: 7px; cursor: pointer; font-weight: 600;">Borrar Todo</button>
+      <span id="feedbackMsg" style="margin-left:10px; color:#045194; font-weight:700;"></span>
+    </div>
+    <nav class="tabs-bar" id="tabsBar" aria-label="Navegación de vistas">
+      <button id="tabMes" class="tab-btn tab-active" onclick="setVista('mes')" aria-current="page" tabindex="0">Por Mes</button>
+      <button id="tabPlan" class="tab-btn tab-inactive" onclick="setVista('plan')" tabindex="0">Planificación</button>
+      <button id="tabGestion" class="tab-btn tab-inactive" onclick="setVista('gestion')" tabindex="0">Gestión Máquinas</button>
+    </nav>
+    <section id="filtrosAreas" aria-label="Filtrar por área"></section>
+    <section id="filtrosSemanas" aria-label="Filtrar por semana"></section>
+    <section id="tabla" tabindex="0" aria-label="Tabla de pedidos"></section>
+    <section id="planContainer" style="display:none;" aria-label="Planificación Kanban"></section>
+    <section id="gestionMaquinas" style="display:none;" aria-label="Gestión de máquinas"></section>
+    <div id="loading" style="display:none;"><div class="loader"></div></div>
+  </main>
+</div>
+<div id="modalAsignarMaquina" role="dialog" aria-modal="true" aria-labelledby="modalTituloAsignar">
+  <div class="modal-content">
+    <h3 id="modalTituloAsignar">Asignar máquina</h3>
+    <div id="modalPedidoInfo"></div>
+    <select id="selectMaquina" aria-label="Seleccionar máquina"></select>
+    <div style="text-align:right; margin-top:12px;">
+      <button onclick="confirmarAsignacion()">Asignar</button>
+      <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+// ==== Variables, utilidades y DB igual que antes ====
+let pedidos = [];
+let maquinasPorArea = {};
+let asignaciones = {};
+let idxFecha = -1, idxPosCreada = -1, mesSel = new Date().getMonth(), anoSel = new Date().getFullYear();
+const mesesES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+let badgeMeses = Array(12).fill(0);
+let vista = "mes";
+let ultimosIDsNuevos = [];
+let areaSeleccionada = "";
+let semanaSeleccionada = "";
+const columnasPedidos = [
+  "Documento de ventas","Posición","Concepto búsqueda 1","Cantidad de pedido",
+  "Unidad de medida","Tipo material","Material","Denominación",
+  "Centro de beneficio","Fecha de entrega","Orden de fabricación","idPedido","Área"
+];
+let columnaNotaFab = "Nota de fabricación";
+
+function toUpperSafe(val) {return (typeof val === 'string') ? val.toUpperCase() : "";}
+function calcularAreaPedido(p) {
+  const unidad = toUpperSafe(p["Unidad de medida"]);
+  const centro = toUpperSafe(p["Centro de beneficio"]);
+  const tipoMaterial = toUpperSafe(p["Tipo material"]);
+  const materialCodigo = toUpperSafe(p["Material"]);
+  const excluirMateriaPrima = ["ROH DIEN"];
+  if (excluirMateriaPrima.includes(materialCodigo)) return "OTROS";
+  if (tipoMaterial !== "FERT") return "MATERIA PRIMA";
+  if (["SQY", "ROL", "YD", "M2", "M", "FT"].includes(unidad)) return "CORTE";
+  if (unidad === "UN" && centro === "MR_MEX") return "MAQUINADOS";
+  if (unidad === "UN" && centro === "LV_MEX") return "FORMADO";
+  if (unidad === "UN" && centro === "RL_MEX") return "MAQUINADOS";
+  if (unidad === "LB" && centro === "LV_MEX") return "CORTE";
+  if (unidad === "KG" && centro === "MR_MEX") return "MAQUINADOS";
+  if (unidad === "KG" && centro === "LV_MEX") return "CORTE";
+  if (unidad === "IN" && centro === "LV_MEX") return "CORTE";
+  if (unidad === "UN" && centro === "LQ_MEX") return "RESINAS";
+  if (unidad === "KG" && centro === "LQ_MEX") return "RESINAS";
+  if (unidad === "UN" && centro === "HV_MEX") return "MAQUINADOS";
+  return "OTROS";
+}
+function parsearFecha(valor) {
+  if (valor instanceof Date && !isNaN(valor)) return valor;
+  if (!valor) return null;
+  if (!isNaN(valor) && String(valor).length <= 5) return new Date(Math.round((valor - 25569) * 86400 * 1000));
+  if (/^\d{8}$/.test(valor)) return new Date(+valor.slice(0, 4), +valor.slice(4, 6) - 1, +valor.slice(6, 8));
+  if (/^\d{2}[\/\-]\d{2}[\/\-]\d{4}$/.test(valor)) {let [d, m, y] = valor.split(/[\/\-]/).map(x => +x);return new Date(y, m - 1, d);}
+  if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {let [y, m, d] = valor.split("-").map(x => +x); return new Date(y, m - 1, d);}
+  let f = new Date(valor); if (!isNaN(f)) return f; return null;
+}
+function formatFecha(fecha) {
+  if (!(fecha instanceof Date) || isNaN(fecha)) return "";
+  let d = fecha.getDate().toString().padStart(2, "0");
+  let m = (fecha.getMonth() + 1).toString().padStart(2, "0");
+  let y = fecha.getFullYear();
+  return `${d}/${m}/${y}`;
+}
+function getWeeksOfMonth(year, month) {
+  let weeks = [];
+  let firstDay = new Date(year, month, 1);
+  let lastDay = new Date(year, month + 1, 0);
+  let current = new Date(firstDay);
+  current.setDate(current.getDate() - current.getDay());
+  while (current <= lastDay) {
+    let start = new Date(current);
+    let end = new Date(current);
+    end.setDate(end.getDate() + 6);
+    weeks.push({ start: new Date(start), end: new Date(end), pedidos: [] });
+    current.setDate(current.getDate() + 7);
+  }
+  return weeks;
+}
+function getIDPedido(obj) {
+  return `${obj["Documento de ventas"] || obj["documento de ventas"] || obj["Documento"] || ""}-${obj["Posición"] || obj["Posicion"] || obj["Posición de pedido"] || ""}`;
+}
+function openDB() {return new Promise((resolve, reject) => {
+  const request = indexedDB.open("PedidosDB", 2);
+  request.onupgradeneeded = e => {
+    const db = e.target.result;
+    if (!db.objectStoreNames.contains("pedidos")) db.createObjectStore("pedidos", { keyPath: "idPedido" });
+    if (!db.objectStoreNames.contains("maquinas")) db.createObjectStore("maquinas", { keyPath: "area" });
+    if (!db.objectStoreNames.contains("asignaciones")) db.createObjectStore("asignaciones", { keyPath: "idPedido" });
+  };
+  request.onsuccess = e => resolve(e.target.result);
+  request.onerror = e => reject(e.target.error);
+});}
+async function guardarPedidos(pedidosArr) {
+  const db = await openDB();
+  const tx = db.transaction("pedidos", "readwrite");
+  const store = tx.objectStore("pedidos");
+  await store.clear();
+  for (const p of pedidosArr) store.put(p);
+  return tx.complete;
+}
+async function cargarPedidos() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("pedidos", "readonly");
+    const store = tx.objectStore("pedidos");
+    const pedidos = [];
+    store.openCursor().onsuccess = e => {
+      const cursor = e.target.result;
+      if (cursor) {pedidos.push(cursor.value);cursor.continue();}
+      else resolve(pedidos);
+    };
+    store.openCursor().onerror = e => reject(e);
+  });
+}
+async function guardarMaquinas(maquinasObj) {
+  const db = await openDB();
+  const tx = db.transaction("maquinas", "readwrite");
+  const store = tx.objectStore("maquinas");
+  await store.clear();
+  for (const area in maquinasObj) store.put({ area, maquinas: maquinasObj[area] });
+  return tx.complete;
+}
+async function cargarMaquinas() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("maquinas", "readonly");
+    const store = tx.objectStore("maquinas");
+    const maquinasObj = {};
+    store.openCursor().onsuccess = e => {
+      const cursor = e.target.result;
+      if (cursor) {maquinasObj[cursor.key] = cursor.value.maquinas;cursor.continue();}
+      else resolve(maquinasObj);
+    };
+    store.openCursor().onerror = e => reject(e);
+  });
+}
+async function guardarAsignaciones(asignacionesObj) {
+  const db = await openDB();
+  const tx = db.transaction("asignaciones", "readwrite");
+  const store = tx.objectStore("asignaciones");
+  await store.clear();
+  for (const id in asignacionesObj) store.put({ idPedido: id, maquina: asignacionesObj[id] });
+  return tx.complete;
+}
+async function cargarAsignaciones() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("asignaciones", "readonly");
+    const store = tx.objectStore("asignaciones");
+    const asigns = {};
+    store.openCursor().onsuccess = e => {
+      const cursor = e.target.result;
+      if (cursor) {asigns[cursor.key] = cursor.value.maquina;cursor.continue();}
+      else resolve(asigns);
+    };
+    store.openCursor().onerror = e => reject(e);
+  });
+}
+function mostrarLoader(show) {document.getElementById("loading").style.display = show ? "block" : "none";}
+function feedback(mensaje, tiempo = 1800) {
+  const el = document.getElementById("feedbackMsg");
+  el.textContent = mensaje; el.style.opacity = 1;
+  if (tiempo) setTimeout(() => {el.style.opacity = 0;}, tiempo);
+}
+// ==== Importación Excel igual que antes ====
+document.getElementById("inputExcel").addEventListener("change", async function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  mostrarLoader(true); ultimosIDsNuevos = [];
+  const reader = new FileReader();
+  reader.onload = async function(evt) {
+    const data = new Uint8Array(evt.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+    const hoja = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(hoja, { header: 1, defval: "" });
+    const header = rows[0];
+    idxFecha = header.findIndex(col => typeof col === 'string' && col.toLowerCase().includes("fecha de entrega"));
+    idxPosCreada = header.findIndex(col => typeof col === 'string' && col.toLowerCase().includes("posic") && col.toLowerCase().includes("creada"));
+    columnaNotaFab = header.find(h => typeof h === 'string' && h.toLowerCase().includes("nota") && h.toLowerCase().includes("fabricacion")) || "Nota de fabricación";
+    let pedidosExist = await cargarPedidos(), pedidosMap = {};
+    pedidosExist.forEach(p => pedidosMap[p.idPedido] = p);
+    // CARGA TAMBIÉN LAS ASIGNACIONES EXISTENTES
+    let asignacionesExist = await cargarAsignaciones();
+
+    let nuevosPedidos = [];
+    rows.slice(1).forEach(row => {
+      let obj = {}; header.forEach((col, i) => obj[col] = row[i]);
+      let fecha = parsearFecha(row[idxFecha]);
+      obj._fechaEntrega = fecha; obj._mesNum = fecha ? fecha.getMonth() : -1; obj._anoNum = fecha ? fecha.getFullYear() : -1;
+      if (idxPosCreada > -1) obj._fechaPosCreada = parsearFecha(row[idxPosCreada]);
+      obj.idPedido = getIDPedido(obj);
+      obj["Área"] = calcularAreaPedido(obj);
+      let yaExiste = pedidosMap[obj.idPedido];
+      if (!yaExiste) {obj._nuevo = true; ultimosIDsNuevos.push(obj.idPedido);}
+      else {if (JSON.stringify(obj) !== JSON.stringify(yaExiste)) {obj._nuevo = true; ultimosIDsNuevos.push(obj.idPedido);}}
+      nuevosPedidos.push(obj);
+    });
+
+    pedidos = nuevosPedidos;
+    // MANTENER ASIGNACIONES
+    // Elimina asignaciones de pedidos que ya no existen, pero conserva las de los nuevos
+    let nuevasAsignaciones = {};
+    for (let p of pedidos) {
+      if (asignacionesExist[p.idPedido]) {
+        nuevasAsignaciones[p.idPedido] = asignacionesExist[p.idPedido];
+      }
+    }
+    asignaciones = nuevasAsignaciones;
+    await guardarPedidos(pedidos);
+    await guardarAsignaciones(asignaciones);
+
+    const añoActual = new Date().getFullYear(); badgeMeses = Array(12).fill(0);
+    pedidos.forEach(p => {if (p._anoNum === añoActual && p._mesNum >= 0) badgeMeses[p._mesNum]++;});
+    mesSel = new Date().getMonth(); anoSel = añoActual;
+    feedback("Pedidos cargados correctamente");
+    renderSidebarL(); renderTabsBar(); renderFiltrosAreas(); renderFiltrosSemanas(); renderTabla(); renderPlanificacion(); renderGestionMaquinas();
+    mostrarLoader(false);
+  };
+  reader.readAsArrayBuffer(file);
+});
+function setVista(v) {
+  vista = v;
+  document.getElementById("planContainer").style.display = v === "plan" ? "flex" : "none";
+  document.getElementById("gestionMaquinas").style.display = v === "gestion" ? "block" : "none";
+  document.getElementById("tabla").style.display = v === "mes" ? "block" : "none";
+  renderTabsBar(); renderFiltrosAreas(); renderFiltrosSemanas(); renderTabla(); renderPlanificacion(); renderGestionMaquinas();
+}
+// ==== SIDEBAR Y FILTROS IGUAL ====
+function renderSidebarL() {
+  const lista = document.getElementById("mesSidebarL"); lista.innerHTML = "";
+  for (let m = 0; m < 12; m++) {
+    let count = badgeMeses[m] || 0;
+    let btn = document.createElement("button");
+    btn.className = "mes-btn" + (mesSel === m && vista === "mes" ? " selected" : "");
+    btn.innerHTML = `${mesesES[m]} <span class="mes-badge">${count}</span>`;
+    btn.setAttribute("aria-label", `Mes ${mesesES[m]}, ${count} pedidos`);
+    btn.onclick = function () {
+      setVista("mes"); mesSel = m; areaSeleccionada = ""; semanaSeleccionada = "";
+      renderSidebarL(); renderFiltrosAreas(); renderFiltrosSemanas(); renderTabla(); renderPlanificacion();
+    };
+    lista.appendChild(btn);
+  }
+}
+function renderFiltrosAreas() {
+  const div = document.getElementById("filtrosAreas"); div.innerHTML = "";
+  let datosFiltrados = pedidos.filter(p => {
+    if (vista === "mes") return p._mesNum === mesSel && p._anoNum === anoSel;
+    return true;
+  });
+  let areasCount = {};
+  datosFiltrados.forEach(p => {
+    let a = p["Área"] || calcularAreaPedido(p); if (!areasCount[a]) areasCount[a] = 0; areasCount[a]++;
+  });
+  let btnTodas = document.createElement("button");
+  btnTodas.className = "area-btn" + (areaSeleccionada === "" ? " selected" : "");
+  btnTodas.innerHTML = `Todas <span class="area-badge">${datosFiltrados.length}</span>`;
+  btnTodas.onclick = () => {areaSeleccionada = ""; semanaSeleccionada = ""; renderFiltrosAreas(); renderFiltrosSemanas(); renderTabla(); renderPlanificacion();};
+  div.appendChild(btnTodas);
+  Object.keys(areasCount).sort().forEach(area => {
+    let btn = document.createElement("button");
+    btn.className = "area-btn" + (areaSeleccionada === area ? " selected" : "");
+    btn.innerHTML = `${area} <span class="area-badge">${areasCount[area]}</span>`;
+    btn.onclick = function () {areaSeleccionada = area; semanaSeleccionada = ""; renderFiltrosAreas(); renderFiltrosSemanas(); renderTabla(); renderPlanificacion();};
+    div.appendChild(btn);
+  });
+}
+function renderFiltrosSemanas() {
+  const div = document.getElementById("filtrosSemanas"); div.innerHTML = "";
+  if (vista !== "mes") return;
+  let datosFiltrados = pedidos.filter(p => p._mesNum === mesSel && p._anoNum === anoSel && (areaSeleccionada ? p["Área"] === areaSeleccionada : true));
+  const semanas = getWeeksOfMonth(anoSel, mesSel);
+  semanas.forEach(semana => {semana.pedidos = datosFiltrados.filter(p => p._fechaEntrega >= semana.start && p._fechaEntrega <= semana.end);});
+  let btnTodas = document.createElement("button");
+  btnTodas.className = "area-btn" + (semanaSeleccionada === "" ? " selected" : "");
+  btnTodas.innerHTML = `Todas las semanas <span class="area-badge">${datosFiltrados.length}</span>`;
+  btnTodas.onclick = () => {semanaSeleccionada = ""; renderFiltrosSemanas(); renderTabla(); renderPlanificacion();};
+  div.appendChild(btnTodas);
+  semanas.forEach((semana, i) => {
+    let btn = document.createElement("button");
+    btn.className = "area-btn" + (semanaSeleccionada === i ? " selected" : "");
+    btn.innerHTML = `Semana ${i + 1}: ${formatFecha(semana.start)} - ${formatFecha(semana.end)} <span class="area-badge">${semana.pedidos.length}</span>`;
+    btn.onclick = () => {semanaSeleccionada = i; renderFiltrosSemanas(); renderTabla(); renderPlanificacion();};
+    div.appendChild(btn);
+  });
+}
+function renderTabsBar() {
+  ["tabMes","tabPlan","tabGestion"].forEach(id => {document.getElementById(id).className = "tab-btn tab-inactive";});
+  if (vista === "mes") document.getElementById("tabMes").className = "tab-btn tab-active";
+  else if (vista === "plan") document.getElementById("tabPlan").className = "tab-btn tab-active";
+  else if (vista === "gestion") document.getElementById("tabGestion").className = "tab-btn tab-active";
+}
+function renderTabla() {
+  let añoActual = new Date().getFullYear();
+  let datos, badgeMsg;
+  if (vista === "mes") {
+    datos = pedidos.filter(p => p._mesNum === mesSel && p._anoNum === añoActual).sort((a,b) => a._fechaEntrega - b._fechaEntrega);
+    badgeMsg = `<span class="badge">${datos.length} pedidos en ${mesesES[mesSel]} ${añoActual}</span>`;
+  } else {datos = pedidos; badgeMsg = `<span class="badge">${datos.length} pedidos totales</span>`;}
+  if (areaSeleccionada) datos = datos.filter(p => (p["Área"] || calcularAreaPedido(p)) === areaSeleccionada);
+  if (semanaSeleccionada !== "") {
+    const semanas = getWeeksOfMonth(anoSel, mesSel);
+    const semana = semanas[semanaSeleccionada];
+    if (semana) datos = datos.filter(p => p._fechaEntrega >= semana.start && p._fechaEntrega <= semana.end);
+  }
+  document.getElementById("cuentaPedidos").innerHTML = badgeMsg;
+  if (!datos.length) {document.getElementById("tabla").innerHTML = "<div style='color:#777'>No hay pedidos en esta vista.</div>"; return;}
+  let columnas = columnasPedidos;
+  let html = "<table aria-label='Tabla de pedidos'><thead><tr>";
+  columnas.forEach(col => { html += `<th>${col}</th>`; });
+  html += `<th>Máquina</th><th>Acciones</th></tr></thead><tbody>`;
+  datos.forEach(r => {
+    let esNuevo = ultimosIDsNuevos.includes(r.idPedido) || r._nuevo;
+    html += `<tr${esNuevo ? " class='fila-nueva'" : ""}>`;
+    columnas.forEach(col => {
+      if (col === "Fecha de entrega") html += `<td>${formatFecha(r._fechaEntrega)}</td>`;
+      else if (col === "Orden de fabricación") {
+        let nota = columnaNotaFab && r[columnaNotaFab] ? r[columnaNotaFab] : "";
+        if (nota && nota.trim() !== "") html += `<td><span class="tooltip" tabindex="0">${r[col] || ""}<span class="tooltiptext">${nota}</span></span></td>`;
+        else html += `<td>${r[col] || ""}</td>`;
+      } else html += `<td>${r[col] || ""}</td>`;
+    });
+    const maquinaAsignada = asignaciones[r.idPedido] || "";
+    html += `<td>${maquinaAsignada}</td>`;
+    html += `<td><button onclick="abrirModalAsignarMaquina('${r.idPedido}')" aria-label="Asignar máquina a pedido ${r['Documento de ventas']}">Asignar Máquina</button></td>`;
+    html += "</tr>";
+  });
+  html += "</tbody></table>";
+  document.getElementById("tabla").innerHTML = html;
+}
+
+// --- CORREGIDO: renderGestionMaquinas para todas las áreas ---
+function renderGestionMaquinas() {
+  const cont = document.getElementById("gestionMaquinas"); cont.innerHTML = "";
+  // Áreas de pedidos y de máquinas
+  const areasSet = new Set([
+    ...Object.keys(maquinasPorArea),
+    ...pedidos.map(p => (p["Área"] || calcularAreaPedido(p)))
+  ]);
+  const areasArr = Array.from(areasSet).sort();
+  if (!areasArr.length) {
+    cont.innerHTML = "<div style='color:#777;'>No hay áreas definidas.</div>";
+    return;
+  }
+  areasArr.forEach(area => {
+    const divArea = document.createElement("div");
+    divArea.className = "area-gestion";
+    const h4 = document.createElement("h4");
+    h4.textContent = area;
+    divArea.appendChild(h4);
+
+    const ul = document.createElement("ul");
+    ul.className = "maquina-list";
+    const maquinas = maquinasPorArea[area] || [];
+    maquinas.forEach((m, i) => {
+      const li = document.createElement("li");
+      li.textContent = m;
+      const btnEliminar = document.createElement("button");
+      btnEliminar.textContent = "Eliminar";
+      btnEliminar.onclick = async () => {
+        maquinas.splice(i, 1); maquinasPorArea[area] = maquinas;
+        await guardarMaquinas(maquinasPorArea);
+        renderGestionMaquinas(); renderPlanificacion(); renderTabla();
+      };
+      li.appendChild(btnEliminar); ul.appendChild(li);
+    });
+    divArea.appendChild(ul);
+
+    // Agregar máquina nueva
+    const contAgregar = document.createElement("div");
+    contAgregar.className = "agregar-maquina-container";
+    const inputNew = document.createElement("input");
+    inputNew.type = "text";
+    inputNew.placeholder = "Nueva máquina";
+    contAgregar.appendChild(inputNew);
+
+    const btnAgregar = document.createElement("button");
+    btnAgregar.textContent = "Agregar";
+    btnAgregar.onclick = async () => {
+      const val = inputNew.value.trim();
+      if (!val) return alert("Ingrese nombre de máquina");
+      if (!maquinasPorArea[area]) maquinasPorArea[area] = [];
+      if (maquinasPorArea[area].includes(val)) {alert("Máquina ya existe"); return;}
+      maquinasPorArea[area].push(val);
+      await guardarMaquinas(maquinasPorArea);
+      inputNew.value = "";
+      renderGestionMaquinas(); renderPlanificacion(); renderTabla();
+    };
+    contAgregar.appendChild(btnAgregar);
+    divArea.appendChild(contAgregar);
+    cont.appendChild(divArea);
+  });
+}
+
+// --- CORREGIDO: renderPlanificacion para mostrar siempre máquinas por área ---
+function renderPlanificacion() {
+  const cont = document.getElementById("planContainer"); cont.innerHTML = "";
+  const area = areaSeleccionada;
+  if (!area) {
+    cont.innerHTML = "<div style='color:#777; padding:20px;'>Seleccione un área para ver la planificación</div>";
+    return;
+  }
+  // Asegura que siempre hay un array aunque esté vacío
+  if (!maquinasPorArea[area]) maquinasPorArea[area] = [];
+  let datos = pedidos.filter(p => p._mesNum === mesSel && p._anoNum === anoSel && (p["Área"] || calcularAreaPedido(p)) === area);
+  if (semanaSeleccionada !== "") {
+    const semanas = getWeeksOfMonth(anoSel, mesSel);
+    const semana = semanas[semanaSeleccionada];
+    if (semana) datos = datos.filter(p => p._fechaEntrega >= semana.start && p._fechaEntrega <= semana.end);
+  }
+  const maquinas = maquinasPorArea[area] || [];
+  if (!maquinas.length) {
+    cont.innerHTML = "<div style='color:#777; padding:20px;'>No hay máquinas definidas para esta área.</div>";
+    return;
+  }
+  maquinas.forEach(maquina => {
+    const col = document.createElement("div");
+    col.className = "maquina-group";
+    col.dataset.maquina = maquina;
+    const h3 = document.createElement("h3");
+    h3.textContent = maquina;
+    col.appendChild(h3);
+
+    const dropzone = document.createElement("div");
+    dropzone.className = "dropzone";
+    dropzone.dataset.maquina = maquina;
+    const pedidosEnMaquina = datos
+      .filter(p => asignaciones[p.idPedido] === maquina)
+      .sort((a, b) => a._fechaEntrega - b._fechaEntrega || (a["Documento de ventas"] || "").localeCompare(b["Documento de ventas"] || ""));
+    pedidosEnMaquina.forEach(pedido => {
+      const item = document.createElement("div");
+      item.className = "pedido-item";
+      item.draggable = true;
+      item.dataset.idPedido = pedido.idPedido;
+      item.innerHTML = `
+        <div class="pedido-header">
+          Pedido: ${pedido["Documento de ventas"] || ""} - ${pedido["Posición"] || ""}
+          <span style="float:right;">OF: ${pedido["Orden de fabricación"] || ""}</span>
+        </div>
+        <div class="pedido-body">
+          Concepto: <b>${pedido["Concepto búsqueda 1"] || ""}</b>
+        </div>
+        <div class="pedido-body">
+          Cantidad: <b>${pedido["Cantidad de pedido"] || ""} ${pedido["Unidad de medida"] || ""}</b>
+        </div>
+        <div class="pedido-footer">
+          Fecha de entrega: <span>${formatFecha(pedido._fechaEntrega)}</span>
+        </div>
+      `;
+      item.title = `Orden fabricación: ${pedido["Orden de fabricación"] || ""}
+Concepto búsqueda 1: ${pedido["Concepto búsqueda 1"] || ""}
+Cantidad pedido: ${pedido["Cantidad de pedido"] || ""}
+Unidad pedido: ${pedido["Unidad de medida"] || ""}
+Fecha entrega: ${formatFecha(pedido._fechaEntrega)}
+Pedido: ${pedido["Documento de ventas"] || ""} - ${pedido["Posición"] || ""}`;
+      item.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", pedido.idPedido);
+        item.classList.add("dragging");
+      });
+      item.addEventListener("dragend", e => {item.classList.remove("dragging");});
+      dropzone.appendChild(item);
+    });
+    dropzone.addEventListener("dragover", e => { e.preventDefault(); dropzone.classList.add("drag-over"); });
+    dropzone.addEventListener("dragleave", e => { dropzone.classList.remove("drag-over"); });
+    dropzone.addEventListener("drop", async e => {
+      e.preventDefault();
+      dropzone.classList.remove("drag-over");
+      const idPedido = e.dataTransfer.getData("text/plain");
+      if (!idPedido) return;
+      asignaciones[idPedido] = maquina;
+      await guardarAsignaciones(asignaciones);
+      feedback("Pedido asignado a máquina");
+      renderPlanificacion(); renderTabla();
+    });
+    col.appendChild(dropzone);
+    cont.appendChild(col);
+  });
+}
+// --- Modal Asignación y demás igual que antes ---
+let pedidoActualModal = null;
+function abrirModalAsignarMaquina(idPedido) {
+  pedidoActualModal = pedidos.find(p => p.idPedido === idPedido);
+  if (!pedidoActualModal) return alert("Pedido no encontrado");
+  const infoDiv = document.getElementById("modalPedidoInfo");
+  infoDiv.innerHTML = `
+    <strong>Pedido:</strong> ${pedidoActualModal["Documento de ventas"] || ""} - ${pedidoActualModal["Posición"] || ""}
+    <br><strong>Área:</strong> ${pedidoActualModal["Área"]}
+    <br><strong>Fecha de entrega:</strong> ${formatFecha(pedidoActualModal._fechaEntrega)}
+  `;
+  const select = document.getElementById("selectMaquina");
+  select.innerHTML = "";
+  const area = pedidoActualModal["Área"];
+  const maquinas = maquinasPorArea[area] || [];
+  maquinas.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m; opt.textContent = m;
+    select.appendChild(opt);
+  });
+  select.value = asignaciones[pedidoActualModal.idPedido] || "";
+  document.getElementById("modalAsignarMaquina").style.display = "flex";
+  select.focus();
+}
+function cerrarModal() {
+  document.getElementById("modalAsignarMaquina").style.display = "none"; pedidoActualModal = null;
+}
+async function confirmarAsignacion() {
+  if (!pedidoActualModal) return;
+  const select = document.getElementById("selectMaquina");
+  const maquina = select.value;
+  if (!maquina) {alert("Seleccione una máquina"); return;}
+  asignaciones[pedidoActualModal.idPedido] = maquina;
+  await guardarAsignaciones(asignaciones);
+  cerrarModal(); feedback("Asignación guardada");
+  renderTabla(); renderPlanificacion();
+}
+window.addEventListener("keydown", function(e) {
+  if (document.getElementById("modalAsignarMaquina").style.display === "flex" && e.key === "Escape") {cerrarModal();}
+});
+async function borrarDatos() {
+  if (!confirm("¿Borrar todos los datos almacenados?")) return;
+  const db = await openDB();
+  let tx = db.transaction("pedidos", "readwrite"); tx.objectStore("pedidos").clear();
+  tx = db.transaction("maquinas", "readwrite"); tx.objectStore("maquinas").clear();
+  tx = db.transaction("asignaciones", "readwrite"); tx.objectStore("asignaciones").clear();
+  pedidos = []; maquinasPorArea = {}; asignaciones = {}; badgeMeses = Array(12).fill(0); areaSeleccionada = ""; semanaSeleccionada = "";
+  renderSidebarL(); renderTabsBar(); renderFiltrosAreas(); renderFiltrosSemanas(); renderTabla(); renderPlanificacion(); renderGestionMaquinas();
+  feedback("Datos borrados");
+}
+window.onload = async () => {
+  mostrarLoader(true);
+  pedidos = await cargarPedidos();
+  maquinasPorArea = await cargarMaquinas();
+  asignaciones = await cargarAsignaciones();
+  const añoActual = new Date().getFullYear();
+  badgeMeses = Array(12).fill(0);
+  pedidos.forEach(p => {
+    if (p._anoNum === añoActual && p._mesNum >= 0) badgeMeses[p._mesNum]++;
+    if (!p["Área"]) p["Área"] = calcularAreaPedido(p);
+  });
+  renderSidebarL(); renderTabsBar(); renderFiltrosAreas(); renderFiltrosSemanas(); renderTabla();
+  mostrarLoader(false);
+};
+</script>
+</body>
+</html>

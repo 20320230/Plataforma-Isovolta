@@ -1,0 +1,2669 @@
+{
+  "Productividad_MaqTurnoDias": {
+    "datos": [
+      {
+        "anio": 2026,
+        "mes": 4,
+        "dia": 4,
+        "maquinaId": 1,
+        "turnos": [
+          {
+            "turnoId": 1,
+            "minutos": 0,
+            "producido": 0,
+            "objetivo": 0
+          }
+        ],
+        "id": 1
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 19,
+        "maquinaId": 2,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "producido": 2,
+            "objetivo": 3
+          },
+          {
+            "turnoId": 3,
+            "minutos": 0,
+            "producido": 0,
+            "objetivo": 0
+          }
+        ],
+        "id": 2
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 28,
+        "maquinaId": 2,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "producido": 0,
+            "objetivo": 0
+          }
+        ],
+        "id": 3
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 17,
+        "maquinaId": 4,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "producido": 0,
+            "objetivo": 0
+          },
+          {
+            "turnoId": 3,
+            "producido": 0,
+            "objetivo": 0
+          },
+          {
+            "turnoId": 4,
+            "producido": 0,
+            "objetivo": 0
+          }
+        ],
+        "id": 4
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 17,
+        "maquinaId": 7,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "producido": 0,
+            "objetivo": 0
+          }
+        ],
+        "id": 5
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 17,
+        "maquinaId": 6,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "producido": 3,
+            "objetivo": 3
+          },
+          {
+            "turnoId": 3,
+            "producido": 0,
+            "objetivo": 0
+          }
+        ],
+        "id": 6
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 17,
+        "maquinaId": 2,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "producido": 0,
+            "objetivo": 0
+          }
+        ],
+        "id": 7
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 17,
+        "maquinaId": 3,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "producido": 0,
+            "objetivo": 0
+          }
+        ],
+        "id": 8
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 19,
+        "maquinaId": 3,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "producido": 2,
+            "objetivo": 2,
+            "operadorId": 1
+          }
+        ],
+        "id": 9
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 19,
+        "maquinaId": 8,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "producido": 1258,
+            "objetivo": 0,
+            "operadorId": 3
+          }
+        ],
+        "id": 10
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 19,
+        "maquinaId": 14,
+        "turnos": [],
+        "id": 11
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 31,
+        "maquinaId": 10,
+        "turnos": [],
+        "id": 12
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 14,
+        "maquinaId": 30,
+        "turnos": [],
+        "id": 13
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 14,
+        "maquinaId": 31,
+        "turnos": [],
+        "id": 14
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 14,
+        "maquinaId": 24,
+        "turnos": [],
+        "id": 15
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 14,
+        "maquinaId": 28,
+        "turnos": [],
+        "id": 16
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 19,
+        "maquinaId": 30,
+        "turnos": [],
+        "id": 17
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 19,
+        "maquinaId": 9,
+        "turnos": [],
+        "id": 18
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 19,
+        "maquinaId": 17,
+        "turnos": [],
+        "id": 19
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 20,
+        "maquinaId": 24,
+        "turnos": [],
+        "id": 20
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 20,
+        "maquinaId": 9,
+        "turnos": [],
+        "id": 21
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 31,
+        "maquinaId": 9,
+        "turnos": [],
+        "id": 22
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 21,
+        "maquinaId": 9,
+        "turnos": [
+          {
+            "turnoId": 6,
+            "operadorId": 51,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 23
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 21,
+        "maquinaId": 11,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "operadorId": 49,
+            "producido": 4080,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 3,
+            "operadorId": 45,
+            "producido": 0,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 4,
+            "operadorId": 50,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 24
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 21,
+        "maquinaId": 13,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "operadorId": 48,
+            "producido": 0,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 3,
+            "operadorId": 61,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 25
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 21,
+        "maquinaId": 14,
+        "turnos": [
+          {
+            "turnoId": 5,
+            "operadorId": 43,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 26
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 21,
+        "maquinaId": 15,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "operadorId": 44,
+            "producido": 0,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 3,
+            "operadorId": 47,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 27
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 21,
+        "maquinaId": 17,
+        "turnos": [],
+        "id": 28
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 21,
+        "maquinaId": 18,
+        "turnos": [],
+        "id": 29
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 21,
+        "maquinaId": 19,
+        "turnos": [],
+        "id": 30
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 21,
+        "maquinaId": 26,
+        "turnos": [
+          {
+            "turnoId": 5,
+            "operadorId": 31,
+            "producido": 861,
+            "defectuosa": 0
+          }
+        ],
+        "id": 31
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 21,
+        "maquinaId": 25,
+        "turnos": [
+          {
+            "turnoId": 5,
+            "operadorId": 24,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 32
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 9,
+        "turnos": [
+          {
+            "turnoId": 6,
+            "operadorId": 51,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 33
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 11,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "operadorId": 49,
+            "producido": 0,
+            "defectuosa": 500
+          },
+          {
+            "turnoId": 3,
+            "operadorId": 45,
+            "producido": 0,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 4,
+            "operadorId": 50,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 34
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 11,
+        "turnos": [
+          {
+            "turnoId": 3,
+            "operadorId": 45,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 35
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 11,
+        "turnos": [
+          {
+            "turnoId": 4,
+            "operadorId": 50,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 36
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 13,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "operadorId": 48,
+            "producido": 0,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 3,
+            "operadorId": 61,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 37
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 13,
+        "turnos": [
+          {
+            "turnoId": 3,
+            "operadorId": 61,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 38
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 14,
+        "turnos": [
+          {
+            "turnoId": 5,
+            "operadorId": 43,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 39
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 15,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "operadorId": 44,
+            "producido": 0,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 3,
+            "operadorId": 47,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 40
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 15,
+        "turnos": [
+          {
+            "turnoId": 3,
+            "operadorId": 47,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 41
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 17,
+        "turnos": [],
+        "id": 42
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 18,
+        "turnos": [],
+        "id": 43
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "maquinaId": 19,
+        "turnos": [],
+        "id": 44
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 23,
+        "maquinaId": 11,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "operadorId": 49,
+            "producido": 0,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 3,
+            "operadorId": 45,
+            "producido": 0,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 4,
+            "operadorId": 50,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 45
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 23,
+        "maquinaId": 11,
+        "turnos": [
+          {
+            "turnoId": 3,
+            "operadorId": 45,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 46
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 23,
+        "maquinaId": 11,
+        "turnos": [
+          {
+            "turnoId": 4,
+            "operadorId": 50,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 47
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 23,
+        "maquinaId": 13,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "operadorId": 48,
+            "producido": 0,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 3,
+            "operadorId": 61,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 48
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 23,
+        "maquinaId": 13,
+        "turnos": [
+          {
+            "turnoId": 3,
+            "operadorId": 61,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 49
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 23,
+        "maquinaId": 14,
+        "turnos": [
+          {
+            "turnoId": 5,
+            "operadorId": 43,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 50
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 23,
+        "maquinaId": 15,
+        "turnos": [
+          {
+            "turnoId": 2,
+            "operadorId": 44,
+            "producido": 0,
+            "defectuosa": 0
+          },
+          {
+            "turnoId": 3,
+            "operadorId": 47,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 51
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 23,
+        "maquinaId": 15,
+        "turnos": [
+          {
+            "turnoId": 3,
+            "operadorId": 47,
+            "producido": 0,
+            "defectuosa": 0
+          }
+        ],
+        "id": 52
+      }
+    ],
+    "maquinas": [
+      {
+        "nombre": "MX-ML-02",
+        "area": "Laminado",
+        "objetivo": 11.25,
+        "unidad": "m2",
+        "id": 9
+      },
+      {
+        "nombre": "MX-ML-01",
+        "area": "Laminado",
+        "objetivo": 5.63,
+        "unidad": "m2",
+        "id": 10
+      },
+      {
+        "nombre": "MX-MC-09",
+        "area": "Corte",
+        "objetivo": 8.5,
+        "unidad": "m2",
+        "id": 11
+      },
+      {
+        "nombre": "MX-MC-10",
+        "area": "Corte",
+        "objetivo": 10.5,
+        "unidad": "m2",
+        "id": 13
+      },
+      {
+        "nombre": "MX-MC-01",
+        "area": "Corte",
+        "objetivo": 16.4,
+        "unidad": "m2",
+        "id": 14
+      },
+      {
+        "nombre": "MX-MC-06",
+        "area": "Corte",
+        "objetivo": 3.75,
+        "unidad": "m2",
+        "id": 15
+      },
+      {
+        "nombre": "MX-MC-07",
+        "area": "Corte",
+        "objetivo": 3.75,
+        "unidad": "m2",
+        "id": 16
+      },
+      {
+        "nombre": "MX-MT-07",
+        "area": "Formado",
+        "objetivo": 55,
+        "unidad": "Un",
+        "id": 17
+      },
+      {
+        "nombre": "MX-MT-11",
+        "area": "Formado",
+        "objetivo": 20.9,
+        "unidad": "Un",
+        "id": 18
+      },
+      {
+        "nombre": "MX-MT-10",
+        "area": "Formado",
+        "objetivo": 1.76,
+        "unidad": "Un",
+        "id": 19
+      },
+      {
+        "nombre": "MX-MT-05",
+        "area": "Formado",
+        "objetivo": 1.65,
+        "unidad": "Un",
+        "id": 20
+      },
+      {
+        "nombre": "MX-MT-08",
+        "area": "Formado",
+        "objetivo": 19.8,
+        "unidad": "Un",
+        "id": 22
+      },
+      {
+        "nombre": "MX-MT-04",
+        "area": "Formado",
+        "objetivo": 2.2,
+        "unidad": "Un",
+        "id": 23
+      },
+      {
+        "nombre": "MX-MM-09",
+        "area": "Maquinado",
+        "objetivo": 2.2,
+        "unidad": "Un",
+        "id": 24
+      },
+      {
+        "nombre": "MX-MM-11",
+        "area": "Maquinado",
+        "objetivo": 2.2,
+        "unidad": "Un",
+        "id": 25
+      },
+      {
+        "nombre": "MX-MM-15",
+        "area": "Maquinado",
+        "objetivo": 3,
+        "unidad": "Un",
+        "id": 26
+      },
+      {
+        "nombre": "MX-MM-14",
+        "area": "Maquinado",
+        "objetivo": 0.17,
+        "unidad": "Un",
+        "id": 27
+      },
+      {
+        "nombre": "MX-MM-10",
+        "area": "Maquinado",
+        "objetivo": 0.17,
+        "unidad": "Un",
+        "id": 28
+      },
+      {
+        "nombre": "MX-MM-12",
+        "area": "Maquinado",
+        "objetivo": 0.37,
+        "unidad": "Un",
+        "id": 29
+      },
+      {
+        "nombre": "MX-MM-04",
+        "area": "Maquinado",
+        "objetivo": 0.33,
+        "unidad": "Un",
+        "id": 30
+      },
+      {
+        "nombre": "MX-MM-05",
+        "area": "Maquinado",
+        "objetivo": 0.042,
+        "unidad": "Un",
+        "id": 31
+      },
+      {
+        "nombre": "MX-LI-01",
+        "area": "Resinas",
+        "objetivo": 1500,
+        "unidad": "kg",
+        "id": 32
+      }
+    ],
+    "operadores": [
+      {
+        "nombre": "RICARDO GONZALEZ",
+        "area": "Maquinado",
+        "id": 24
+      },
+      {
+        "nombre": "CARLOS ANAYA",
+        "area": "Maquinado",
+        "id": 25
+      },
+      {
+        "nombre": "JUAN DIONISIO",
+        "area": "Maquinado",
+        "id": 26
+      },
+      {
+        "nombre": "SARA JUAREZ",
+        "area": "Maquinado",
+        "id": 27
+      },
+      {
+        "nombre": "ALEJANDRO MEDINA",
+        "area": "Maquinado",
+        "id": 28
+      },
+      {
+        "nombre": "VICTOR HERNANDEZ",
+        "area": "Maquinado",
+        "id": 29
+      },
+      {
+        "nombre": "ISRAEL MORENO",
+        "area": "Maquinado",
+        "id": 30
+      },
+      {
+        "nombre": "SAUL MOLINA",
+        "area": "Maquinado",
+        "id": 31
+      },
+      {
+        "nombre": "LILIAN MENESES",
+        "area": "Maquinado",
+        "id": 32
+      },
+      {
+        "nombre": "MARIBEL GONZALEZ",
+        "area": "Maquinado",
+        "id": 33
+      },
+      {
+        "nombre": "EDWIN ALEJANDRO",
+        "area": "Maquinado",
+        "id": 34
+      },
+      {
+        "nombre": "JORGE GARCIA",
+        "area": "Maquinado",
+        "id": 35
+      },
+      {
+        "nombre": "FERNANDO LOBATO",
+        "area": "Maquinado",
+        "id": 36
+      },
+      {
+        "nombre": "YORIY BELTRAN",
+        "area": "Maquinado",
+        "id": 38
+      },
+      {
+        "nombre": "OPERADOR03 MAQUINADO",
+        "area": "Maquinado",
+        "id": 39
+      },
+      {
+        "nombre": "OPERADOR04 MAQUINADO",
+        "area": "Maquinado",
+        "id": 40
+      },
+      {
+        "nombre": "OPERADOR05 MAQUINADO",
+        "area": "Maquinado",
+        "id": 41
+      },
+      {
+        "nombre": "MARIA BUSTOS",
+        "area": "Corte",
+        "id": 42
+      },
+      {
+        "nombre": "PEDRO SANTOS",
+        "area": "Corte",
+        "id": 43
+      },
+      {
+        "nombre": "SANDRA OSORIO",
+        "area": "Corte",
+        "id": 44
+      },
+      {
+        "nombre": "BRENDA PIZANO",
+        "area": "Corte",
+        "id": 45
+      },
+      {
+        "nombre": "FABIAN ALFARO",
+        "area": "Corte",
+        "id": 46
+      },
+      {
+        "nombre": "BRENDA LUGO",
+        "area": "Corte",
+        "id": 47
+      },
+      {
+        "nombre": "EDUARDO BUSTOS",
+        "area": "Corte",
+        "id": 48
+      },
+      {
+        "nombre": "JENNY HERNANDEZ",
+        "area": "Corte",
+        "id": 49
+      },
+      {
+        "nombre": "COHINTA VITAE",
+        "area": "Corte",
+        "id": 50
+      },
+      {
+        "nombre": "OSWALDO ROMERO",
+        "area": "Laminado",
+        "id": 51
+      },
+      {
+        "nombre": "RENE CALBO",
+        "area": "Laminado",
+        "id": 52
+      },
+      {
+        "nombre": "ITZEL HERNANDEZ",
+        "area": "Formado",
+        "id": 53
+      },
+      {
+        "nombre": "CAROLINA FLORES",
+        "area": "Formado",
+        "id": 54
+      },
+      {
+        "nombre": "FABIAN ALFARO",
+        "area": "Formado",
+        "id": 55
+      },
+      {
+        "nombre": "ROSA AGUILAR",
+        "area": "Formado",
+        "id": 56
+      },
+      {
+        "nombre": "ANGELICA LOPEZ",
+        "area": "Formado",
+        "id": 57
+      },
+      {
+        "nombre": "MAYRA DORANTES",
+        "area": "Formado",
+        "id": 58
+      },
+      {
+        "nombre": "OLGA HUERTO",
+        "area": "Formado",
+        "id": 59
+      },
+      {
+        "nombre": "NANCY CRUZ",
+        "area": "Formado",
+        "id": 60
+      },
+      {
+        "nombre": "GUSTAVO BUSTOS",
+        "area": "Corte",
+        "id": 61
+      },
+      {
+        "nombre": "BRENDA LUGO",
+        "area": "Corte",
+        "id": 62
+      }
+    ],
+    "turnos": [
+      {
+        "nombre": "Turno 1",
+        "inicio": "06:00",
+        "fin": "14:00",
+        "id": 2
+      },
+      {
+        "nombre": "Turno 2",
+        "inicio": "14:00",
+        "fin": "22:00",
+        "id": 3
+      },
+      {
+        "nombre": "Turno 3",
+        "inicio": "22:00",
+        "fin": "06:00",
+        "id": 4
+      },
+      {
+        "nombre": "Turno Mixto",
+        "inicio": "08:00",
+        "fin": "17:30",
+        "id": 5
+      },
+      {
+        "nombre": "12x12 1",
+        "inicio": "06:00",
+        "fin": "17:30",
+        "id": 6
+      },
+      {
+        "nombre": "12x12 2",
+        "inicio": "17:30",
+        "fin": "06:00",
+        "id": 7
+      },
+      {
+        "nombre": "Ausentismo",
+        "inicio": "01:00",
+        "fin": "01:00",
+        "id": 8
+      },
+      {
+        "nombre": "Vacaciones",
+        "inicio": "02:00",
+        "fin": "14:00",
+        "id": 9
+      }
+    ]
+  },
+  "Atrasos_Produccion": {
+    "atrasos": [
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 19,
+        "area": "Laminado",
+        "planeadas": 0,
+        "incumplidas": 0,
+        "motivos": [],
+        "id": 1,
+        "comentario": ""
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 20,
+        "area": "Laminado",
+        "planeadas": 0,
+        "incumplidas": 0,
+        "motivos": [],
+        "id": 2,
+        "comentario": ""
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "area": "Laminado",
+        "planeadas": 0,
+        "incumplidas": 0,
+        "motivos": [
+          {
+            "motivo": "",
+            "lineas": 1
+          },
+          {
+            "motivo": "Falta de Operador (Ausentismo)",
+            "lineas": 1
+          },
+          {
+            "motivo": "Falta de Operador (Ausentismo)",
+            "lineas": 2
+          }
+        ],
+        "comentario": "",
+        "id": 3
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 22,
+        "area": "Corte",
+        "planeadas": 0,
+        "incumplidas": 10,
+        "motivos": [
+          {
+            "motivo": "Falta de Operador (Ausentismo)",
+            "lineas": 3
+          },
+          {
+            "motivo": "Error de Planificacion",
+            "lineas": 4
+          },
+          {
+            "motivo": "Falta de Material Laminado",
+            "lineas": 3
+          },
+          {
+            "motivo": "Productividad (Logística)",
+            "lineas": 2
+          },
+          {
+            "motivo": "Error de Planificacion",
+            "lineas": 2
+          }
+        ],
+        "comentario": "",
+        "id": 4
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 23,
+        "area": "Laminado",
+        "planeadas": 0,
+        "incumplidas": 0,
+        "motivos": [
+          {
+            "motivo": "",
+            "lineas": 0
+          },
+          {
+            "motivo": "",
+            "lineas": 0
+          }
+        ],
+        "comentario": "",
+        "id": 5
+      },
+      {
+        "anio": 2025,
+        "mes": 7,
+        "dia": 23,
+        "area": "Corte",
+        "planeadas": 0,
+        "incumplidas": 0,
+        "motivos": [],
+        "comentario": "\n",
+        "id": 6
+      }
+    ],
+    "motivos": [
+      {
+        "nombre": "Falta de Material Laminado",
+        "id": 8
+      },
+      {
+        "nombre": "Falta de Operador (Ausentismo)",
+        "id": 9
+      },
+      {
+        "nombre": "Error de Planificacion",
+        "id": 10
+      },
+      {
+        "nombre": "Problemas de Calidad",
+        "id": 11
+      },
+      {
+        "nombre": "Falta de Materia Prima",
+        "id": 12
+      },
+      {
+        "nombre": "Productividad (Logística)",
+        "id": 13
+      },
+      {
+        "nombre": "Pago Anticipado",
+        "id": 14
+      },
+      {
+        "nombre": "Productividad (Producción)",
+        "id": 15
+      },
+      {
+        "nombre": "Fallo de Maquina",
+        "id": 16
+      }
+    ]
+  },
+  "TurnosDB": {
+    "asignaciones": [
+      {
+        "persId": 1,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 1,
+        "id": 1
+      },
+      {
+        "persId": 1,
+        "semanaId": "2025-08-04",
+        "equipoId": null,
+        "turnoId": 1,
+        "id": 2
+      },
+      {
+        "persId": 1,
+        "semanaId": "2025-08-11",
+        "equipoId": null,
+        "turnoId": 1,
+        "id": 3
+      },
+      {
+        "persId": 1,
+        "semanaId": "2025-08-28",
+        "equipoId": null,
+        "turnoId": 1,
+        "id": 4
+      },
+      {
+        "persId": 1,
+        "semanaId": "2025-08-18",
+        "equipoId": 1,
+        "turnoId": null,
+        "id": 5
+      },
+      {
+        "persId": 2,
+        "semanaId": "2025-07-21",
+        "equipoId": 28,
+        "turnoId": 13,
+        "id": 6
+      },
+      {
+        "persId": 2,
+        "semanaId": "2025-07-28",
+        "equipoId": 0,
+        "turnoId": 13,
+        "id": 7
+      },
+      {
+        "persId": 2,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 8
+      },
+      {
+        "persId": 3,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 12,
+        "id": 9
+      },
+      {
+        "persId": 4,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 10
+      },
+      {
+        "persId": 5,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 12,
+        "id": 11
+      },
+      {
+        "persId": 6,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 12
+      },
+      {
+        "persId": 7,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 13
+      },
+      {
+        "persId": 8,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 14
+      },
+      {
+        "persId": 9,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 15
+      },
+      {
+        "persId": 10,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 16
+      },
+      {
+        "persId": 11,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 12,
+        "id": 17
+      },
+      {
+        "persId": 12,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 18
+      },
+      {
+        "persId": 13,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 12,
+        "id": 19
+      },
+      {
+        "persId": 14,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 14,
+        "id": 20
+      },
+      {
+        "persId": 15,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 14,
+        "id": 21
+      },
+      {
+        "persId": 16,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 22
+      },
+      {
+        "persId": 17,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 23
+      },
+      {
+        "persId": 18,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 24
+      },
+      {
+        "persId": 19,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 12,
+        "id": 25
+      },
+      {
+        "persId": 20,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 26
+      },
+      {
+        "persId": 21,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 27
+      },
+      {
+        "persId": 22,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 28
+      },
+      {
+        "persId": 24,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 18,
+        "id": 29
+      },
+      {
+        "persId": 23,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 30
+      },
+      {
+        "persId": 25,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 31
+      },
+      {
+        "persId": 26,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 32
+      },
+      {
+        "persId": 27,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 14,
+        "id": 33
+      },
+      {
+        "persId": 28,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 34
+      },
+      {
+        "persId": 29,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 15,
+        "id": 35
+      },
+      {
+        "persId": 30,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 36
+      },
+      {
+        "persId": 31,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 37
+      },
+      {
+        "persId": 32,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 14,
+        "id": 38
+      },
+      {
+        "persId": 3,
+        "semanaId": "2025-07-21",
+        "equipoId": 34,
+        "turnoId": 12,
+        "id": 39
+      },
+      {
+        "persId": 4,
+        "semanaId": "2025-07-21",
+        "equipoId": 36,
+        "turnoId": 11,
+        "id": 40
+      },
+      {
+        "persId": 5,
+        "semanaId": "2025-07-21",
+        "equipoId": 31,
+        "turnoId": 13,
+        "id": 41
+      },
+      {
+        "persId": 6,
+        "semanaId": "2025-07-21",
+        "equipoId": 40,
+        "turnoId": 11,
+        "id": 42
+      },
+      {
+        "persId": 7,
+        "semanaId": "2025-07-21",
+        "equipoId": 34,
+        "turnoId": 11,
+        "id": 43
+      },
+      {
+        "persId": 8,
+        "semanaId": "2025-07-21",
+        "equipoId": 35,
+        "turnoId": 11,
+        "id": 44
+      },
+      {
+        "persId": 9,
+        "semanaId": "2025-07-21",
+        "equipoId": 40,
+        "turnoId": 10,
+        "id": 45
+      },
+      {
+        "persId": 10,
+        "semanaId": "2025-07-21",
+        "equipoId": 36,
+        "turnoId": 10,
+        "id": 46
+      },
+      {
+        "persId": 11,
+        "semanaId": "2025-07-21",
+        "equipoId": 36,
+        "turnoId": 12,
+        "id": 47
+      },
+      {
+        "persId": 12,
+        "semanaId": "2025-07-21",
+        "equipoId": 34,
+        "turnoId": 10,
+        "id": 48
+      },
+      {
+        "persId": 13,
+        "semanaId": "2025-07-21",
+        "equipoId": 40,
+        "turnoId": 12,
+        "id": 49
+      },
+      {
+        "persId": 14,
+        "semanaId": "2025-07-21",
+        "equipoId": 38,
+        "turnoId": 14,
+        "id": 50
+      },
+      {
+        "persId": 15,
+        "semanaId": "2025-07-21",
+        "equipoId": 38,
+        "turnoId": 14,
+        "id": 51
+      },
+      {
+        "persId": 16,
+        "semanaId": "2025-07-21",
+        "equipoId": 42,
+        "turnoId": 13,
+        "id": 52
+      },
+      {
+        "persId": 17,
+        "semanaId": "2025-07-21",
+        "equipoId": 41,
+        "turnoId": 11,
+        "id": 53
+      },
+      {
+        "persId": 18,
+        "semanaId": "2025-07-21",
+        "equipoId": 45,
+        "turnoId": 10,
+        "id": 54
+      },
+      {
+        "persId": 19,
+        "semanaId": "2025-07-21",
+        "equipoId": 41,
+        "turnoId": 12,
+        "id": 55
+      },
+      {
+        "persId": 20,
+        "semanaId": "2025-07-21",
+        "equipoId": 43,
+        "turnoId": 11,
+        "id": 56
+      },
+      {
+        "persId": 21,
+        "semanaId": "2025-07-21",
+        "equipoId": 41,
+        "turnoId": 10,
+        "id": 57
+      },
+      {
+        "persId": 22,
+        "semanaId": "2025-07-21",
+        "equipoId": 45,
+        "turnoId": 11,
+        "id": 58
+      },
+      {
+        "persId": 23,
+        "semanaId": "2025-07-21",
+        "equipoId": 46,
+        "turnoId": 14,
+        "id": 59
+      },
+      {
+        "persId": 24,
+        "semanaId": "2025-07-21",
+        "equipoId": null,
+        "turnoId": 18,
+        "id": 60
+      },
+      {
+        "persId": 25,
+        "semanaId": "2025-07-21",
+        "equipoId": 53,
+        "turnoId": 13,
+        "id": 61
+      },
+      {
+        "persId": 26,
+        "semanaId": "2025-07-21",
+        "equipoId": 53,
+        "turnoId": 13,
+        "id": 62
+      },
+      {
+        "persId": 27,
+        "semanaId": "2025-07-21",
+        "equipoId": 46,
+        "turnoId": 15,
+        "id": 63
+      },
+      {
+        "persId": 28,
+        "semanaId": "2025-07-21",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 64
+      },
+      {
+        "persId": 29,
+        "semanaId": "2025-07-21",
+        "equipoId": 51,
+        "turnoId": 14,
+        "id": 65
+      },
+      {
+        "persId": 30,
+        "semanaId": "2025-07-21",
+        "equipoId": 52,
+        "turnoId": 13,
+        "id": 66
+      },
+      {
+        "persId": 31,
+        "semanaId": "2025-07-21",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 67
+      },
+      {
+        "persId": 32,
+        "semanaId": "2025-07-21",
+        "equipoId": 51,
+        "turnoId": 15,
+        "id": 68
+      },
+      {
+        "persId": 2,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 69
+      },
+      {
+        "persId": 3,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 70
+      },
+      {
+        "persId": 4,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 71
+      },
+      {
+        "persId": 5,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 12,
+        "id": 72
+      },
+      {
+        "persId": 6,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 12,
+        "id": 73
+      },
+      {
+        "persId": 7,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 74
+      },
+      {
+        "persId": 8,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 12,
+        "id": 75
+      },
+      {
+        "persId": 9,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 76
+      },
+      {
+        "persId": 10,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 77
+      },
+      {
+        "persId": 11,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 78
+      },
+      {
+        "persId": 12,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 79
+      },
+      {
+        "persId": 13,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 80
+      },
+      {
+        "persId": 14,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 14,
+        "id": 81
+      },
+      {
+        "persId": 15,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 14,
+        "id": 82
+      },
+      {
+        "persId": 16,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 83
+      },
+      {
+        "persId": 17,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 84
+      },
+      {
+        "persId": 18,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 85
+      },
+      {
+        "persId": 19,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 17,
+        "id": 86
+      },
+      {
+        "persId": 20,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 87
+      },
+      {
+        "persId": 21,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 12,
+        "id": 88
+      },
+      {
+        "persId": 22,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 89
+      },
+      {
+        "persId": 23,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 15,
+        "id": 90
+      },
+      {
+        "persId": 24,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 18,
+        "id": 91
+      },
+      {
+        "persId": 25,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 92
+      },
+      {
+        "persId": 26,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 93
+      },
+      {
+        "persId": 27,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 14,
+        "id": 94
+      },
+      {
+        "persId": 28,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 95
+      },
+      {
+        "persId": 29,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 14,
+        "id": 96
+      },
+      {
+        "persId": 30,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 97
+      },
+      {
+        "persId": 31,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 98
+      },
+      {
+        "persId": 32,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 15,
+        "id": 99
+      },
+      {
+        "persId": 14,
+        "semanaId": "2025-07-28",
+        "equipoId": 38,
+        "turnoId": 14,
+        "id": 100
+      },
+      {
+        "persId": 15,
+        "semanaId": "2025-07-28",
+        "equipoId": 38,
+        "turnoId": 14,
+        "id": 101
+      },
+      {
+        "persId": 16,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 102
+      },
+      {
+        "persId": 18,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 103
+      },
+      {
+        "persId": 22,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 104
+      },
+      {
+        "persId": 21,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 105
+      },
+      {
+        "persId": 20,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 11,
+        "id": 106
+      },
+      {
+        "persId": 17,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 12,
+        "id": 107
+      },
+      {
+        "persId": 19,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 108
+      },
+      {
+        "persId": 23,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 15,
+        "id": 109
+      },
+      {
+        "persId": 24,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 18,
+        "id": 110
+      },
+      {
+        "persId": 27,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 14,
+        "id": 111
+      },
+      {
+        "persId": 29,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 15,
+        "id": 112
+      },
+      {
+        "persId": 32,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 14,
+        "id": 113
+      },
+      {
+        "persId": 3,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 10,
+        "id": 114
+      },
+      {
+        "persId": 4,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 0,
+        "id": 115
+      },
+      {
+        "persId": 5,
+        "semanaId": "2025-07-28",
+        "equipoId": 28,
+        "turnoId": 0,
+        "id": 116
+      },
+      {
+        "persId": 6,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 0,
+        "id": 117
+      },
+      {
+        "persId": 8,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 0,
+        "id": 118
+      },
+      {
+        "persId": 9,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 0,
+        "id": 119
+      },
+      {
+        "persId": 10,
+        "semanaId": "2025-07-28",
+        "equipoId": 0,
+        "turnoId": 0,
+        "id": 120
+      },
+      {
+        "persId": 11,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 0,
+        "id": 121
+      },
+      {
+        "persId": 13,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 0,
+        "id": 122
+      },
+      {
+        "persId": 12,
+        "semanaId": "2025-07-28",
+        "equipoId": null,
+        "turnoId": 0,
+        "id": 123
+      },
+      {
+        "persId": 2,
+        "semanaId": "2025-07-30",
+        "equipoId": 28,
+        "turnoId": null,
+        "id": 124
+      },
+      {
+        "persId": 33,
+        "semanaId": "2025-07-21",
+        "equipoId": 47,
+        "turnoId": 13,
+        "id": 125
+      },
+      {
+        "persId": 33,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 126
+      },
+      {
+        "persId": 33,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 127
+      },
+      {
+        "persId": 33,
+        "semanaId": "2025-07-30",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 128
+      },
+      {
+        "persId": 35,
+        "semanaId": "2025-07-21",
+        "equipoId": 48,
+        "turnoId": 13,
+        "id": 129
+      },
+      {
+        "persId": 35,
+        "semanaId": "2025-07-14",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 130
+      },
+      {
+        "persId": 35,
+        "semanaId": "2025-07-07",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 131
+      },
+      {
+        "persId": 35,
+        "semanaId": "2025-07-30",
+        "equipoId": null,
+        "turnoId": 13,
+        "id": 132
+      },
+      {
+        "persId": 34,
+        "semanaId": "2025-07-21",
+        "equipoId": 50,
+        "turnoId": 13,
+        "id": 133
+      },
+      {
+        "persId": 34,
+        "semanaId": "2025-07-14",
+        "equipoId": 50,
+        "turnoId": 13,
+        "id": 134
+      },
+      {
+        "persId": 34,
+        "semanaId": "2025-07-07",
+        "equipoId": 50,
+        "turnoId": 13,
+        "id": 135
+      },
+      {
+        "persId": 34,
+        "semanaId": "2025-07-30",
+        "equipoId": 50,
+        "turnoId": 13,
+        "id": 136
+      },
+      {
+        "persId": 33,
+        "semanaId": "2025-07-28",
+        "equipoId": 47,
+        "turnoId": 13,
+        "id": 137
+      },
+      {
+        "persId": 35,
+        "semanaId": "2025-07-28",
+        "equipoId": 48,
+        "turnoId": 13,
+        "id": 138
+      },
+      {
+        "persId": 34,
+        "semanaId": "2025-07-28",
+        "equipoId": 50,
+        "turnoId": 13,
+        "id": 139
+      },
+      {
+        "persId": 36,
+        "semanaId": "2025-07-21",
+        "equipoId": 43,
+        "turnoId": 10,
+        "id": 140
+      }
+    ],
+    "equipos": [
+      {
+        "nombre": "MX-MM-15",
+        "area": "MAQUINADOS",
+        "id": 28
+      },
+      {
+        "nombre": "MX-MM-11",
+        "area": "MAQUINADOS",
+        "id": 31
+      },
+      {
+        "nombre": "MX-MM-09",
+        "area": "MAQUINADOS",
+        "id": 32
+      },
+      {
+        "nombre": "MX-MM-04",
+        "area": "MAQUINADOS",
+        "id": 33
+      },
+      {
+        "nombre": "MX-MM-10",
+        "area": "MAQUINADOS",
+        "id": 34
+      },
+      {
+        "nombre": "MX-MM-12",
+        "area": "MAQUINADOS",
+        "id": 35
+      },
+      {
+        "nombre": "MX-MM-05",
+        "area": "MAQUINADOS",
+        "id": 36
+      },
+      {
+        "nombre": "MX-ML-02",
+        "area": "LAMINADO",
+        "id": 38
+      },
+      {
+        "nombre": "MX-ML-01",
+        "area": "LAMINADO",
+        "id": 39
+      },
+      {
+        "nombre": "MX-MM-14",
+        "area": "MAQUINADOS",
+        "id": 40
+      },
+      {
+        "nombre": "MX-MC-09",
+        "area": "CORTE",
+        "id": 41
+      },
+      {
+        "nombre": "MX-MC-01",
+        "area": "CORTE",
+        "id": 42
+      },
+      {
+        "nombre": "MX-MC-10",
+        "area": "CORTE",
+        "id": 43
+      },
+      {
+        "nombre": "MX-MC-07",
+        "area": "CORTE",
+        "id": 44
+      },
+      {
+        "nombre": "MX-MC-06",
+        "area": "CORTE",
+        "id": 45
+      },
+      {
+        "nombre": "MX-MT-07",
+        "area": "FORMADO",
+        "id": 46
+      },
+      {
+        "nombre": "SUPERVISOR",
+        "area": "MAQUINADOS",
+        "id": 47
+      },
+      {
+        "nombre": "SUPERVISOR",
+        "area": "CORTE",
+        "id": 48
+      },
+      {
+        "nombre": "SUPERVISOR",
+        "area": "FORMADO",
+        "id": 50
+      },
+      {
+        "nombre": "MX-MT-11",
+        "area": "FORMADO",
+        "id": 51
+      },
+      {
+        "nombre": "MX-MT-10",
+        "area": "FORMADO",
+        "id": 52
+      },
+      {
+        "nombre": "MX-MT-04",
+        "area": "FORMADO",
+        "id": 53
+      },
+      {
+        "nombre": "MX-MT-08",
+        "area": "FORMADO",
+        "id": 54
+      },
+      {
+        "nombre": "MX-MT-05",
+        "area": "FORMADO",
+        "id": 55
+      }
+    ],
+    "personal": [
+      {
+        "nombre": "MOLINA GABIÑO SAUL",
+        "area": "MAQUINADOS",
+        "id": 2,
+        "orden": 1
+      },
+      {
+        "nombre": "GONZALEZ VAZQUEZ MARIBEL",
+        "area": "MAQUINADOS",
+        "id": 3,
+        "orden": 12
+      },
+      {
+        "nombre": "ALEJANDRO MENDOZA EDWIN ESTEBAN",
+        "area": "MAQUINADOS",
+        "id": 4,
+        "orden": 4
+      },
+      {
+        "nombre": "GONZALEZ SOTO RICARDO",
+        "area": "MAQUINADOS",
+        "id": 5,
+        "orden": 2
+      },
+      {
+        "nombre": "HERNANDEZ DANIEL VICTOR MANUEL",
+        "area": "MAQUINADOS",
+        "id": 6,
+        "orden": 8
+      },
+      {
+        "nombre": "MEJIA FONSECA ALEJANDRO",
+        "area": "MAQUINADOS",
+        "id": 7,
+        "orden": 9
+      },
+      {
+        "nombre": "JUAREZ SANAVIA SARA ABIGAIL",
+        "area": "MAQUINADOS",
+        "id": 8,
+        "orden": 10
+      },
+      {
+        "nombre": "BELTRAN DEL CID YORIY NEFTALI",
+        "area": "MAQUINADOS",
+        "id": 9,
+        "orden": 6
+      },
+      {
+        "nombre": "DIONICIO GONZALEZ JUAN CARLOS",
+        "area": "MAQUINADOS",
+        "id": 10,
+        "orden": 3
+      },
+      {
+        "nombre": "LOBATO PEREZ FERNANDO",
+        "area": "MAQUINADOS",
+        "id": 11,
+        "orden": 5
+      },
+      {
+        "nombre": "MORENO GUERRERO ANGEL ISRAEL",
+        "area": "MAQUINADOS",
+        "id": 12,
+        "orden": 7
+      },
+      {
+        "nombre": "MENESES CORTES ROCIO LILIAN",
+        "area": "MAQUINADOS",
+        "id": 13,
+        "orden": 11
+      },
+      {
+        "nombre": "ROMERO HIDALGO OSWALDO",
+        "area": "LAMINADO",
+        "id": 14,
+        "orden": 0
+      },
+      {
+        "nombre": "CALBO SANTIAGO RENE",
+        "area": "LAMINADO",
+        "id": 15,
+        "orden": 1
+      },
+      {
+        "nombre": "SANTOS JIMENEZ PEDRO YSMAEL",
+        "area": "CORTE",
+        "id": 16,
+        "orden": 4
+      },
+      {
+        "nombre": "PIZANO PALACIOS BRENDA PATRICIA",
+        "area": "CORTE",
+        "id": 17,
+        "orden": 3
+      },
+      {
+        "nombre": "OSORIO GOMEZ SANDRA",
+        "area": "CORTE",
+        "id": 18,
+        "orden": 5
+      },
+      {
+        "nombre": "VITE HERNANDEZ COHINTA",
+        "area": "CORTE",
+        "id": 19,
+        "orden": 1
+      },
+      {
+        "nombre": "BUSTOS JUAREZ GUSTAVO ALEJANDRO",
+        "area": "CORTE",
+        "id": 20,
+        "orden": 7
+      },
+      {
+        "nombre": "HERNANDEZ HERNANDEZ JENNY RUBI",
+        "area": "CORTE",
+        "id": 21,
+        "orden": 2
+      },
+      {
+        "nombre": "VILLEDA LUGO BRENDA LIZBEY",
+        "area": "CORTE",
+        "id": 22,
+        "orden": 6
+      },
+      {
+        "nombre": "LOPEZ SANCHEZ ANGELICA",
+        "area": "FORMADO",
+        "id": 23,
+        "orden": 2
+      },
+      {
+        "nombre": "GUTIERREZ DORANTES MAYRA LIZBETH",
+        "area": "FORMADO",
+        "id": 24,
+        "orden": 1
+      },
+      {
+        "nombre": "ALFARO MARIO FABIAN",
+        "area": "FORMADO",
+        "id": 25,
+        "orden": 4
+      },
+      {
+        "nombre": "HUERTA BRIONES MA. CRUZ OLGA",
+        "area": "FORMADO",
+        "id": 26,
+        "orden": 5
+      },
+      {
+        "nombre": "VEGA MARTINEZ BERENICE",
+        "area": "FORMADO",
+        "id": 27,
+        "orden": 6
+      },
+      {
+        "nombre": "CRUZ RIOS NANCY CECILIA",
+        "area": "FORMADO",
+        "id": 28,
+        "orden": 9
+      },
+      {
+        "nombre": "HERNANDEZ HERNANDEZ ITZEL",
+        "area": "FORMADO",
+        "id": 29,
+        "orden": 3
+      },
+      {
+        "nombre": "AGUILAR CRUZ ROSA MARIA",
+        "area": "FORMADO",
+        "id": 30,
+        "orden": 8
+      },
+      {
+        "nombre": "Wendy Calbo",
+        "area": "FORMADO",
+        "id": 31,
+        "orden": 10
+      },
+      {
+        "nombre": "Torres Huerta Jessica",
+        "area": "FORMADO",
+        "id": 32,
+        "orden": 7
+      },
+      {
+        "nombre": "ANAYA GARCIA CARLOS",
+        "area": "MAQUINADOS",
+        "orden": 0,
+        "id": 33
+      },
+      {
+        "nombre": "FLORES LOPEZ DULCE CAROLINA",
+        "area": "FORMADO",
+        "orden": 0,
+        "id": 34
+      },
+      {
+        "nombre": "BUSTOS JUAREZ MARIA DE JESUS",
+        "area": "CORTE",
+        "orden": 0,
+        "id": 35
+      },
+      {
+        "nombre": "BUSTOS JUAREZ JESUS EDUARDO",
+        "area": "CORTE",
+        "orden": 8,
+        "id": 36
+      }
+    ],
+    "turnos": [
+      {
+        "nombre": "Turno 1\t",
+        "horario": "06:00 - 14:00",
+        "color": "#b8a005",
+        "id": 10
+      },
+      {
+        "nombre": "Turno 2",
+        "horario": "14:00 - 22:00",
+        "color": "#7c7d73",
+        "id": 11
+      },
+      {
+        "nombre": "Turno 3",
+        "horario": "22:00 - 06:00",
+        "color": "#750066",
+        "id": 12
+      },
+      {
+        "nombre": "Turno Mixto",
+        "horario": "08:00 - 17:30",
+        "color": "#2e00ad",
+        "id": 13
+      },
+      {
+        "nombre": "12x12 1",
+        "horario": "06:00 - 17:30",
+        "color": "#b05103",
+        "id": 14
+      },
+      {
+        "nombre": "12x12 2",
+        "horario": "17:30 - 06:00 ",
+        "color": "#1a6d03",
+        "id": 15
+      },
+      {
+        "nombre": "Ausentismo",
+        "horario": "-",
+        "color": "#171717",
+        "id": 16
+      },
+      {
+        "nombre": "Vacaciones",
+        "horario": "-",
+        "color": "#151415",
+        "id": 17
+      },
+      {
+        "nombre": "Incapacidad",
+        "horario": "-",
+        "color": "#1f1e1f",
+        "id": 18
+      }
+    ]
+  }
+}

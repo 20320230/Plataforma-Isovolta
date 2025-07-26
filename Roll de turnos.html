@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cargador Semanal de Turnos — ISOVOLTA</title>
+  <link rel="icon" type="image/png" href="Isovolta.ico">
+  <link href="https://fonts.googleapis.com/css?family=Segoe+UI:700,400&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; font-family:'Segoe UI',Arial,sans-serif; background:#f6f9fc; }
+    .logo-header {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 32px 0 10px 0; background: #fff;
+      border-bottom: 4px solid #004990;
+    }
+    .logo-header img { width:170px; max-width: 94vw; height:auto; }
+    .logo-header .titulo { font-size:1.28rem; color:#004990; font-weight:900; margin-top:6px; letter-spacing:.5px; }
+    .tabs { background:#045194; color:#fff; display:flex; font-size:1.1em; }
+    .tab { padding:16px 28px; cursor:pointer; border-bottom:4px solid transparent; font-weight:700; }
+    .tab.active { background:#f6f9fc; color:#045194; border-bottom:4px solid #f4d307;}
+    .panel { display:none; max-width:1800px; margin:0 auto; padding:26px 32px 32px 32px;}
+    .panel.active { display:block;}
+    .weeks-nav, .weeks-btns { display:flex; gap:9px; align-items:center;}
+    .weeks-nav { background:#fffde7; padding:17px 22px 12px 22px; border-radius:13px; margin-bottom:15px; box-shadow:0 1px 7px #f4d30714; }
+    .weeks-nav select, .weeks-nav button { font-size:1.07em;}
+    .weeks-btns {margin:13px 0 19px 0;}
+    .week-btn {
+      padding:13px 22px;
+      border:none; border-radius:11px; font-weight:700; font-size:1em; background:#f6f6fa; color:#004990;
+      box-shadow:0 1px 7px #08355e14; cursor:pointer; border:2px solid transparent; min-width:148px;
+      transition: all .16s;
+    }
+    .week-btn.selected { background:#004990; color:#fff; border:2.5px solid #f4d307; }
+    .card-table {
+      background:#fff; border-radius:17px; box-shadow:0 4px 24px #00499016; padding:22px 17px 27px 17px; margin-top:8px;
+      overflow: auto;
+    }
+    table { border-collapse:separate; border-spacing:0 5px; width:100%; margin-top:13px; font-size:1.09em;}
+    th, td { padding:14px 10px; }
+    th { background:#e8f1fa; color:#045194; font-size:1.15em;}
+    tr.area-row th {
+      background:linear-gradient(90deg,#f4d30733,#fff 98%);
+      font-size:1.09em;color:#004990; text-align:left;
+      border-top:3px solid #f4d307;
+      border-radius:10px 10px 0 0;
+      box-shadow:0 2px 8px #ffe92314;
+    }
+    tr:not(.area-row) { background:#fcfcfd;}
+    .historial-turnos {display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+    .tag-turno {
+      padding:6px 15px;
+      border-radius:13px; font-size:.97em; font-weight:700;
+      color:#fff; display:inline-block; margin-right:5px;
+      box-shadow:0 1px 5px #00499022;
+      margin-bottom:4px;
+    }
+    .select-turno, .select-equipo {
+      padding:8px 11px;
+      border-radius:7px;
+      font-size:1em;
+      border:1.5px solid #bdd6ee;
+      background:#fcfcfc;
+      min-width:165px;
+      transition: border .17s;
+      margin-right:2px;
+    }
+    .select-turno:focus, .select-equipo:focus { border-color:#f4d307; outline:0;}
+    .weeks-nav label {font-size:1.08em;margin:0 3px 0 9px;}
+    .panel h3 {margin:0 0 11px 0;font-size:1.22em;}
+    .btn {padding:8px 22px;background:#004990;color:#fff;border:none;border-radius:7px;cursor:pointer;font-weight:700;}
+    .btn-danger {background:#e33c56;}
+    .form-row {margin-bottom:13px;}
+    .form-row label {display:inline-block;width:98px;}
+    .form-row input, .form-row select {padding:7px 10px; border-radius:5px; border:1.2px solid #d5d8ea;}
+    .form-grid {max-width:470px;margin-top:13px; background:#fff;border-radius:10px; box-shadow:0 1px 8px #00499011;padding:14px 12px;}
+    .footer {
+      width: 100vw; background: #004990; color: #fff;
+      text-align: center; padding: 13px 0 9px 0;
+      font-size: 1.08em; letter-spacing: .1em;
+      position: fixed; left: 0; bottom: 0; z-index: 9;
+      border-radius: 0 0 13px 13px;
+      box-shadow: 0 1px 13px #00336622;
+    }
+    @media (max-width: 950px){
+      .panel { padding: 10px 2vw 50px 2vw;}
+      .weeks-nav {flex-wrap:wrap;}
+      .form-grid {max-width:99vw;}
+      .logo-header {padding:18px 0 9px 0;}
+    }
+    @media (max-width: 600px){
+      .logo-header img { width:120px;}
+      .panel { padding: 2px 0 68px 0;}
+      .weeks-nav label, .weeks-nav select {font-size:1em;}
+      table, th, td { font-size:.97em;}
+    }
+    .historial-turnos {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+      min-width: 180px;
+    }
+    .tag-turno {
+      margin-bottom: 0 !important;
+      white-space: nowrap;
+    }
+    td:nth-child(3) {
+      white-space: nowrap;
+      overflow: visible;
+      text-overflow: unset;
+      max-width: none;
+    }
+    table {
+      table-layout: auto !important;
+    }
+
+    /* Resumen de cargas */
+  .resumen-cargas {
+  background: #fffde7;
+  border-radius: 13px;
+  box-shadow: 0 1px 7px #f4d30726;
+  padding: 13px 8px 10px 10px;
+  margin: 0 10px 0 0;
+  min-width: 180px;
+  max-width: 250px;
+  font-size: 0.95em;
+  float: left;
+}
+    @media (max-width: 950px) {
+      .resumen-cargas {
+        float: none;
+        width: auto;
+        max-width: 99vw;
+        margin: 0 0 17px 0;
+      }
+    }
+  .resumen-cargas-area {
+  font-size: 1em;
+  margin-top: 8px;
+  margin-bottom: 2px;
+  padding-bottom: 0.5px;
+}
+  .resumen-cargas-equipo {
+  font-size: 0.97em;
+  margin-top: 2px;
+  margin-bottom: 0;
+  line-height: 1.25;
+}
+  .resumen-cargas-turno {
+  margin-left: 7px;
+  margin-bottom: 2px;
+  font-size: .94em;
+  padding: 1.5px 7px;
+  border-radius: 8px;
+  vertical-align: middle;
+    color: #fff !important;
+}
+   .resumen-cargas-total {
+  font-size: .98em;
+  margin: 6px 0 8px 0;
+}
+   .resumen-cargas-sin {
+  margin-left: 2px;
+  font-size: .95em;
+}
+
+@media (max-width: 1200px) {
+  .resumen-cargas { min-width: 120px; max-width: 99vw; font-size: .95em; }
+}
+.resumen-cargas {
+  min-width: 180px;
+  max-width: 270px;
+  flex-shrink: 0;
+  /* el resto de tu estilo igual */
+}
+
+.card-table {
+  flex: 1 1 0%;
+  min-width: 0;
+  margin-left: 12px;
+  background: #fff;
+  border-radius: 17px;
+  box-shadow: 0 4px 24px #00499016;
+  padding: 22px 17px 27px 17px;
+  margin-top: 8px;
+  overflow-x: auto;
+}
+
+/* Para que el contenedor use todo el ancho disponible */
+.flex-contenedor {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  gap: 12px;
+}
+
+/* Responsive: apila en móvil */
+@media (max-width: 950px) {
+  .flex-contenedor { flex-direction: column; }
+  .card-table { margin-left: 0; }
+}
+
+  </style>
+</head>
+<body>
+  <div class="logo-header">
+    <img src="https://www.isovolta.com/logo_isovolta.png" alt="Isovolta Logo"/>
+    <div class="titulo">Cargador Semanal de Turnos — ISOVOLTA</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="mostrarPanel(0)">Turnos Semana</div>
+    <div class="tab" onclick="mostrarPanel(1)">Catálogo Personal</div>
+    <div class="tab" onclick="mostrarPanel(2)">Catálogo Equipos</div>
+    <div class="tab" onclick="mostrarPanel(3)">Catálogo Turnos</div>
+  </div>
+  <!-- Panel Turnos Semana -->
+  <div class="panel active" id="panelTurnosSemana">
+    <div class="weeks-nav">
+      <select id="anioSel"></select>
+      <select id="mesSel"></select>
+      <button id="btnDescargarImagen" class="btn" style="margin-bottom:13px;background:#0a7ecf;">Descargar como imagen</button>
+      <button onclick="cambiarMes(-1)" class="btn" style="background:#eaeaea;color:#045194;border:1px solid #dbe0ee;">&#60;</button>
+      <button onclick="cambiarMes(1)" class="btn" style="background:#eaeaea;color:#045194;border:1px solid #dbe0ee;">&#62;</button>
+      <label><b>Selecciona semana:</b></label>
+      <div class="weeks-btns" id="weeksBtns"></div>
+    </div>
+<div style="display:flex;flex-direction:row;align-items:flex-start;">
+  <div id="resumenCargas" class="resumen-cargas"></div>
+  <div class="card-table">
+        <div style="margin:3px 0 12px 0; color:#004990;font-weight:500;">
+          Visualiza aquí los últimos <b>3 turnos semanales</b> por persona para evitar repeticiones.
+        </div>
+        <div id="tablaTurnosSemana"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Panel Personal -->
+  <div class="panel" id="panelPersonal">
+    <h3>Catálogo de Personal</h3>
+    <form id="formPersonal" class="form-grid">
+      <div class="form-row">
+        <label>Nombre:</label>
+        <input id="nombrePersonal" required />
+      </div>
+      <div class="form-row">
+        <label>Área:</label>
+        <input id="areaPersonal" required />
+      </div>
+      <button class="btn">Agregar</button>
+    </form>
+    <div class="card-table">
+      <table id="tablaPersonal"></table>
+    </div>
+  </div>
+  <!-- Panel Equipos -->
+  <div class="panel" id="panelEquipos">
+    <h3>Catálogo de Equipos</h3>
+    <form id="formEquipo" class="form-grid">
+      <div class="form-row">
+        <label>Nombre:</label>
+        <input id="nombreEquipo" required />
+      </div>
+      <div class="form-row">
+        <label>Área:</label>
+        <input id="areaEquipo" required />
+      </div>
+      <button class="btn">Agregar</button>
+    </form>
+    <div class="card-table">
+      <table id="tablaEquipos"></table>
+    </div>
+  </div>
+  <!-- Panel Turnos -->
+  <div class="panel" id="panelTurnos">
+    <h3>Catálogo de Turnos</h3>
+    <form id="formTurno" class="form-grid">
+      <div class="form-row">
+        <label>Nombre:</label>
+        <input id="nombreTurno" required />
+      </div>
+      <div class="form-row">
+        <label>Horario:</label>
+        <input id="horarioTurno" required />
+      </div>
+      <div class="form-row">
+        <label>Color:</label>
+        <input type="color" id="colorTurno" value="#ee3fd8" style="width:60px;"/>
+      </div>
+      <button class="btn">Agregar</button>
+    </form>
+    <div class="card-table">
+      <table id="tablaTurnos"></table>
+    </div>
+  </div>
+  <div class="footer">
+    Herramienta diseñada por el departamento de Producción &amp; Mejora Continua
+  </div>
+
+
+
+
+
+
+
+
+
+<script>
+  // --------- Tabs y Paneles -----------
+  function mostrarPanel(idx) {
+    document.querySelectorAll('.tab').forEach((t, i) =>
+      t.classList.toggle('active', i === idx));
+    document.querySelectorAll('.panel').forEach((p, i) =>
+      p.classList.toggle('active', i === idx));
+    if (idx === 0) renderPanelTurnosSemana();
+    if (idx === 1) renderPersonal();
+    if (idx === 2) renderEquipos();
+    if (idx === 3) renderTurnos();
+  }
+  // ---------- IndexedDB utils -----------
+  let db;
+  function abrirBD() {
+    return new Promise((resolve, reject) => {
+      let req = indexedDB.open("TurnosDB", 1);
+      req.onupgradeneeded = function (e) {
+        db = e.target.result;
+        let personalStore = db.createObjectStore("personal", { keyPath: "id", autoIncrement: true });
+        db.createObjectStore("equipos", { keyPath: "id", autoIncrement: true });
+        db.createObjectStore("turnos", { keyPath: "id", autoIncrement: true });
+        db.createObjectStore("asignaciones", { keyPath: "id", autoIncrement: true });
+        try { personalStore.createIndex('area', 'area', { unique: false }); } catch(e){}
+      };
+      req.onsuccess = function (e) { db = e.target.result; resolve(); };
+      req.onerror = function (e) { alert("Error BD"); reject(); };
+    });
+  }
+  function put(store, obj) {
+    return new Promise(res => {
+      let t = db.transaction(store, "readwrite").objectStore(store);
+      t.put(obj).onsuccess = res;
+    });
+  }
+  function getAll(store) {
+    return new Promise(res => {
+      let t = db.transaction(store).objectStore(store);
+      let req = t.getAll(); req.onsuccess = () => res(req.result);
+    });
+  }
+  function remove(store, id) {
+    return new Promise(res => {
+      let t = db.transaction(store, "readwrite").objectStore(store);
+      t.delete(id).onsuccess = res;
+    });
+  }
+
+  // ---------- Fechas y semanas ----------
+  function semanasDelMes(anio, mes) {
+    let semanas = [];
+    let primero = new Date(anio, mes, 1);
+    let lunes = new Date(primero);
+    lunes.setDate(lunes.getDate() - (lunes.getDay() === 0 ? 6 : lunes.getDay() - 1));
+    for (let w = 0; w < 6; w++) {
+      let desde = new Date(lunes); desde.setDate(lunes.getDate() + w * 7);
+      let hasta = new Date(desde); hasta.setDate(desde.getDate() + 6);
+      if (desde.getMonth() !== mes && hasta.getMonth() !== mes) continue;
+      semanas.push({ desde, hasta });
+    }
+    return semanas;
+  }
+
+  // --------- Resumen de cargas por área/equipo/turno ----------
+  async function renderResumenCargas() {
+    let personal = await getAll("personal");
+    let equipos = await getAll("equipos");
+    let turnos = await getAll("turnos");
+    let asignaciones = await getAll("asignaciones");
+
+    let sem = semanasMes[semanaSel];
+    let semId = `${anioActual}-${(mesActual + 1).toString().padStart(2, "0")}-${sem.desde.getDate().toString().padStart(2, "0")}`;
+    let html = `<div style="margin-bottom:8px;font-size:1.17em;color:#004990;font-weight:800;">Resumen de cargas</div>`;
+
+    // Agrupar por áreas
+    let areas = [...new Set(personal.map(p => p.area))];
+    for (let area of areas) {
+      let persArea = personal.filter(p => p.area === area);
+      let equiposArea = equipos.filter(e => e.area === area);
+      let equiposNombres = equiposArea.map(e => e.nombre);
+      let personasPorEquipo = {};
+      let totalArea = persArea.length;
+
+      // Inicializa equipos y sin equipo
+      equiposArea.forEach(e => { personasPorEquipo[e.nombre] = []; });
+      personasPorEquipo["Sin equipo"] = [];
+
+      // Clasifica por equipo asignado (de la semana)
+      for (let p of persArea) {
+        let asig = asignaciones.find(a => a.persId === p.id && a.semanaId === semId);
+        let equipo = null;
+        if (asig && asig.equipoId) {
+          let equipoObj = equipos.find(e => e.id == asig.equipoId);
+          equipo = equipoObj ? equipoObj.nombre : "Sin equipo";
+        } else {
+          equipo = "Sin equipo";
+        }
+        if (!personasPorEquipo[equipo]) personasPorEquipo[equipo] = [];
+        personasPorEquipo[equipo].push({ ...p, asig });
+      }
+
+      html += `<div class="resumen-cargas-area">${area}</div>`;
+
+      // Por cada equipo, muestra resumen y subtotales de turnos
+      for (let eq of Object.keys(personasPorEquipo)) {
+        let arr = personasPorEquipo[eq];
+        if (!arr.length) continue;
+        html += `<div class="resumen-cargas-equipo">${eq === "Sin equipo" ? "<span class='resumen-cargas-sin'>(Sin equipo asignado)</span>" : eq}: <b>${arr.length}</b> persona${arr.length > 1 ? "s" : ""}</div>`;
+
+        // Contar por turno
+        let turnosPorEquipo = {};
+        for (let p of arr) {
+          let turnoId = (p.asig && p.asig.turnoId) ? p.asig.turnoId : "Sin turno";
+          if (!turnosPorEquipo[turnoId]) turnosPorEquipo[turnoId] = 0;
+          turnosPorEquipo[turnoId]++;
+        }
+        for (let tId in turnosPorEquipo) {
+          if (tId === "Sin turno") {
+            html += `<div class="resumen-cargas-turno" style="background:#bbb;color:#fff;">Sin turno: ${turnosPorEquipo[tId]}</div>`;
+          } else {
+            let turno = turnos.find(t => t.id == tId);
+            let color = turno && turno.color ? turno.color : "#bbb";
+            let nombre = turno ? turno.nombre : "Turno?";
+            html += `<div class="resumen-cargas-turno" style="background:${color};">${nombre}: ${turnosPorEquipo[tId]}</div>`;
+          }
+        }
+      }
+      html += `<div class="resumen-cargas-total">Total área: ${totalArea}</div>`;
+      html += `<hr style="border:none;border-top:1.7px solid #f4d30733;margin:10px 0 10px 0;">`;
+    }
+    document.getElementById("resumenCargas").innerHTML = html;
+  }
+
+  // ---------- Panel Semanal de Turnos -----------
+  let anioActual = new Date().getFullYear(), mesActual = new Date().getMonth(), semanaSel = 0;
+  let semanasMes = [];
+  function renderSelectorSemanas() {
+    let selA = document.getElementById('anioSel');
+    let selM = document.getElementById('mesSel');
+    selA.innerHTML = "";
+    for (let a = anioActual - 2; a <= anioActual + 2; a++) {
+      selA.innerHTML += `<option${a === anioActual ? " selected" : ""}>${a}</option>`;
+    }
+    selM.innerHTML = "";
+    let meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    for (let m = 0; m < 12; m++) {
+      selM.innerHTML += `<option value="${m}"${m === mesActual ? " selected" : ""}>${meses[m]}</option>`;
+    }
+    selA.onchange = () => { anioActual = +selA.value; renderPanelTurnosSemana(); }
+    selM.onchange = () => { mesActual = +selM.value; renderPanelTurnosSemana(); }
+  }
+  function cambiarMes(dir) {
+    mesActual += dir;
+    if (mesActual > 11) { mesActual = 0; anioActual++; }
+    if (mesActual < 0) { mesActual = 11; anioActual--; }
+    renderPanelTurnosSemana();
+  }
+  function renderWeeksBtns() {
+    semanasMes = semanasDelMes(anioActual, mesActual);
+    let btns = semanasMes.map((sem, i) => {
+      let d = sem.desde, h = sem.hasta;
+      let txt = `Semana ${i + 1}<br>${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1).toString().padStart(2, "0")} - ${h.getDate().toString().padStart(2, "0")}/${(h.getMonth() + 1).toString().padStart(2, "0")}`;
+      return `<button class="week-btn${i === semanaSel ? " selected" : ""}" onclick="seleccionarSemana(${i})">${txt}</button>`;
+    });
+    document.getElementById("weeksBtns").innerHTML = btns.join("");
+  }
+  function seleccionarSemana(idx) { semanaSel = idx; renderPanelTurnosSemana(); }
+
+  async function renderPanelTurnosSemana() {
+    renderSelectorSemanas();
+    renderWeeksBtns();
+    renderResumenCargas();
+    let personal = await getAll("personal");
+    let equipos = await getAll("equipos");
+    let turnos = await getAll("turnos");
+    let asignaciones = await getAll("asignaciones");
+    // Si no existe el campo 'orden', asignar a cada uno según su posición (SOLO una vez!)
+    let needOrderUpdate = false;
+    for (let p of personal) {
+      if (p.orden === undefined) { needOrderUpdate = true; break; }
+    }
+    if (needOrderUpdate) {
+      let porArea = {};
+      personal.forEach(p => {
+        if (!porArea[p.area]) porArea[p.area] = [];
+        porArea[p.area].push(p);
+      });
+      for (let area in porArea) {
+        porArea[area].forEach((p, idx) => {
+          p.orden = idx;
+          put("personal", p);
+        });
+      }
+    }
+    // Agrupar personal por área
+    let areas = [...new Set(personal.map(p => p.area))];
+    let tabla = `<table><tr>
+      <th>Área</th><th>Equipo</th><th>Nombre</th><th>Turno de la semana</th><th>Histórico (3 Turnos previos)</th>
+    </tr>`;
+    let sem = semanasMes[semanaSel];
+    let semId = `${anioActual}-${(mesActual + 1).toString().padStart(2, "0")}-${sem.desde.getDate().toString().padStart(2, "0")}`;
+    for (let area of areas) {
+      tabla += `<tr class="area-row"><th colspan="5">${area}</th></tr>`;
+      let persArea = personal.filter(p => p.area === area);
+      // Ordenar por 'orden'
+      persArea.sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
+      for (let i = 0; i < persArea.length; i++) {
+        let p = persArea[i];
+        // Historial 3 turnos previos
+        let historico = [];
+        let idxSem = semanasMes.findIndex(s => s.desde.getTime() === sem.desde.getTime());
+        let mesB = mesActual, anioB = anioActual, semIdx = semanaSel;
+        let buscarSem = [];
+        for (let k = 1; k <= 3; k++) {
+          semIdx--;
+          if (semIdx < 0) {
+            mesB--; if (mesB < 0) { mesB = 11; anioB--; }
+            let semsPrev = semanasDelMes(anioB, mesB);
+            semIdx = semsPrev.length - 1;
+            buscarSem = semanasDelMes(anioB, mesB);
+          }
+          let semB = buscarSem.length ? buscarSem[semIdx] : semanasMes[semIdx];
+          if (!semB) continue;
+          let semIdB = `${anioB}-${(mesB + 1).toString().padStart(2, "0")}-${semB.desde.getDate().toString().padStart(2, "0")}`;
+          let asigB = asignaciones.find(a => a.persId === p.id && a.semanaId === semIdB && a.turnoId);
+          if (asigB) {
+            let turno = turnos.find(t => t.id === asigB.turnoId);
+            historico.push({
+              nombre: turno ? turno.nombre : "?", color: turno ? turno.color : "#bbb",
+              semana: semB ? `${semB.desde.getDate().toString().padStart(2, "0")}/${(semB.desde.getMonth() + 1).toString().padStart(2, "0")}-${semB.hasta.getDate().toString().padStart(2, "0")}/${(semB.hasta.getMonth() + 1).toString().padStart(2, "0")}` : ""
+            });
+          }
+        }
+        let asig = asignaciones.find(a => a.persId === p.id && a.semanaId === semId);
+        // Equipos del área
+        let equiposArea = equipos.filter(e => e.area === area);
+        let equipoSel = asig && asig.equipoId ? asig.equipoId : "";
+        let turnoAsignado = asig && asig.turnoId ? asig.turnoId : "";
+
+        // --- Drag & drop aquí ---
+        tabla += `<tr draggable="true" data-id="${p.id}" data-area="${area}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropRow(event)" ondragend="dragEnd(event)">
+          <td>${area}</td>
+          <td>
+            <select class="select-equipo" onchange="asignarEquipoSemana(${p.id},this.value)">
+              <option value="">--</option>
+              ${equiposArea.map(e => `<option value="${e.id}"${e.id == equipoSel ? " selected" : ""}>${e.nombre}</option>`).join("")}
+            </select>
+          </td>
+          <td>${p.nombre}</td>
+          <td>
+            <select class="select-turno" onchange="asignarTurnoSemana(${p.id},this.value)">
+              <option value="">-- Sin asignar --</option>
+              ${turnos.map(t =>
+                `<option value="${t.id}" ${t.id == turnoAsignado ? "selected" : ""}>${t.nombre} (${t.horario})</option>`
+              ).join("")}
+            </select>
+          </td>
+          <td>
+            <div class="historial-turnos">
+              ${historico.map(h =>
+                `<span class="tag-turno" style="background:${h.color};">${h.nombre}<br><span style="font-size:.89em;font-weight:400;">${h.semana}</span></span>`
+              ).join("")}
+            </div>
+          </td>
+        </tr>`;
+      }
+    }
+    tabla += `</table>`;
+    document.getElementById("tablaTurnosSemana").innerHTML = tabla;
+  }
+
+  // ---- Drag & Drop funciones ----
+  let dragSourceId = null;
+  function dragStart(ev) {
+    dragSourceId = ev.currentTarget.getAttribute("data-id");
+    ev.dataTransfer.effectAllowed = "move";
+    ev.currentTarget.style.opacity = "0.5";
+  }
+  function dragOver(ev) {
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = "move";
+    let areaSrc = document.querySelector(`tr[data-id="${dragSourceId}"]`).getAttribute("data-area");
+    let areaTarget = ev.currentTarget.getAttribute("data-area");
+    if (areaSrc === areaTarget) {
+      ev.currentTarget.style.borderTop = "2.5px solid #f4d307";
+    }
+  }
+  function dragEnd(ev) {
+    document.querySelectorAll("#tablaTurnosSemana tr").forEach(tr => tr.style.opacity = "1");
+    document.querySelectorAll("#tablaTurnosSemana tr").forEach(tr => tr.style.borderTop = "");
+  }
+  async function dropRow(ev) {
+    ev.preventDefault();
+    document.querySelectorAll("#tablaTurnosSemana tr").forEach(tr => tr.style.borderTop = "");
+    let targetId = ev.currentTarget.getAttribute("data-id");
+    if (!dragSourceId || dragSourceId === targetId) return;
+
+    let personal = await getAll("personal");
+    let source = personal.find(p => p.id == dragSourceId);
+    let target = personal.find(p => p.id == targetId);
+
+    if (!source || !target || source.area !== target.area) return;
+
+    // Solo reordenar dentro del área
+    let persArea = personal.filter(p => p.area === source.area).sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
+    let idxSource = persArea.findIndex(p => p.id == source.id);
+    let idxTarget = persArea.findIndex(p => p.id == target.id);
+
+    // Mover source a la posición de target
+    persArea.splice(idxSource, 1);
+    persArea.splice(idxTarget, 0, source);
+
+    // Actualizar 'orden' de todos en esa área
+    for (let i = 0; i < persArea.length; i++) {
+      persArea[i].orden = i;
+      await put("personal", persArea[i]);
+    }
+    dragSourceId = null;
+    renderPanelTurnosSemana();
+  }
+
+  async function asignarEquipoSemana(persId, equipoId) {
+    let sem = semanasMes[semanaSel];
+    let semanaId = `${anioActual}-${(mesActual + 1).toString().padStart(2, "0")}-${sem.desde.getDate().toString().padStart(2, "0")}`;
+    let asignaciones = await getAll("asignaciones");
+    let registro = asignaciones.find(a => a.persId === persId && a.semanaId === semanaId);
+    if (registro) { registro.equipoId = +equipoId; await put("asignaciones", registro);}
+    else { await put("asignaciones", { persId, semanaId, equipoId: +equipoId, turnoId: null }); }
+    renderPanelTurnosSemana();
+  }
+  async function asignarTurnoSemana(persId, turnoId) {
+    let sem = semanasMes[semanaSel];
+    let semanaId = `${anioActual}-${(mesActual + 1).toString().padStart(2, "0")}-${sem.desde.getDate().toString().padStart(2, "0")}`;
+    let asignaciones = await getAll("asignaciones");
+    let registro = asignaciones.find(a => a.persId === persId && a.semanaId === semanaId);
+    if (registro) { registro.turnoId = +turnoId; await put("asignaciones", registro);}
+    else { await put("asignaciones", { persId, semanaId, equipoId: null, turnoId: +turnoId }); }
+    renderPanelTurnosSemana();
+  }
+  // ------------ Catálogos CRUD -----------------
+  async function renderPersonal() {
+    let personal = await getAll("personal");
+    let html = `<tr><th>Nombre</th><th>Área</th><th></th></tr>`;
+    for (let p of personal) {
+      html += `<tr><td>${p.nombre}</td><td>${p.area}</td>
+      <td><button class="btn btn-danger" onclick="borrarPersonal(${p.id})">Eliminar</button></td></tr>`;
+    }
+    document.getElementById("tablaPersonal").innerHTML = html;
+  }
+  document.getElementById("formPersonal").onsubmit = async function (e) {
+    e.preventDefault();
+    let personal = await getAll("personal");
+    let area = areaPersonal.value;
+    let perArea = personal.filter(p => p.area === area);
+    let nextOrder = perArea.length;
+    await put("personal", { nombre: nombrePersonal.value, area: areaPersonal.value, orden: nextOrder });
+    this.reset(); renderPersonal();
+  };
+  async function borrarPersonal(id) { await remove("personal", id); renderPersonal(); }
+  async function renderEquipos() {
+    let equipos = await getAll("equipos");
+    let html = `<tr><th>Nombre</th><th>Área</th><th></th></tr>`;
+    for (let e of equipos) {
+      html += `<tr><td>${e.nombre}</td><td>${e.area}</td>
+      <td><button class="btn btn-danger" onclick="borrarEquipo(${e.id})">Eliminar</button></td></tr>`;
+    }
+    document.getElementById("tablaEquipos").innerHTML = html;
+  }
+  document.getElementById("formEquipo").onsubmit = async function (e) {
+    e.preventDefault();
+    await put("equipos", { nombre: nombreEquipo.value, area: areaEquipo.value });
+    this.reset(); renderEquipos();
+  };
+  async function borrarEquipo(id) { await remove("equipos", id); renderEquipos(); }
+  async function renderTurnos() {
+    let turnos = await getAll("turnos");
+    let html = `<tr><th>Nombre</th><th>Horario</th><th>Color</th><th></th></tr>`;
+    for (let t of turnos) {
+      html += `<tr><td>${t.nombre}</td><td>${t.horario}</td>
+      <td><span class="tag-turno" style="background:${t.color};">${t.nombre}</span></td>
+      <td><button class="btn btn-danger" onclick="borrarTurno(${t.id})">Eliminar</button></td></tr>`;
+    }
+    document.getElementById("tablaTurnos").innerHTML = html;
+  }
+  document.getElementById("formTurno").onsubmit = async function (e) {
+    e.preventDefault();
+    await put("turnos", { nombre: nombreTurno.value, horario: horarioTurno.value, color: colorTurno.value });
+    this.reset(); renderTurnos();
+  };
+  async function borrarTurno(id) { await remove("turnos", id); renderTurnos(); }
+  // ----------- INIT ----------
+  abrirBD().then(()=>{
+    renderSelectorSemanas();
+    renderWeeksBtns();
+    renderPanelTurnosSemana();
+    renderPersonal();
+    renderEquipos();
+    renderTurnos();
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+document.getElementById('btnDescargarImagen').onclick = function() {
+  // Encuentra la tabla
+  const tabla = document.querySelector('#tablaTurnosSemana table');
+  if (!tabla) return alert("No se encontró la tabla");
+
+  // Clona la tabla y quita la columna del histórico
+  const tablaClone = tabla.cloneNode(true);
+
+  // Encuentra la posición de la columna "Histórico"
+  const ths = tablaClone.querySelectorAll('tr th');
+  let colHistorico = -1;
+  ths.forEach((th, idx) => {
+    if (th.innerText.toLowerCase().includes('histórico')) colHistorico = idx;
+  });
+  if (colHistorico === -1) return alert("No se encontró la columna Histórico");
+
+  // Quita la columna Histórico de encabezado
+  tablaClone.querySelectorAll('tr').forEach(tr => {
+    if (tr.children[colHistorico]) tr.removeChild(tr.children[colHistorico]);
+  });
+
+  // Prepara un contenedor invisible temporal
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'fixed';
+  wrapper.style.top = '-9999px';
+  wrapper.appendChild(tablaClone);
+  document.body.appendChild(wrapper);
+
+  // Usa html2canvas para hacer la imagen
+  html2canvas(tablaClone, { backgroundColor: '#fff', scale: 2 }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'turnos_isovolta.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    document.body.removeChild(wrapper);
+  });
+};
+
+
+// ---- RESPALDO Y RESTAURACION GLOBAL PARA TurnosDB ----
+function descargarRespaldoTurnosDB() {
+  document.getElementById('statusBackupTurnos').innerText = "Generando respaldo...";
+  let req = indexedDB.open("TurnosDB", 1);
+  req.onsuccess = function(event) {
+    let db = event.target.result;
+    let stores = Array.from(db.objectStoreNames);
+    if (!stores.length) {
+      document.getElementById('statusBackupTurnos').innerText = "No hay datos para respaldar.";
+      return;
+    }
+    let exportData = {}, pending = stores.length;
+    stores.forEach(storeName => {
+      let tx = db.transaction(storeName, "readonly");
+      let store = tx.objectStore(storeName);
+      let getAll = store.getAll();
+      getAll.onsuccess = function() {
+        exportData[storeName] = getAll.result;
+        pending--;
+        if (pending === 0) {
+          let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+          let downloadAnchor = document.createElement('a');
+          downloadAnchor.setAttribute("href", dataStr);
+          downloadAnchor.setAttribute("download", `respaldo_turnos_${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
+          document.body.appendChild(downloadAnchor);
+          downloadAnchor.click();
+          downloadAnchor.remove();
+          document.getElementById('statusBackupTurnos').innerText = "¡Respaldo completado!";
+          setTimeout(()=>document.getElementById('statusBackupTurnos').innerText = "", 3500);
+        }
+      };
+      getAll.onerror = function() {
+        document.getElementById('statusBackupTurnos').innerText = `Error al leer datos de ${storeName}`;
+      };
+    });
+  };
+  req.onerror = function() {
+    document.getElementById('statusBackupTurnos').innerText = "No se pudo abrir la base de datos.";
+  };
+}
+
+function restaurarRespaldoTurnosDB(file) {
+  if (!confirm("¿Deseas SOBREESCRIBIR todos los datos actuales? Esta acción no se puede deshacer.")) return;
+  document.getElementById('statusBackupTurnos').innerText = "Restaurando datos...";
+  let reader = new FileReader();
+  reader.onload = function(evt) {
+    try {
+      let importData = JSON.parse(evt.target.result);
+      let req = indexedDB.open("TurnosDB", 1);
+      req.onsuccess = function(event) {
+        let db = event.target.result;
+        let stores = Object.keys(importData).filter(name => db.objectStoreNames.contains(name));
+        let tx = db.transaction(stores, "readwrite");
+        stores.forEach(storeName => {
+          let store = tx.objectStore(storeName);
+          store.clear();
+          (importData[storeName] || []).forEach(val => store.put(val));
+        });
+        tx.oncomplete = () => {
+          document.getElementById('statusBackupTurnos').innerText = "¡Restauración completada!";
+          setTimeout(()=>document.getElementById('statusBackupTurnos').innerText = "", 3500);
+          alert("¡Datos restaurados correctamente! Actualiza la página para ver los cambios.");
+        };
+        tx.onerror = function() {
+          document.getElementById('statusBackupTurnos').innerText = "Error al restaurar los datos.";
+        }
+      };
+      req.onerror = function() {
+        document.getElementById('statusBackupTurnos').innerText = "No se pudo abrir la base de datos para restaurar.";
+      }
+    } catch(e) {
+      document.getElementById('statusBackupTurnos').innerText = "El archivo de respaldo no es válido.";
+    }
+  };
+  reader.readAsText(file);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

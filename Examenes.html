@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Exámenes</title>
+<link rel="icon" type="image/png" href="Isovolta.ico">
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+    padding: 0 0 70px 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .encabezado {
+    width: 100vw;
+    background: #fff;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-shadow: 0 2px 16px 0 rgba(0,32,91,0.06);
+  }
+  .logo-isovolta {
+    height: 64px;
+    margin: 10px 34px 10px 0;
+  }
+  .main-container {
+    max-width: 1600px;
+    margin: 32px auto 32px auto;
+    background: #fff;
+    border-radius: 13px;
+    box-shadow: 0 5px 18px rgba(0,32,91,0.09);
+    padding: 32px 22px 22px 22px;
+  }
+  h1 {
+    background: #fff;
+    color: #004990;
+    text-align: center;
+    font-size: 2em;
+    margin: 0 0 24px 0;
+    padding: 18px 0 10px 0;
+    border-radius: 12px;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 14px 0 rgba(0,32,91,0.04);
+  }
+  .top-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    gap: 8px;
+  }
+  .btn {
+    background: #0056a0;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    padding: 8px 19px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    box-shadow: 0 2px 7px rgba(0,32,91,0.07);
+    cursor: pointer;
+    transition: background 0.16s, box-shadow 0.16s, transform 0.14s;
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn:hover {
+    background: #003366;
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 4px 12px rgba(0,32,91,0.16);
+  }
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+    margin-top: 5px;
+  }
+  input[type="text"] {
+    padding: 7px;
+    border-radius: 8px;
+    border: 1px solid #cfd8dc;
+    font-size: 1em;
+    outline: none;
+    background: #f7fafc;
+    margin-right: 6px;
+    min-width: 170px;
+    margin-bottom: 2px;
+  }
+  input[type="text"]:focus {
+    border-color: #0077be;
+    background: #e2eaf7;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    background: #fafdff;
+    border-radius: 8px;
+    box-shadow: 0 1px 9px rgba(0,32,91,0.03);
+    overflow: hidden;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid #d5d7de;
+    padding: 10px 8px;
+    text-align: left;
+    font-size: 14px;
+    vertical-align: top;
+  }
+  th {
+    background-color: #f2f4f8 !important;
+    color: #222;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    border-bottom: 2px solid #dde2ea;
+    white-space: nowrap;
+  }
+  tr:nth-child(even) td {
+    background: #f2f6fb;
+  }
+  td input[type="text"] {
+    padding: 5px;
+    font-size: 14px;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #d0d7df;
+    border-radius: 5px;
+  }
+  td input[type="text"]:focus {
+    background: #eaf6ff;
+    border: 1.3px solid #006ad1;
+  }
+  .btn-abierto {
+    padding: 6px 12px;
+    background: #015197;
+    color: #fff;
+    border-radius: 7px;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .btn-abierto:hover {
+    background: #004990;
+  }
+  footer {
+    width: 100vw;
+    background: #00529b;
+    color: #fff;
+    text-align: center;
+    padding: 14px 0 12px 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    font-size: 1.08em;
+    letter-spacing: 0.8px;
+    z-index: 50;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+  @media (max-width: 1400px) {
+    .main-container {
+      max-width: 98vw;
+      padding: 12px 1vw 18px 1vw;
+    }
+  }
+  @media (max-width: 950px) {
+    .main-container { padding: 4px 2vw 14px 2vw; }
+    table { font-size: 12px; }
+    th, td { padding: 6px 2px; }
+    .logo-isovolta { height: 36px; margin: 6px 8px; }
+    h1 { font-size: 1.1em; }
+    .btn { font-size: 0.95em; }
+  }
+  @media (max-width: 680px) {
+    .main-container { padding: 2px 1vw 6px 1vw; }
+    th, td { padding: 4px 2px; }
+    .btn { padding: 7px 9px; }
+    input[type="text"] { min-width: 90px; }
+  }
+</style>
+</head>
+<body>
+<header class="encabezado">
+  <img alt="Isovolta Logo" class="logo-isovolta" src="https://www.isovolta.com/logo_isovolta.png"/>
+</header>
+<div class="main-container">
+<h1>Exámenes</h1>
+<div class="top-controls">
+  <div>
+    <button class="btn" onclick="guardarDatos()">Guardar Rutas</button>
+  </div>
+  <div>
+    <input id="filtroCodigo" oninput="filtrarTabla()" placeholder="Filtrar por Código..." type="text"/>
+    <input id="filtroDocumento" oninput="filtrarTabla()" placeholder="Filtrar por Documento..." type="text"/>
+    <!-- Quitamos filtro por área -->
+  </div>
+</div>
+<table id="tablaExamenes">
+<thead>
+<tr>
+<th>Código</th>
+<th>Documento</th>
+<th>Revisión</th>
+<th>Versión</th>
+<th>Ruta de Acceso</th>
+<th>Acceso</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+<script>
+// ========== IndexedDB Helper ==========
+const DB_NAME = 'ILUO_DB';
+const DB_VERSION = 1;
+const STORE_NAME = 'respaldo';
+const RUTAS_KEY = 'rutasExamenesV2';
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'clave' });
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = (event) => reject(event.target.error);
+  });
+}
+
+async function guardarEnIndexedDB(clave, valor) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put({ clave, valor });
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function leerDeIndexedDB(clave) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.get(clave);
+    req.onsuccess = () => resolve(req.result ? req.result.valor : null);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+// ========== Lógica principal ==========
+let examenes = [];
+let rutas = {};
+
+async function renderizarTabla() {
+  examenes = await leerDeIndexedDB("documentosILUO") || [];
+  rutas = await leerDeIndexedDB(RUTAS_KEY) || {};
+
+  // --- Documentos únicos por código
+  const unicosPorCodigo = {};
+  examenes.forEach(doc => {
+    if (!unicosPorCodigo[doc.codigo]) {
+      unicosPorCodigo[doc.codigo] = doc;
+    }
+  });
+  const docsUnicos = Object.values(unicosPorCodigo);
+
+  const tbody = document.querySelector("#tablaExamenes tbody");
+  tbody.innerHTML = "";
+
+  docsUnicos.forEach((doc, index) => {
+    const ruta = rutas[doc.codigo] || "";
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${doc.codigo || ""}</td>
+      <td>${doc.documento || ""}</td>
+      <td>${doc.revision || ""}</td>
+      <td>${doc.version || ""}</td>
+      <td>
+        <input type="text" id="ruta-${index}" value="${ruta}">
+      </td>
+      <td>
+        <button class="btn-abierto" onclick="abrirDocumento(${index})">Abrir</button>
+      </td>
+    `;
+    tbody.appendChild(fila);
+  });
+}
+
+function abrirDocumento(index) {
+  const input = document.getElementById("ruta-" + index);
+  if (input && input.value.trim()) {
+    window.open(input.value.trim(), '_blank');
+  } else {
+    alert("Ruta no especificada.");
+  }
+}
+
+async function guardarDatos() {
+  const filas = document.querySelectorAll("#tablaExamenes tbody tr");
+  let nuevasRutas = {};
+  filas.forEach((fila, index) => {
+    const codigo = fila.cells[0].textContent.trim();
+    const ruta = fila.querySelector(`#ruta-${index}`).value.trim();
+    nuevasRutas[codigo] = ruta;
+  });
+  await guardarEnIndexedDB(RUTAS_KEY, nuevasRutas);
+  alert("Rutas guardadas correctamente.");
+}
+
+// Filtrado múltiple por código y documento
+function filtrarTabla() {
+  const codigo = document.getElementById("filtroCodigo").value.toLowerCase();
+  const doc = document.getElementById("filtroDocumento").value.toLowerCase();
+  const filas = document.querySelectorAll("#tablaExamenes tbody tr");
+  filas.forEach(fila => {
+    const cellCodigo = fila.cells[0].textContent.toLowerCase();
+    const cellDoc = fila.cells[1].textContent.toLowerCase();
+    fila.style.display =
+      (cellCodigo.includes(codigo)) &&
+      (cellDoc.includes(doc))
+      ? "" : "none";
+  });
+}
+
+renderizarTabla();
+</script>
+<footer>
+    Herramienta diseñada por el departamento de Producción & Mejora Continua
+</footer>
+</body>
+</html>

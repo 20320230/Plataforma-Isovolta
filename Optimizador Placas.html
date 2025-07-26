@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Optimizador Visual de Placas — Isovolta</title>
+  <link href="Isovolta.ico" rel="icon" type="image/png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+    }
+    .encabezado {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      box-shadow: 0 2px 14px 0 rgba(0,32,91,0.08);
+      padding: 0 0 0 0;
+      min-height: 68px;
+      width: 100vw;
+    }
+    .logo-isovolta {
+      height: 55px;
+      margin: 13px 36px 13px 0;
+    }
+    h1 {
+      color: #115180;
+      font-size: 2.15em;
+      font-weight: 900;
+      margin: 0;
+      padding-left: 45px;
+      letter-spacing: 0.7px;
+      background: none;
+    }
+    .main-content {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 38px;
+      max-width: 1480px;
+      margin: 32px auto 28px auto;
+    }
+    .inputs-box {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #00499014;
+      padding: 28px 28px 28px 28px;
+      width: 390px;
+      margin: 0 0 0 0;
+    }
+    .inputs-box h3 {
+      color: #135d9c;
+      background: #f0f6fc;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: 800;
+      margin: 0 0 18px 0;
+      padding: 9px 0 9px 14px;
+      letter-spacing: .2px;
+    }
+    .form-row {
+      margin-bottom: 12px;
+    }
+    .inputs-box label {
+      font-weight: 700;
+      color: #1c3c56;
+      font-size: 1.05em;
+      display: inline-block;
+      min-width: 158px;
+    }
+    .inputs-box input[type="number"] {
+      width: 90px;
+      margin: 0 4px 0 0;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1.2px solid #bed3ec;
+      background: #fafdff;
+      font-size: 1.05em;
+      transition: border-color .18s;
+    }
+    .inputs-box input[type="number"]:focus {
+      border-color: #115180;
+      background: #e9f5ff;
+    }
+    .inputs-box table {
+      margin-top: 14px;
+      margin-bottom: 10px;
+      border-radius: 9px;
+      overflow: hidden;
+      background: #fafdff;
+      box-shadow: 0 2px 9px #1b376c09;
+    }
+    .inputs-box th, .inputs-box td {
+      font-size: 1.04em;
+      padding: 5px 8px;
+      text-align: left;
+    }
+    .inputs-box th {
+      color: #226ba3;
+      font-weight: 800;
+      background: #f0f7fd;
+      border-bottom: 1.6px solid #c8dbef;
+    }
+    .inputs-box td {
+      background: #fff;
+    }
+    .inputs-box button {
+      background: #f4d307;
+      color: #0b3a6f;
+      font-weight: 900;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.08em;
+      padding: 11px 22px;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-top: 6px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 10px #ffe06629;
+      transition: background .12s, box-shadow .12s;
+    }
+    .inputs-box button:hover {
+      background: #ffe066;
+      color: #102a55;
+    }
+    .results-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 0;
+    }
+    .resumen-flex {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .summary-table {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px #3f6a8813;
+      padding: 20px 28px 10px 28px;
+      min-width: 335px;
+      font-size: 1.09em;
+      display: inline-block;
+      border: 2px solid #f4d30725;
+    }
+    .summary-table td {
+      padding: 7px 10px 7px 0;
+      border-bottom: 1.2px solid #e9eef7;
+    }
+    .summary-table tr:last-child td {
+      border-bottom: none;
+    }
+    .summary-table .res {
+      font-weight: 800;
+      color: #0a3175;
+      background: #fffbe7;
+      letter-spacing: 0.5px;
+    }
+    .placa-visual-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 19px 32px;
+      margin-bottom: 14px;
+      max-width: 100%;
+    }
+    .placa-container {
+      background: #fff;
+      border-radius: 11px;
+      box-shadow: 0 2px 12px #2765a020;
+      margin-bottom: 4px;
+      padding: 10px 15px 12px 15px;
+      display: inline-block;
+      border: 2.2px solid #e1e7f3;
+      min-width: 420px;
+    }
+    .placa-title {
+      font-weight: 800;
+      color: #226ba3;
+      font-size: 1.11em;
+      margin-bottom: 2px;
+      letter-spacing: .7px;
+      padding-bottom: 2px;
+    }
+    .svg-placa {
+      background: #fafdff;
+      border: 2.2px solid #2474ba;
+      border-radius: 10px;
+      display: block;
+      margin: 2px 0 0 0;
+      max-width: 98vw;
+    }
+    .scrap-label {
+      fill: #a11;
+      font-weight: 700;
+      font-size: 20px;
+      pointer-events: none;
+    }
+    /* Tooltip */
+    #tooltip-corte {
+      position: fixed; pointer-events: none; z-index: 999;
+      background: #fffbe7; border: 1.5px solid #f4d307;
+      border-radius: 9px; font-size: 1.11em; color: #1a2333; 
+      padding: 8px 17px 8px 17px; box-shadow: 0 2px 12px #887a1b30;
+      min-width: 76px; text-align: center; font-weight: 700;
+      opacity: 0; transition: opacity .15s;
+    }
+    .footer {
+      width: 100vw;
+      background: #115180;
+      color: #fff;
+      text-align: center;
+      padding: 15px 0 10px 0;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      font-size: 1.09em;
+      letter-spacing: 0.8px;
+      z-index: 50;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+    @media (max-width: 1480px) { .main-content { max-width: 98vw;} }
+    @media (max-width: 1100px) { .main-content { flex-direction: column; align-items: center; gap: 20px;} .results-box { width: 97vw;} .placa-visual-group { max-width: 97vw;} .placa-container{min-width:300px;} }
+    @media (max-width: 680px) {
+      .inputs-box, .summary-table { min-width: 90vw; width: 98vw;}
+      .placa-visual-group { max-width: 96vw;}
+      .placa-container{ min-width:240px; }
+      h1 { font-size: 1.25em; }
+    }
+  </style>
+</head>
+<body>
+  <header class="encabezado">
+    <h1>Optimizador Visual de Placas</h1>
+    <img alt="Isovolta Logo" class="logo-isovolta" src="https://www.isovolta.com/logo_isovolta.png"/>
+  </header>
+  <div class="main-content">
+    <div class="inputs-box">
+      <h3>Datos de la Placa</h3>
+      <div class="form-row">
+        <label>Largo (mm):</label>
+        <input id="anchoPlaca" type="number" value="2400">
+      </div>
+      <div class="form-row">
+        <label>Ancho (mm):</label>
+        <input id="largoPlaca" type="number" value="1220">
+      </div>
+      <div class="form-row">
+        <label>Ancho Disco Corte (mm):</label>
+        <input id="kerf" type="number" value="5">
+      </div>
+      <b>Cortes a Optimizar (máx 10)</b>
+      <table id="tablaCortes">
+        <thead>
+          <tr>
+            <th>#</th><th>Ancho (mm)</th><th>Largo (mm)</th><th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><input type="number" value="100"></td>
+            <td><input type="number" value="100"></td>
+            <td><input type="number" value="50"></td>
+          </tr>
+        </tbody>
+      </table>
+      <button onclick="agregarCorte()">+ Agregar Corte</button>
+      <button onclick="quitarCorte()">- Quitar Corte</button>
+      <br>
+      <button style="margin-top:11px;" onclick="optimizar()">Optimizar y Dibujar</button>
+    </div>
+    <div class="results-box" id="resultados"></div>
+  </div>
+  <div id="tooltip-corte"></div>
+  <div class="footer">Herramienta diseñada por el departamento de Producción & Mejora Continua</div>
+<script>
+let maxCortes = 10;
+function agregarCorte() {
+  let tabla = document.getElementById('tablaCortes').getElementsByTagName('tbody')[0];
+  if (tabla.rows.length >= maxCortes) return;
+  let row = tabla.insertRow();
+  row.innerHTML = `<td>${tabla.rows.length+1}</td>
+    <td><input type="number" value="100"></td>
+    <td><input type="number" value="500"></td>
+    <td><input type="number" value="1"></td>`;
+}
+function quitarCorte() {
+  let tabla = document.getElementById('tablaCortes').getElementsByTagName('tbody')[0];
+  if (tabla.rows.length > 1) tabla.deleteRow(tabla.rows.length-1);
+}
+function mm2aM2(val) {
+  return (val/1e6).toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3}) + " m²";
+}
+function optimizar() {
+  let ancho = +document.getElementById('anchoPlaca').value;
+  let largo = +document.getElementById('largoPlaca').value;
+  let kerf = +document.getElementById('kerf').value;
+  let cortes = [];
+  let rows = document.getElementById('tablaCortes').getElementsByTagName('tbody')[0].rows;
+  for (let r=0; r<rows.length; r++) {
+    let celdas = rows[r].getElementsByTagName('input');
+    let c = {
+      ancho: +celdas[0].value,
+      largo: +celdas[1].value,
+      cantidad: +celdas[2].value,
+      usado: 0
+    };
+    if (c.ancho>0 && c.largo>0 && c.cantidad>0) cortes.push(c);
+  }
+  cortes.sort((a,b)=>b.largo*b.ancho - a.largo*a.ancho);
+  let placas = [];
+  let piezasPendientes = cortes.map(c=>({...c}));
+  while(piezasPendientes.some(p=>p.cantidad>0)) {
+    let placa = { ancho, largo, cortes:[], scrapRects:[], areaUsada:0, areaScrap:0 };
+    let tiraPlan = piezasPendientes.map((p,i)=>({
+      idx: i, ancho: p.ancho, largo: p.largo, piezas: p.cantidad
+    }));
+    tiraPlan.sort((a,b)=>b.piezas-b.piezas);
+    let x = 0, y = 0;
+    while (x + Math.min(...tiraPlan.filter(t=>t.piezas>0).map(t=>t.ancho)) <= ancho) {
+      let tIdx = tiraPlan.findIndex(t=>t.piezas>0 && t.ancho<=ancho-x);
+      if (tIdx==-1) break;
+      let t = tiraPlan[tIdx];
+      let piezasXTira = Math.floor((largo + kerf)/(t.largo + kerf));
+      piezasXTira = Math.min(piezasXTira, t.piezas);
+      if (piezasXTira==0) { tiraPlan[tIdx].piezas = 0; continue;}
+      let py = 0;
+      for (let k=0; k<piezasXTira; k++) {
+        placa.cortes.push({ idx: t.idx, x, y:py, w:t.ancho, h:t.largo });
+        placa.areaUsada += t.ancho*t.largo;
+        py += t.largo + kerf;
+      }
+      piezasPendientes[t.idx].cantidad -= piezasXTira;
+      tiraPlan[tIdx].piezas -= piezasXTira;
+      let scrapH = largo - (py-kerf);
+      if (scrapH>0) placa.scrapRects.push({ x, y:py, w: t.ancho, h: scrapH });
+      x += t.ancho + kerf;
+    }
+    if (x < ancho) placa.scrapRects.push({ x, y: 0, w: ancho-x, h: largo });
+    placa.areaScrap = placa.scrapRects.reduce((acc,s)=>acc+(s.w*s.h),0);
+    placas.push(placa);
+  }
+  let totalPiezas = cortes.reduce((acc,c,i)=>acc+placas.reduce((a,p)=>a+p.cortes.filter(x=>x.idx===i).length,0),0);
+  let totalAreaUtil = cortes.reduce((acc,c,i)=>acc+placas.reduce((a,p)=>a+p.cortes.filter(x=>x.idx===i).length,0)*c.ancho*c.largo,0);
+  let totalArea = placas.length*ancho*largo;
+  let areaScrap = totalArea-totalAreaUtil;
+  let pctScrap = totalArea>0 ? 100*areaScrap/totalArea : 0;
+  let html = `
+    <div class="resumen-flex">
+      <table class="summary-table">
+        <tr><td>Total de Piezas</td><td class="res">${totalPiezas}</td></tr>
+        <tr><td>Placas Usadas</td><td class="res">${placas.length}</td></tr>
+        <tr><td>% Scrap</td><td class="res">${pctScrap.toFixed(2)}%</td></tr>
+        <tr><td>Área útil</td><td class="res">${mm2aM2(totalAreaUtil)}</td></tr>
+        <tr><td>Área scrap</td><td class="res">${mm2aM2(areaScrap)}</td></tr>
+      </table>
+    </div>
+    <div class="placa-visual-group">
+  `;
+  placas.forEach((p, idx) => {
+    let scale = Math.min(530/p.ancho, 400/p.largo, 1.5); // SVG grande
+    html += `
+      <div class="placa-container">
+        <div class="placa-title">Placa ${idx+1} — Cortes acomodados: ${p.cortes.length}</div>
+        <svg class="svg-placa" width="${p.ancho*scale}" height="${p.largo*scale}" viewBox="0 0 ${p.ancho} ${p.largo}">
+          <rect x="0" y="0" width="${p.ancho}" height="${p.largo}" fill="#fafdff" stroke="#2474ba" stroke-width="2.4"/>
+          <!-- Cortes -->
+          ${p.cortes.map((o,i) => {
+            let txt = `${o.w}x${o.h}`;
+            let fSize = Math.max(14, Math.min(o.w,o.h)/3.2);
+            return `
+            <rect x="${o.x}" y="${o.y}" width="${o.w}" height="${o.h}" fill="#ffe066" stroke="#b79c00" stroke-width="2"
+              onmousemove="showTooltip(evt, '${txt}')" onmouseout="hideTooltip()" />
+            <text x="${o.x + o.w/2}" y="${o.y + o.h/2 + fSize/3}" font-size="${fSize}" text-anchor="middle" fill="#555" font-weight="700"
+            pointer-events="none">${fSize<24?'':txt}</text>
+            `;
+          }).join("")}
+          <!-- Scrap -->
+          ${p.scrapRects.map(s=>`
+            <rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" fill="#e6e6e6" stroke="#c1c1c1" stroke-width="1.5"
+              onmousemove="showTooltip(evt, 'SCRAP: ${s.w}x${s.h}')" onmouseout="hideTooltip()"/>
+            <text x="${s.x + s.w/2}" y="${s.y + s.h/2}" font-size="19" text-anchor="middle" class="scrap-label"
+              pointer-events="none">${s.w>50&&s.h>50 ? `${s.w}x${s.h}`:""}</text>
+          `).join("")}
+        </svg>
+      </div>
+    `;
+  });
+  html += "</div>";
+  document.getElementById('resultados').innerHTML = html;
+}
+
+// Tooltips: sigue al mouse
+function showTooltip(evt, texto) {
+  let tt = document.getElementById('tooltip-corte');
+  tt.textContent = texto;
+  tt.style.opacity = "1";
+  let px = evt.clientX + 16, py = evt.clientY + 5;
+  if (px + tt.offsetWidth > window.innerWidth) px = window.innerWidth - tt.offsetWidth - 8;
+  tt.style.left = px + "px"; tt.style.top = py + "px";
+}
+function hideTooltip() {
+  let tt = document.getElementById('tooltip-corte');
+  tt.style.opacity = "0";
+}
+window.onload = optimizar;
+</script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Piezas por Rollo</title>
+  <link rel="icon" type="image/png" href="Isovolta.ico"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: #f5f8fc;
+      margin: 0;
+    }
+    header {
+      background: #fff;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 18px 0 rgba(0,32,91,0.07);
+      padding: 0;
+      min-height: 70px;
+    }
+    .logo-isovolta {
+      height: 58px;
+      margin: 7px 38px 7px 18px;
+    }
+    .titulo-app {
+      color: #115180;
+      font-size: 2.15em;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      margin-left: 38px;
+      margin-bottom: 0;
+      margin-top: 0;
+      flex: 1;
+      text-align: left;
+    }
+    .flex-main {
+      display: flex;
+      gap: 44px;
+      justify-content: center;
+      align-items: flex-start;
+      margin-bottom: 35px;
+    }
+    .input-card, .output-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 5px 20px #00499017;
+      padding: 30px 38px 26px 38px;
+      min-width: 340px;
+      max-width: 410px;
+    }
+    .input-card label {
+      font-weight: 700;
+      color: #145497;
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 4px;
+      font-size: 1.06em;
+    }
+    .input-card input[type="number"] {
+      width: 97%;
+      max-width: 220px;
+      padding: 7px 11px;
+      font-size: 1.12em;
+      border: 1.5px solid #b5c7d6;
+      border-radius: 7px;
+      background: #fafdff;
+      margin-bottom: 4px;
+      margin-top: 1.5px;
+      transition: border .13s;
+      outline: none;
+    }
+    .input-card input:focus {
+      border-color: #0b509e;
+      background: #eaf1fc;
+    }
+    .input-card button {
+      width: 100%;
+      font-weight: 900;
+      font-size: 1.2em;
+      margin: 22px 0 3px 0;
+      background: #ffd600;
+      color: #184177;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 0;
+      cursor: pointer;
+      box-shadow: 0 2px 9px #ffe0662c;
+      transition: background .13s;
+      letter-spacing: 0.4px;
+    }
+    .input-card button:hover {
+      background: #ffe16a;
+    }
+    .output-card {
+      min-width: 340px;
+      max-width: 440px;
+    }
+    .output-card h2 {
+      color: #164070;
+      font-size: 1.18em;
+      margin-bottom: 12px;
+      font-style: italic;
+      font-weight: 700;
+    }
+    .output-card .bigval {
+      font-size: 1.38em;
+      color: #1a4680;
+      font-weight: 900;
+      margin-left: 3px;
+    }
+    .output-card .subval {
+      color: #056fa2;
+      font-weight: 700;
+      margin-left: 2px;
+    }
+    .output-card .ok {
+      color: #1d8048;
+      font-weight: 900;
+    }
+    .output-card .bad {
+      color: #c12b1a;
+      font-weight: 900;
+    }
+    .output-card ul {
+      padding-left: 1.4em;
+      margin: 12px 0 8px 0;
+    }
+    .output-card li {
+      margin-bottom: 7px;
+      font-size: 1.08em;
+    }
+    .output-card .aprov {
+      font-size: 1.12em;
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+    .output-card .small {
+      font-size: 0.97em;
+      color: #757575;
+      margin-top: 15px;
+    }
+    .footer {
+      width: 100vw;
+      background: #115180;
+      color: #fff;
+      text-align: center;
+      padding: 16px 0 10px 0;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      font-size: 1.09em;
+      letter-spacing: 0.8px;
+      z-index: 50;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+    @media (max-width: 1100px) {
+      .flex-main { flex-direction: column; align-items: center; gap: 22px;}
+      .input-card, .output-card { max-width: 98vw;}
+      .titulo-app { margin-left: 12vw; }
+    }
+    @media (max-width: 600px) {
+      .input-card, .output-card { padding: 14px 5vw; min-width: 80vw;}
+      .titulo-app { margin-left: 2vw; font-size: 1.3em;}
+      .logo-isovolta { height: 38px; margin-right: 10px;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="titulo-app">Calculadora de Piezas por Rollo</div>
+    <img class="logo-isovolta" src="https://www.isovolta.com/logo_isovolta.png" alt="Isovolta Logo">
+  </header>
+  <div class="flex-main">
+    <div class="input-card">
+      <label>Espesor de la Materia Prima (mm):
+        <input id="espesor" type="number" step="0.0001"/>
+      </label>
+      <label>Diámetro Exterior (mm):
+        <input id="diamExt" type="number"/>
+      </label>
+      <label>Diámetro Interior (mm):
+        <input id="diamInt" type="number"/>
+      </label>
+      <label>Ancho del Rollo (mm):
+        <input id="anchoRollo" type="number"/>
+      </label>
+      <hr style="margin:18px 0;">
+      <label>Largo de la Pieza (mm):
+        <input id="largoPieza" type="number"/>
+      </label>
+      <label>Ancho de la Pieza (mm):
+        <input id="anchoPieza" type="number"/>
+      </label>
+      <label>Espacio entre Piezas (mm):
+        <input id="gapPieza" type="number"/>
+      </label>
+      <button onclick="calcular()">Calcular Piezas</button>
+    </div>
+    <div class="output-card" id="output"></div>
+  </div>
+  <div class="footer">Herramienta diseñada por el departamento de Producción & Mejora Continua</div>
+<script>
+function calcular() {
+  let espesor = parseFloat(document.getElementById('espesor').value) || 0;
+  let dExt = parseFloat(document.getElementById('diamExt').value) || 0;
+  let dInt = parseFloat(document.getElementById('diamInt').value) || 0;
+  let anchoRollo = parseFloat(document.getElementById('anchoRollo').value) || 0;
+  let largoPieza = parseFloat(document.getElementById('largoPieza').value) || 0;
+  let anchoPieza = parseFloat(document.getElementById('anchoPieza').value) || 0;
+  let gap = parseFloat(document.getElementById('gapPieza').value) || 0;
+
+  let errores = [];
+  if (espesor <= 0) errores.push("Espesor de materia prima inválido.");
+  if (dExt <= 0 || dInt < 0 || dInt >= dExt) errores.push("Diámetros inválidos.");
+  if (anchoRollo <= 0) errores.push("Ancho de rollo inválido.");
+  if (largoPieza <= 0) errores.push("Largo de pieza inválido.");
+  if (anchoPieza <= 0) errores.push("Ancho de pieza inválido.");
+  if (errores.length > 0) {
+    document.getElementById('output').innerHTML = '<div class="bad">Error:<br>' + errores.join('<br>') + '</div>';
+    return;
+  }
+
+  // Metros lineales de rollo
+  let ml = (Math.PI * ( (Math.pow(dExt/2,2) - Math.pow(dInt/2,2)) )) / espesor; // mm
+  let metrosLineales = ml / 1000; // a metros
+
+  // Área total desplegada del rollo (en m²)
+  let area_rollo = (anchoRollo * metrosLineales * 1000) / 1e6;
+
+  // Piezas por ancho (con espacios)
+  let piezas_ancho = Math.floor( (anchoRollo + gap) / (anchoPieza + gap) );
+  // Piezas por largo del rollo
+  let piezas_largo = Math.floor( (ml + gap) / (largoPieza + gap) );
+  let piezas_totales = piezas_ancho * piezas_largo;
+
+  // Área útil convertida en piezas
+  let area_piezas = (anchoPieza * largoPieza * piezas_totales) / 1e6;
+  let porcentaje_util = area_piezas / area_rollo * 100;
+  if (porcentaje_util > 100) porcentaje_util = 100;
+
+  document.getElementById('output').innerHTML = `
+    <h2>Resultados del Rollo</h2>
+    <ul>
+      <li><b>Metros lineales del rollo:</b> <span class="bigval">${metrosLineales.toLocaleString(undefined, {maximumFractionDigits:2})} m</span></li>
+      <li><b>Piezas por ancho:</b> <span class="subval">${piezas_ancho}</span></li>
+      <li><b>Piezas por largo:</b> <span class="subval">${piezas_largo}</span></li>
+      <li><b>Total de piezas:</b> <span class="bigval">${piezas_totales}</span></li>
+      <li><b>Área útil convertida:</b> ${area_piezas.toLocaleString(undefined,{maximumFractionDigits:1})} m²</li>
+      <li><b>Área total de rollo:</b> ${area_rollo.toLocaleString(undefined,{maximumFractionDigits:2})} m²</li>
+    </ul>
+    <div class="aprov"><b>% de aprovechamiento:</b>
+      <span class="${porcentaje_util>=85?'ok':'bad'}">${porcentaje_util.toLocaleString(undefined,{maximumFractionDigits:2})}%</span>
+    </div>
+    <div class="small">Cálculo realizado considerando corte alineado, sin invertir piezas ni optimizar retales.<br>
+    El resultado puede variar si hay ajustes de espacio, scrap o piezas invertidas.</div>
+  `;
+}
+</script>
+</body>
+</html>
